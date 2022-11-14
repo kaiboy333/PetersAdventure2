@@ -9,7 +9,7 @@ public class FriendChara : ButtleChara
 
     private int level = 1;
 
-    public FriendChara(int hp, int mp, int atp, int mtp, int df, int speed, string name, string professionName) : base(hp, mp, atp, mtp, df, speed, name)
+    public FriendChara(string name, int hp, int mp, int atp, int mtp, int df, int speed, string professionName) : base(name, hp, mp, atp, mtp, df, speed)
     {
         this.professionName = professionName;
     }

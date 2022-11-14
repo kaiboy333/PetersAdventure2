@@ -10,9 +10,9 @@ public class EnemyChara : ButtleChara
     //敵の画像
     public Image image;
 
-    public EnemyChara(int hp, int mp, int atp, int mtp, int df, string name, int speed, string tribeName, Image image) : base(hp, mp, atp, mtp, df, speed, name)
+    public EnemyChara(string name, int hp, int mp, int atp, int mtp, int df, int speed, string tribeName, string imagePath) : base(name, hp, mp, atp, mtp, df, speed)
     {
         this.tribeName = tribeName;
-        this.image = image;
+        this.image = Resources.Load<Image>(imagePath);
     }
 }

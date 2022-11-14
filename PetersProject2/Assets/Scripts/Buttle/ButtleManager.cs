@@ -22,9 +22,13 @@ public class ButtleManager : MonoBehaviour
 
     private List<ButtleCulculate> buttleCulculates = new List<ButtleCulculate>();
 
+    private SkillEngine skillEngine = null;
+
     // Start is called before the first frame update
     void Start()
     {
+        skillEngine = FindObjectOfType<SkillEngine>();
+
         if (eventTaskManager)
         {
             //明るくする
@@ -44,21 +48,31 @@ public class ButtleManager : MonoBehaviour
                     {
                         var commandPanel1 = commandManager.MakeCommandPanel(new List<string> { "こうげき", "じゅもん", "とくぎ", "どうぐ" }, 4, 1, commandPanelfirstPos, commandLast, false, true);
                         var commands1 = commandPanel1.GetCommands();
+                        //こうげきを選択したら
+                        var skill = skillEngine.Get(friendChara.normalSkillKey);
                         //単体攻撃なら
-                        if (!friendChara.normalSkill.isAll)
+                        if (!skill.isAll)
                         {
-                            //こうげきを選択したら敵表示
-                            var enemysName = GetCharaNames(enemyCharas.Cast<ButtleChara>().ToList());
-                            var enemySelectPanel = commandManager.MakeCommandPanel(enemysName, enemysName.Count, 1, enemySelectPanelPos, commands1[0], false, true);
+                            //敵表示
+                            var enemyNames = GetCharaNames(enemyCharas.Cast<ButtleChara>().ToList());
+                            var enemySelectPanel = commandManager.MakeCommandPanel(enemyNames, enemyNames.Count, 1, enemySelectPanelPos, commands1[0], false, true);
                         }
                         //全体攻撃なら
                         else
                         {
+                            //計算リストに追加
                             commands1[0].SetAction(() =>
                             {
-                                buttleCulculates.Add(new ButtleCulculate(friendChara, enemyCharas.Cast<ButtleChara>().ToList(), friendChara.normalSkill));
+                                buttleCulculates.Add(new ButtleCulculate(friendChara, enemyCharas.Cast<ButtleChara>().ToList(), skill));
                             });
                         }
+
+                        //じゅもんを選択したら
+                        //呪文表示
+                        var magicNames = GetThingNames(friendChara.magics.Cast<Thing>().ToList());
+                        var magicPanel = commandManager.MakeCommandPanel(magicNames, 3, 2, enemySelectPanelPos, commands1[1], false, true);
+                        var magicCommands = magicPanel.GetCommands();
+
                     }
 
 
@@ -91,6 +105,18 @@ public class ButtleManager : MonoBehaviour
         foreach (ButtleChara buttleChara in buttleCharas)
         {
             names.Add(buttleChara.name);
+        }
+
+        return names;
+    }
+
+    public List<string> GetThingNames(List<Thing> things)
+    {
+        var names = new List<string>();
+
+        foreach (Thing thing in things)
+        {
+            names.Add(thing.name);
         }
 
         return names;

@@ -25,13 +25,13 @@ public abstract class ButtleChara
     public bool isFriend { get { return this is FriendChara; } }
 
     //特技
-    public List<Skill> skills = new List<Skill>();
+    public List<int> skillkeys = new List<int>();
     //魔法
-    public List<Skill> magics = new List<Skill>();
+    public List<int> magickeys = new List<int>();
     //通常攻撃
-    public Skill normalSkill = null;
+    public int normalSkillKey = 0;
 
-    public ButtleChara(int hp, int mp, int atp, int mtp, int df, int speed, string name)
+    public ButtleChara(string name, int hp, int mp, int atp, int mtp, int df, int speed)
     {
         this.hp = hp;
         this.mp = mp;

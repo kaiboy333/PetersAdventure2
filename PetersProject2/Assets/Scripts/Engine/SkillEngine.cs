@@ -1,0 +1,37 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System;
+
+public class SkillEngine : Engine<Skill>
+{
+    protected override string loadTextPath => "SkillEngine.txt";
+
+    protected override void LoadDictionary(TextAsset textAsset)
+    {
+        var strs = textAsset.text.Split('\n');
+        int i = 0;
+        foreach(var str in strs)
+        {
+            //最初の文字が#か空白なら飛ばす
+            if (str[0] == '#' || str[0] == '\n')
+                break;
+
+            var strs_t = str.Split(',');
+
+            var name = strs_t[0];
+            var power = int.Parse(strs_t[1]);
+            var isCure = bool.Parse(strs_t[2]);
+            var isAll = bool.Parse(strs_t[3]);
+            var isMP = bool.Parse(strs_t[4]);
+            var consumeMP = int.Parse(strs_t[5]);
+            Skill.SkillType skillType = (Skill.SkillType)Enum.GetValues(typeof(Skill.SkillType)).GetValue(int.Parse(strs_t[6]));
+
+            var skill = new Skill(name, power, isCure, isAll, isMP, consumeMP, skillType);
+
+            dictionary.Add(i, skill);
+
+            i++;
+        }
+    }
+}

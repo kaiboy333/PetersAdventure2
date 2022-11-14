@@ -15,7 +15,7 @@ public class Skill : Thing
     }
     public SkillType skillType = SkillType.Normal;
 
-    public Skill(string name, int consumeMP, int power, bool isCure, bool isAll, bool isMP, SkillType skillType) : base(name, power, isCure, isAll, isMP)
+    public Skill(string name, int power, bool isCure, bool isAll, bool isMP, int consumeMP, SkillType skillType) : base(name, power, isCure, isAll, isMP)
     {
         this.consumeMP = consumeMP;
         this.skillType = skillType;
