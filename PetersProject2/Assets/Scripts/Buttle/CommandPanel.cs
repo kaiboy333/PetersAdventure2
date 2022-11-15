@@ -11,7 +11,7 @@ public class CommandPanel : MonoBehaviour
     //private int maxPage = 0;
     //private int nowPage = 0;
     //矢印が指している番号
-    private int nowNo = 0;
+    public int nowNo { get; private set; }
     //現在表示している行の一番上
     private int printNowRowNo = 0;
 

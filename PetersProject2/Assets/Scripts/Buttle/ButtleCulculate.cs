@@ -6,11 +6,23 @@ public class ButtleCulculate
 {
     private List<string> strs = new List<string>();
 
-    ButtleChara offence = null;
-    List<ButtleChara> defences = null;
-    Thing thing = null;
+    private ButtleChara offence = null;
+    public List<ButtleChara> defences = null;
+    private Thing thing = null;
 
-    private int speed = 0;
+    public int speed { get; private set; }
+
+    //替えが必要か
+    public bool isNeedAlternate
+    {
+        get
+        {
+            if (defences.Count != 1)
+                return false;
+
+            return defences[0].isDead;
+        }
+    }
 
     public ButtleCulculate(ButtleChara offence, List<ButtleChara> defences, Thing thing)
     {
@@ -23,8 +35,9 @@ public class ButtleCulculate
 
     public void Culculate()
     {
-        //計算できないなら終わり
-        if (!CanCulculate())
+        //攻撃側が死んでいるのなら
+        if (offence.isDead)
+            //終わり
             return;
 
         var offencePoint = thing.power;
@@ -74,6 +87,9 @@ public class ButtleCulculate
 
         foreach (ButtleChara defence in defences)
         {
+            if (defence.isDead)
+                return;
+
             var defencePoint = thing.isCure ? 0 : (int)(defence.df + defence.df / 1000f);
             var actualPoint = defence.ChangeHPORMP(offencePoint - defencePoint, thing.isCure, thing.isMP);
             var pointName = thing.isMP ? "MP" : "HP";
@@ -93,28 +109,21 @@ public class ButtleCulculate
                     if (defence.isFriend)
                     {
                         strs.Add(defence.name + "は" + actualPoint + "のダメージを受けた！");
+                        if (defence.isDead)
+                        {
+                            strs.Add(defence.name + "は死んでしまった！");
+                        }
                     }
                     else
                     {
                         strs.Add(defence.name + "に" + actualPoint + "のダメージを与えた！");
+                        if (defence.isDead)
+                        {
+                            strs.Add(defence.name + "を倒した！");
+                        }
                     }
                 }
             }
         }
-    }
-
-    //計算しても良いか
-    public bool CanCulculate()
-    {
-        if (offence.isDead)
-            return false;
-
-        foreach (ButtleChara defence in defences)
-        {
-            if (defence.isDead)
-                return false;
-        }
-
-        return true;
     }
 }

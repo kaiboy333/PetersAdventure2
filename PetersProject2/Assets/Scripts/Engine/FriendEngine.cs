@@ -37,10 +37,10 @@ public class FriendEngine : Engine<FriendChara>
                         friend.normalSkillKey = key;
                         break;
                     case Skill.SkillType.Skill:
-                        friend.skillkeys.Add(key);
+                        friend.skillKeys.Add(key);
                         break;
                     case Skill.SkillType.Magic:
-                        friend.magickeys.Add(key);
+                        friend.magicKeys.Add(key);
                         break;
                 }
             }

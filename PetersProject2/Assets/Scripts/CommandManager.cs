@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class CommandManager : MonoBehaviour
+public class CommandManager : SingletonMonoBehaviour<CommandManager>
 {
     private CommandPanel commandPanel = null;
     [SerializeField] private GameObject commandPanelPrefab;
     [SerializeField] private RectTransform canvasRect;
+
+    protected override bool dontDestroyOnLoad => true;
 
     // Start is called before the first frame update
     void Start()
@@ -85,5 +87,20 @@ public class CommandManager : MonoBehaviour
         }
 
         return commandPanel;
+    }
+
+    //生成したコマンドパネルを全て消去
+    public void RemoveAllCommandPanel()
+    {
+        //RootCommandPanelまで遡る
+        while (commandPanel.beforeCommandPanel != null)
+        {
+            commandPanel = commandPanel.beforeCommandPanel;
+        }
+
+        //RootCommandPanelを削除
+        Destroy(commandPanel.gameObject);
+        //参照をnullに
+        commandPanel = null;
     }
 }

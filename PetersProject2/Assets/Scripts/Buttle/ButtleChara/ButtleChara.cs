@@ -25,9 +25,9 @@ public abstract class ButtleChara
     public bool isFriend { get { return this is FriendChara; } }
 
     //特技
-    public List<int> skillkeys = new List<int>();
+    public List<int> skillKeys = new List<int>();
     //魔法
-    public List<int> magickeys = new List<int>();
+    public List<int> magicKeys = new List<int>();
     //通常攻撃
     public int normalSkillKey = 0;
 

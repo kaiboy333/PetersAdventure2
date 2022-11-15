@@ -6,85 +6,45 @@ using System.Linq;
 
 public class ButtleManager : MonoBehaviour
 {
-    [SerializeField] private CommandManager commandManager = null;
-    [SerializeField] private EventTaskManager eventTaskManager = null;
     [SerializeField] private Image blackPanelImage = null;
 
     private CommandPanel statusPanel = null;
 
-    private static List<FriendChara> friendCharas = null;
-    private static List<EnemyChara> enemyCharas = null;
+    public static List<ButtleChara> friendCharas = null;
+    public static List<ButtleChara> enemyCharas = null;
 
     private List<string> buttleStrs = new List<string>();
 
-    private Vector2 commandPanelfirstPos = new Vector2(100, 500);
-    private Vector2 enemySelectPanelPos = new Vector2(1000, 500);
+    public List<ButtleCulculate> buttleCulculates = new List<ButtleCulculate>();
 
-    private List<ButtleCulculate> buttleCulculates = new List<ButtleCulculate>();
-
-    private SkillEngine skillEngine = null;
+    private bool isFinished = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        skillEngine = FindObjectOfType<SkillEngine>();
+        //ステータスパネル作成
+        statusPanel = CommandManager.Instance.MakeCommandPanel(new List<string> { "?", "HP:?", "MP:?", "Lv:?" }, 4, 1, new Vector2(100, 1000), null, true, true);
+        //敵画像生成
 
-        if (eventTaskManager)
-        {
-            //明るくする
-            eventTaskManager.PushTask(new AlphaManager(blackPanelImage, true));
-            //コマンドパネル生成
-            eventTaskManager.PushTask(new DoNowTask(() =>
-            {
-                if (commandManager)
-                {
-                    //バトルパネル
-                    var commandPanelRoot = commandManager.MakeCommandPanel(new List<string> { "たたかう", "にげる", "さくせん" }, 3, 1, commandPanelfirstPos, null, false, true);
-                    var commandsRoot = commandPanelRoot.GetCommands();
+        //明るくする
+        EventTaskManager.Instance.PushTask(new AlphaManager(blackPanelImage, true));
+        //敵名表示(Log)
 
-                    var commandLast = commandsRoot[0];
-
-                    foreach (var friendChara in friendCharas)
-                    {
-                        var commandPanel1 = commandManager.MakeCommandPanel(new List<string> { "こうげき", "じゅもん", "とくぎ", "どうぐ" }, 4, 1, commandPanelfirstPos, commandLast, false, true);
-                        var commands1 = commandPanel1.GetCommands();
-                        //こうげきを選択したら
-                        var skill = skillEngine.Get(friendChara.normalSkillKey);
-                        //単体攻撃なら
-                        if (!skill.isAll)
-                        {
-                            //敵表示
-                            var enemyNames = GetCharaNames(enemyCharas.Cast<ButtleChara>().ToList());
-                            var enemySelectPanel = commandManager.MakeCommandPanel(enemyNames, enemyNames.Count, 1, enemySelectPanelPos, commands1[0], false, true);
-                        }
-                        //全体攻撃なら
-                        else
-                        {
-                            //計算リストに追加
-                            commands1[0].SetAction(() =>
-                            {
-                                buttleCulculates.Add(new ButtleCulculate(friendChara, enemyCharas.Cast<ButtleChara>().ToList(), skill));
-                            });
-                        }
-
-                        //じゅもんを選択したら
-                        //呪文表示
-                        var magicNames = GetThingNames(friendChara.magics.Cast<Thing>().ToList());
-                        var magicPanel = commandManager.MakeCommandPanel(magicNames, 3, 2, enemySelectPanelPos, commands1[1], false, true);
-                        var magicCommands = magicPanel.GetCommands();
-
-                    }
-
-
-                    //ステータスパネル
-                    statusPanel = commandManager.MakeCommandPanel(new List<string> { "ピーター", "HP:?", "MP:?", "Lv:?" }, 4, 1, new Vector2(100, 1000), null, true, true);
-                }
-            }));
-        }
+        //一連のバトルの流れを行う
+        ButtleLoop();
     }
 
     private void Update()
     {
+        if (!isFinished)
+        {
+            if (!EventTaskManager.Instance.IsWorking)
+            {
+                //一連のバトルの流れを行う
+                ButtleLoop();
+            }
+        }
+
         //ステータスパネルの更新
         if (statusPanel)
         {
@@ -92,33 +52,134 @@ public class ButtleManager : MonoBehaviour
         }
     }
 
-    public static void SetButtleCharas(List<FriendChara> friendCharas, List<EnemyChara> enemyCharas)
+    public void ButtleLoop()
     {
-        ButtleManager.friendCharas = friendCharas;
-        ButtleManager.enemyCharas = enemyCharas;
+        //コマンドパネル生成、選択が終わるまで進まない
+        EventTaskManager.Instance.PushTask(new CommandPanelTask(this));
+        //敵の技を決める
+        EventTaskManager.Instance.PushTask(new DoNowTask(DesideEnemyTurn));
+        //戦闘計算の並び替え
+        EventTaskManager.Instance.PushTask(new DoNowTask(() => 
+        {
+            //素早さの降順で並び替える
+            buttleCulculates.Sort((a, b) =>
+            {
+                return b.speed - a.speed;
+            });
+        }));
+        //バトル開始
+        EventTaskManager.Instance.PushTask(new DoNowTask(() =>
+        {
+            foreach (var buttleCulculate in buttleCulculates)
+            {
+                EventTaskManager.Instance.PushTask(new DoNowTask(() =>
+                {
+                    //替えが必要なら
+                    if (buttleCulculate.isNeedAlternate)
+                    {
+                        var buttleChara = buttleCulculate.defences[0];
+                        //変えの候補を取得
+                        var alliveDefences = buttleChara.isFriend ? GetAlliveChara(friendCharas) : GetAlliveChara(enemyCharas);
+                        //誰か替えがいるなら
+                        if (alliveDefences.Count != 0)
+                        {
+                            //最初のやつを変えにする
+                            buttleCulculate.defences = new List<ButtleChara>() { alliveDefences[0] };
+                        }
+                        ////いないなら
+                        //else
+                        //{
+                        //    //イベントを全て消す
+                        //    EventTaskManager.Instance.RemoveAll();
+                        //}
+                    }
+                    //バトルの計算
+                    buttleCulculate.Culculate();
+                }));
+            }
+        }));
+        EventTaskManager.Instance.PushTask(new DoNowTask(() =>
+        {
+            isFinished = IsFinished(out bool isWin);
+
+            //戦闘が終了なら
+            if (isFinished)
+            {
+                if (isWin)
+                {
+                    Debug.Log("Win");
+                }
+                else
+                {
+                    Debug.Log("Lose");
+                }
+            }
+        }));
     }
 
-    public List<string> GetCharaNames(List<ButtleChara> buttleCharas)
+    //敵の技を決める
+    public void DesideEnemyTurn()
     {
-        var names = new List<string>();
+
+    }
+
+    public List<ButtleChara> GetAlliveChara(List<ButtleChara> buttleCharas)
+    {
+        var alliveCharas = new List<ButtleChara>();
 
         foreach (ButtleChara buttleChara in buttleCharas)
         {
-            names.Add(buttleChara.name);
+            if (!buttleChara.isDead)
+            {
+                alliveCharas.Add(buttleChara);
+            }
         }
 
-        return names;
+        return alliveCharas;
     }
 
-    public List<string> GetThingNames(List<Thing> things)
+    public List<string> GetCharaName(List<ButtleChara> buttleCharas)
     {
-        var names = new List<string>();
+        var charaNames = new List<string>();
 
-        foreach (Thing thing in things)
+        foreach (ButtleChara buttleChara in buttleCharas)
         {
-            names.Add(thing.name);
+            charaNames.Add(buttleChara.name);
         }
 
-        return names;
+        return charaNames;
+    }
+
+    public List<string> GetSkillNames(List<int> keys)
+    {
+        var skillNames = new List<string>();
+
+        foreach (var key in keys)
+        {
+            skillNames.Add(SkillEngine.Instance.Get(key).name);
+        }
+
+        return skillNames;
+    }
+
+    //戦闘終了か
+    public bool IsFinished(out bool isWin)
+    {
+        isWin = false;
+
+        var alliveFriendCharas = GetAlliveChara(friendCharas);
+        if(alliveFriendCharas.Count == 0)
+        {
+            return true;
+        }
+            
+        var alliveEnemyCharas = GetAlliveChara(enemyCharas);
+        if (alliveEnemyCharas.Count == 0)
+        {
+            isWin = true;
+            return true;
+        }
+
+        return false;
     }
 }

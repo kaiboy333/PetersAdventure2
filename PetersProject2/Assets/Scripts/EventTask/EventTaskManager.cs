@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EventTaskManager : MonoBehaviour
+public class EventTaskManager : SingletonMonoBehaviour<EventTaskManager>
 {
     //先入れ先出しのイベントたち
     private Queue<EventTask> tasks = new Queue<EventTask>();
@@ -13,6 +13,8 @@ public class EventTaskManager : MonoBehaviour
     {
         get { return nowtask != null; }
     }
+
+    protected override bool dontDestroyOnLoad => true;
 
     // Update is called once per frame
     void Update()
@@ -43,5 +45,12 @@ public class EventTaskManager : MonoBehaviour
     {
         //リストに追加
         tasks.Enqueue(task);
+    }
+
+    //全てを消す
+    public void RemoveAll()
+    {
+        tasks.Clear();
+        nowtask = null;
     }
 }
