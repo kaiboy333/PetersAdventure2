@@ -30,7 +30,9 @@ public class EventTaskManager : SingletonMonoBehaviour<EventTaskManager>
                 nowtask = null;
             }
         }
-        else
+
+        //タスクがないなら
+        if(nowtask == null)
         {
             //次のタスクがあるなら
             if (tasks.Count != 0)
@@ -51,6 +53,5 @@ public class EventTaskManager : SingletonMonoBehaviour<EventTaskManager>
     public void RemoveAll()
     {
         tasks.Clear();
-        nowtask = null;
     }
 }

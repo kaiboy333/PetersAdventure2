@@ -10,41 +10,49 @@ public class ButtleManager : MonoBehaviour
 
     private CommandPanel statusPanel = null;
 
-    public static List<ButtleChara> friendCharas = null;
-    public static List<ButtleChara> enemyCharas = null;
-
-    private List<string> buttleStrs = new List<string>();
+    public static List<ButtleChara> friendCharas = new List<ButtleChara>();
+    public static List<ButtleChara> enemyCharas = new List<ButtleChara>();
 
     public List<ButtleCulculate> buttleCulculates = new List<ButtleCulculate>();
 
     private bool isFinished = false;
 
+    //バトルログ
+    public List<Log> buttleLogs = new List<Log>();
+
     // Start is called before the first frame update
     void Start()
     {
-        //ステータスパネル作成
-        statusPanel = CommandManager.Instance.MakeCommandPanel(new List<string> { "?", "HP:?", "MP:?", "Lv:?" }, 4, 1, new Vector2(100, 1000), null, true, true);
-        //敵画像生成
+        //味方生成
+        friendCharas.Add(FriendEngine.Instance.Get(0));
+        //敵生成
+        enemyCharas.Add(EnemyEngine.Instance.Get(0));
+
+        EventTaskManager.Instance.PushTask(new DoNowTask(() =>
+        {
+            //ステータスパネル作成
+            statusPanel = CommandManager.Instance.MakeCommandPanel(new List<string> { "?", "HP:?", "MP:?", "Lv:?" }, 4, 1, new Vector2(100, 1000), null, true, true);
+            //敵画像生成
+        }));
 
         //明るくする
         EventTaskManager.Instance.PushTask(new AlphaManager(blackPanelImage, true));
-        //敵名表示(Log)
 
-        //一連のバトルの流れを行う
-        ButtleLoop();
+        EventTaskManager.Instance.PushTask(new DoNowTask(() =>
+        {
+            //敵名表示(Log)
+        }));
+        //数秒まつ
+
+        EventTaskManager.Instance.PushTask(new DoNowTask(() =>
+        {
+            //一連のバトルの流れを行う
+            ButtleLoop();
+        }));
     }
 
     private void Update()
     {
-        if (!isFinished)
-        {
-            if (!EventTaskManager.Instance.IsWorking)
-            {
-                //一連のバトルの流れを行う
-                ButtleLoop();
-            }
-        }
-
         //ステータスパネルの更新
         if (statusPanel)
         {
@@ -54,8 +62,16 @@ public class ButtleManager : MonoBehaviour
 
     public void ButtleLoop()
     {
-        //コマンドパネル生成、選択が終わるまで進まない
-        EventTaskManager.Instance.PushTask(new CommandPanelTask(this));
+        //生きている仲間を取得
+        var alliveFriendCharas = GetAlliveChara(friendCharas);
+        //味方の技を決める
+        for(int i = 0, len = alliveFriendCharas.Count; i < len; i++)
+        {
+            var alliveFriendChara = alliveFriendCharas[i];
+            bool isFirstMake = i == 0;
+            //コマンドパネル生成、選択が終わるまで進まない
+            EventTaskManager.Instance.PushTask(new CommandPanelTask(this, (FriendChara)alliveFriendChara, isFirstMake));
+        }
         //敵の技を決める
         EventTaskManager.Instance.PushTask(new DoNowTask(DesideEnemyTurn));
         //戦闘計算の並び替え
@@ -86,33 +102,40 @@ public class ButtleManager : MonoBehaviour
                             //最初のやつを変えにする
                             buttleCulculate.defences = new List<ButtleChara>() { alliveDefences[0] };
                         }
-                        ////いないなら
-                        //else
-                        //{
-                        //    //イベントを全て消す
-                        //    EventTaskManager.Instance.RemoveAll();
-                        //}
                     }
                     //バトルの計算
                     buttleCulculate.Culculate();
-                }));
-            }
-        }));
-        EventTaskManager.Instance.PushTask(new DoNowTask(() =>
-        {
-            isFinished = IsFinished(out bool isWin);
+                    //終了チェック
+                    EventTaskManager.Instance.PushTask(new DoNowTask(() =>
+                    {
+                        //バトルの計算が最後なら
+                        if (buttleCulculate == buttleCulculates[buttleCulculates.Count - 1])
+                        {
+                            isFinished = IsFinished(out bool isWin);
 
-            //戦闘が終了なら
-            if (isFinished)
-            {
-                if (isWin)
-                {
-                    Debug.Log("Win");
-                }
-                else
-                {
-                    Debug.Log("Lose");
-                }
+                            //戦闘が終了なら
+                            if (isFinished)
+                            {
+                                //タスクを全消去
+                                EventTaskManager.Instance.RemoveAll();
+
+                                if (isWin)
+                                {
+                                    Debug.Log("Win");
+                                }
+                                else
+                                {
+                                    Debug.Log("Lose");
+                                }
+                            }
+                            else
+                            {
+                                //一連のバトルの流れを行う
+                                ButtleLoop();
+                            }
+                        }
+                    }));
+                }));
             }
         }));
     }
@@ -120,7 +143,43 @@ public class ButtleManager : MonoBehaviour
     //敵の技を決める
     public void DesideEnemyTurn()
     {
+        foreach(var enemyChara in GetAlliveChara(enemyCharas))
+        {
+            //技リストを取得
+            var skillKeys = new List<int>();
+            skillKeys.AddRange(enemyChara.skillKeys);
+            skillKeys.AddRange(enemyChara.magicKeys);
 
+            //技リストからランダムに選ぶ
+            var skillKey = skillKeys[Random.Range(0, skillKeys.Count)];
+            var skill = SkillEngine.Instance.Get(skillKey);
+
+            List<ButtleChara> defences = null;
+
+            //回復なら
+            if (skill.isCure)
+            {
+                //守備側は敵
+                defences = GetAlliveChara(ButtleManager.enemyCharas);
+            }
+            else
+            {
+                //守備側は味方
+                defences = GetAlliveChara(ButtleManager.friendCharas);
+            }
+
+            //全体技なら
+            if (skill.isAll)
+            {
+                buttleCulculates.Add(new ButtleCulculate(enemyChara, defences, skill, this));
+            }
+            else
+            {
+                var defence = defences[Random.Range(0, defences.Count)];
+
+                buttleCulculates.Add(new ButtleCulculate(enemyChara, new List<ButtleChara>() { defence }, skill, this));
+            }
+        }
     }
 
     public List<ButtleChara> GetAlliveChara(List<ButtleChara> buttleCharas)

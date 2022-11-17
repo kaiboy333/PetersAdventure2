@@ -16,6 +16,7 @@ public class Command : MonoBehaviour
     }
 
     public CommandPanel commandPanel = null;
+    public CommandPanel childPanel = null;
 
     public RectTransform CommandRect { get { return GetComponent<RectTransform>(); } }
 

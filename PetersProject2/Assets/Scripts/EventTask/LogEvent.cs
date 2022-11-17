@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class LogEvent : EventTask
 {
-    public string Str { get; private set; }
+    public List<Log> logs = null;
+    public bool isButtle = false;
 
-    public LogEvent(LogManager logManager, string str)
+    public LogEvent(LogManager logManager, List<Log> logs, bool isButtle)
     {
-        //文字列セット
-        Str = str;
+        //Logセット
+        this.logs = logs;
+        this.isButtle = isButtle;
         //表示開始
         logManager.SetLogEvent(this);
     }

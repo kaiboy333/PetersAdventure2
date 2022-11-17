@@ -46,7 +46,8 @@ public abstract class ButtleChara
         this.name = name;
     }
 
-    public int ChangeHPORMP(int point, bool isCure, bool isMP)
+    //HPかMPの変化分の値を取得する
+    public int GetChangeHPORMPValue(int point, bool isCure, bool isMP)
     {
         var newPoint = isMP ? mp : hp;
         var beforePoint = newPoint;
@@ -54,15 +55,7 @@ public abstract class ButtleChara
         var dir = isCure ? 1 : -1;
 
         newPoint = Mathf.Clamp(newPoint + dir * point, 0, maxPoint);
-        if (isMP)
-        {
-            mp = newPoint;
-        }
-        else
-        {
-            hp = newPoint;
-        }
 
-        return Mathf.Abs(newPoint - beforePoint);
+        return newPoint - beforePoint;
     }
 }

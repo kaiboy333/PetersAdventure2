@@ -66,6 +66,9 @@ public class CommandPanel : MonoBehaviour
         //最後の行の最大列番号
         var lastRowNoColMaxNo = (nowRowNo == row - 1) ? commands.Count % col : col - 1;
 
+        //前回として記憶
+        var beforeNo = nowNo;
+
         //縦スクロールで
         if (isColScroll)
         {
@@ -160,9 +163,13 @@ public class CommandPanel : MonoBehaviour
         {
         }
 
-        //矢印の位置移動
-        //指定のコマンドの左に設定
-        arrowRect.anchoredPosition = commands[nowNo].GetComponent<RectTransform>().anchoredPosition - Vector2.right * arrowWidth;
+        //選択している番号が変わったら
+        if(beforeNo != nowNo)
+        {
+            //矢印の位置移動
+            //指定のコマンドの左に設定
+            arrowRect.anchoredPosition = commands[nowNo].GetComponent<RectTransform>().anchoredPosition - Vector2.right * arrowWidth;
+        }
     }
 
     //コマンドの名前検索
@@ -262,6 +269,8 @@ public class CommandPanel : MonoBehaviour
 
     public Command GetSelectedCommand()
     {
+        if (nowNo < 0)
+            Debug.LogError("負のnowNo");
         return commands[nowNo];
     }
 

@@ -10,9 +10,17 @@ public class CommandPanelTask : EventTask
     private Vector2 enemySelectPanelPos = new Vector2(1000, 500);
     private ButtleManager buttleManager = null;
 
-    public CommandPanelTask(ButtleManager buttleManager)
+    private FriendChara friendChara = null;
+    private bool isFirstMake = false;
+
+    private CommandPanel commandPanelRoot = null;
+
+    public CommandPanelTask(ButtleManager buttleManager, FriendChara friendChara, bool isFirstMake)
     {
         this.buttleManager = buttleManager;
+        this.friendChara = friendChara;
+        this.isFirstMake = isFirstMake;
+
     }
 
     protected override bool Event()
@@ -29,30 +37,38 @@ public class CommandPanelTask : EventTask
 
     public void SelectFriendAction()
     {
-        //バトルパネル
-        var commandPanelRoot = CommandManager.Instance.MakeCommandPanel(new List<string> { "たたかう", "にげる", "さくせん" }, 3, 1, commandPanelfirstPos, null, false, true);
-        var commandsRoot = commandPanelRoot.GetCommands();
+        Command buttleCommand = null;
 
-        var commandLast = commandsRoot[0];
+        CommandPanel buttleCommandPanel = null;
 
-        foreach (FriendChara friendChara in buttleManager.GetAlliveChara(ButtleManager.friendCharas.Cast<ButtleChara>().ToList()))
+        //最初の生成なら
+        if (isFirstMake)
         {
-            var commandPanel1 = CommandManager.Instance.MakeCommandPanel(new List<string> { "こうげき", "じゅもん", "とくぎ", "どうぐ" }, 4, 1, commandPanelfirstPos, commandLast, false, true);
-            var commands1 = commandPanel1.GetCommands();
-            //こうげきを選択したら
-            MakeThingPanel(friendChara, new List<int>(friendChara.normalSkillKey), commands1[0], true);
-
-            //じゅもんを選択したら
-            MakeThingPanel(friendChara, friendChara.magicKeys, commands1[1], true);
-
-            //とくぎを選択したら
-            MakeThingPanel(friendChara, friendChara.skillKeys, commands1[2], true);
-
-            //道具を選択したら
+            //バトルパネル
+            buttleCommandPanel = CommandManager.Instance.MakeCommandPanel(new List<string> { "たたかう", "にげる", "さくせん" }, 3, 1, commandPanelfirstPos, null, false, true);
+            var buttleCommands = buttleCommandPanel.GetCommands();
+            buttleCommand = buttleCommands[0];
         }
+
+        var commandPanel1 = CommandManager.Instance.MakeCommandPanel(new List<string> { "こうげき", "じゅもん", "とくぎ", "どうぐ" }, 4, 1, commandPanelfirstPos, buttleCommand, false, true);
+        var commands1 = commandPanel1.GetCommands();
+
+        //今回のパネルのルートを決める
+        commandPanelRoot = buttleCommand ? buttleCommandPanel : commandPanel1;
+
+        //こうげきを選択したら
+        MakeThingPanel(new List<int>(friendChara.normalSkillKey), commands1[0], true);
+
+        //じゅもんを選択したら
+        MakeThingPanel(friendChara.magicKeys, commands1[1], true);
+
+        //とくぎを選択したら
+        MakeThingPanel(friendChara.skillKeys, commands1[2], true);
+
+        //道具を選択したら
     }
 
-    public void MakeThingPanel(FriendChara friendChara, List<int> thingKeys, Command parentCommand, bool isSkill)
+    public void MakeThingPanel(List<int> thingKeys, Command parentCommand, bool isSkill)
     {
         //生きている味方
         var friendCharas = buttleManager.GetAlliveChara(ButtleManager.friendCharas);
@@ -67,6 +83,7 @@ public class CommandPanelTask : EventTask
         {
             things = SkillEngine.Instance.Gets(thingKeys).Cast<Thing>().ToList();
         }
+        //道具なら
         else
         {
 
@@ -115,14 +132,14 @@ public class CommandPanelTask : EventTask
                     thingCommand.SetAction(() =>
                     {
                         //計算リストに追加
-                        buttleManager.buttleCulculates.Add(new ButtleCulculate(friendChara, defences, thing));
+                        buttleManager.buttleCulculates.Add(new ButtleCulculate(friendChara, defences, thing, buttleManager));
                         //最後の選択だった場合
                         if (friendChara == friendCharas[friendCharas.Count - 1])
                         {
                             //終わりの合図
                             isFinished = true;
                             //コマンドパネルを全削除
-                            CommandManager.Instance.RemoveAllCommandPanel();
+                            CommandManager.Instance.RemoveAllButtleCommandPanel();
                         }
                     });
                 }
@@ -138,19 +155,20 @@ public class CommandPanelTask : EventTask
                     for (int j = 0, len2 = targetNames.Count; j < len2; j++)
                     {
                         var targetCommand = targetCommands[j];
+                        var target = targets[j];
 
                         //敵を選択したら
                         targetCommand.SetAction(() =>
                         {
                             //計算リストに追加
-                            buttleManager.buttleCulculates.Add(new ButtleCulculate(friendChara, new List<ButtleChara>() { targets[j] }, thing));
+                            buttleManager.buttleCulculates.Add(new ButtleCulculate(friendChara, new List<ButtleChara>() { target }, thing, buttleManager));
                             //最後の選択だった場合
                             if (friendChara == friendCharas[friendCharas.Count - 1])
                             {
                                 //終わりの合図
                                 isFinished = true;
                                 //コマンドパネルを全削除
-                                CommandManager.Instance.RemoveAllCommandPanel();
+                                CommandManager.Instance.RemoveAllButtleCommandPanel();
                             }
                         });
                     }

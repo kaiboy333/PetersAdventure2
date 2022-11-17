@@ -5,7 +5,7 @@ using System;
 
 public class SkillEngine : Engine<Skill>
 {
-    protected override string loadTextPath => "SkillEngine.txt";
+    protected override string loadTextPath => "SkillEngine";
 
     protected override void LoadDictionary(TextAsset textAsset)
     {
@@ -13,9 +13,12 @@ public class SkillEngine : Engine<Skill>
         int i = 0;
         foreach(var str in strs)
         {
-            //最初の文字が#か空白なら飛ばす
-            if (str[0] == '#' || str[0] == '\n')
-                break;
+            //空白なら飛ばす
+            if (str == "")
+                continue;
+            //最初の文字が#か飛ばす
+            if (str[0] == '#')
+                continue;
 
             var strs_t = str.Split(',');
 

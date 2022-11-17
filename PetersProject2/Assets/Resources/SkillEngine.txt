@@ -1,4 +1,4 @@
-#name,power,isCure,issAll,isMP,consumeMP,skillType
+#name,power,isCure,isAll,isMP,consumeMP,skillType
 
 こうげき,1,false,false,false,0,0
 ひっつく,2,false,false,false,0,1
@@ -8,3 +8,4 @@
 吸い取る踊り,2,false,false,true,4,1
 臭い息,1,false,true,false,0,1
 風起こし,4,false,true,false,8,1
+渾身斬り,2,false,false,false,1,1

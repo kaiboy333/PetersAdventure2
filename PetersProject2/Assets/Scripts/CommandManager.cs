@@ -5,7 +5,7 @@ using System;
 
 public class CommandManager : SingletonMonoBehaviour<CommandManager>
 {
-    private CommandPanel commandPanel = null;
+    private CommandPanel nowCommandPanel = null;
     [SerializeField] private GameObject commandPanelPrefab;
     [SerializeField] private RectTransform canvasRect;
 
@@ -20,16 +20,16 @@ public class CommandManager : SingletonMonoBehaviour<CommandManager>
     // Update is called once per frame
     void Update()
     {
-        if (commandPanel)
+        if (nowCommandPanel)
         {
             //矢印を動かす
-            commandPanel.MoveArrow();
+            nowCommandPanel.MoveArrow();
 
             //スペースキーを押したら
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 //コマンドを取得
-                var command = commandPanel.GetSelectedCommand();
+                var command = nowCommandPanel.GetSelectedCommand();
 
                 //関数を呼ぶ
                 command.DoAction();
@@ -38,14 +38,14 @@ public class CommandManager : SingletonMonoBehaviour<CommandManager>
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 //一個前のがあるなら
-                if (commandPanel.beforeCommandPanel)
+                if (nowCommandPanel.beforeCommandPanel)
                 {
                     //一個前を取得
-                    var beforeCommandPanel = commandPanel.beforeCommandPanel;
-                    //パネルを削除
-                    Destroy(commandPanel.gameObject);
+                    var beforeCommandPanel = nowCommandPanel.beforeCommandPanel;
+                    //パネルを見えなくする
+                    nowCommandPanel.gameObject.SetActive(false);
                     //戻す
-                    commandPanel = beforeCommandPanel;
+                    nowCommandPanel = beforeCommandPanel;
                 }
             }
         }
@@ -55,52 +55,76 @@ public class CommandManager : SingletonMonoBehaviour<CommandManager>
     {
         CommandPanel commandPanel = null;
 
-        Action action = () =>
+        //コマンドパネル生成
+        var commandPanelObj = Instantiate(commandPanelPrefab, canvasRect);
+        commandPanel = commandPanelObj.GetComponent<CommandPanel>();
+        //コマンドパネル初期化
+        commandPanel.Init(pos, strs, row, col, isColScroll, isOnlyPrint);
+        if (!isOnlyPrint)
         {
-            //コマンドパネル生成
-            var commandPanelObj = Instantiate(commandPanelPrefab, canvasRect);
-            commandPanel = commandPanelObj.GetComponent<CommandPanel>();
-            //コマンドパネル初期化
-            commandPanel.Init(pos, strs, row, col, isColScroll, isOnlyPrint);
-            if (!isOnlyPrint)
+            if (command)
             {
-                if (command)
-                {
-                    //コマンドのコマンドパネルを取得(前回の)
-                    var parentCommandPanel = command.commandPanel;
-                    //前回のをセット
-                    commandPanel.beforeCommandPanel = parentCommandPanel;
-                }
-                //操作するパネルを今のにする
-                this.commandPanel = commandPanel;
+                //コマンドのコマンドパネルを取得(前回の)
+                var parentCommandPanel = command.commandPanel;
+                //前回のをセット
+                commandPanel.beforeCommandPanel = parentCommandPanel;
+
+                //コマンドの子パネルを作ったものにする
+                command.childPanel = commandPanel;
             }
-        };
+        }
+        //見えないようにする
+        commandPanel.gameObject.SetActive(false);
 
         //入れるコマンドがあるなら
         if (command)
         {
-            command.SetAction(action);
+            //親コマンドの名前をつけてわかりやすくする
+            commandPanel.gameObject.name = commandPanel.gameObject.name + command.Name;
+
+            command.SetAction(() =>
+            {
+                //見えるようにする
+                commandPanel.gameObject.SetActive(true);
+                //操作するパネルを今のにする
+                this.nowCommandPanel = commandPanel;
+            });
         }
         else
         {
-            action();
+            //見えるようにする
+            commandPanel.gameObject.SetActive(true);
+            //操作するパネルを今のにする
+            this.nowCommandPanel = commandPanel;
         }
 
         return commandPanel;
     }
 
-    //生成したコマンドパネルを全て消去
-    public void RemoveAllCommandPanel()
+    //バトルコマンドパネルを全て消去
+    public void RemoveAllButtleCommandPanel()
     {
         //RootCommandPanelまで遡る
-        while (commandPanel.beforeCommandPanel != null)
+        while (nowCommandPanel.beforeCommandPanel != null)
         {
-            commandPanel = commandPanel.beforeCommandPanel;
+            nowCommandPanel = nowCommandPanel.beforeCommandPanel;
         }
 
-        //RootCommandPanelを削除
+        RemoveCommandPanel(nowCommandPanel);
+    }
+
+    private void RemoveCommandPanel(CommandPanel commandPanel)
+    {
+        if (!commandPanel)
+            return;
+
+        foreach(var command in commandPanel.GetCommands())
+        {
+            //子のパネルを消す
+            RemoveCommandPanel(command.childPanel);
+        }
+
+        //自信を消す
         Destroy(commandPanel.gameObject);
-        //参照をnullに
-        commandPanel = null;
     }
 }

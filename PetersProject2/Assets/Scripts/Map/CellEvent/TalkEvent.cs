@@ -19,7 +19,16 @@ public class TalkEvent : CellEvent
     {
         if (eventTaskManager && logManager)
         {
-            eventTaskManager.PushTask(new LogEvent(logManager, talkStr));
+            //改行で分ける
+            var strs = talkStr.Split('\n');
+            //Logたちをセット
+            var logs = new List<Log>();
+            foreach(var str in strs)
+            {
+                logs.Add(new Log(str));
+            }
+
+            eventTaskManager.PushTask(new LogEvent(logManager, logs, false));
         }
     }
 }

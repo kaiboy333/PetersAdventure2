@@ -4,49 +4,63 @@ using UnityEngine;
 
 public class FriendEngine : Engine<FriendChara>
 {
-    protected override string loadTextPath => "FriendEngine.txt";
+    protected override string loadTextPath => "FriendEngine";
 
     protected override void LoadDictionary(TextAsset textAsset)
     {
         var strs = textAsset.text.Split('\n');
-        int j = 0;
-        for (int i = 0; i < strs.Length; i += 2)
+        int i = 0;
+        foreach (var str in strs)
         {
-            var strs_t = strs[i].Split(',');
+            //空白なら飛ばす
+            if (str == "")
+                continue;
+            //最初の文字が#か飛ばす
+            if (str[0] == '#')
+                continue;
 
-            var name = strs_t[0];
-            var hp = int.Parse(strs_t[1]);
-            var mp = int.Parse(strs_t[2]);
-            var atp = int.Parse(strs_t[3]);
-            var mtp = int.Parse(strs_t[4]);
-            var df = int.Parse(strs_t[5]);
-            var speed = int.Parse(strs_t[6]);
-            var professionName = strs_t[7];
+            var strs_t = str.Split(',');
 
-            var friend = new FriendChara(name, hp, mp, atp, mtp, df, speed, professionName);
-
-            var strs_t2 = strs[i + 1].Split(',');
-
-            foreach (var keyStr in strs_t2)
+            if (i % 2 == 0)
             {
-                var key = int.Parse(keyStr);
-                var skill = SkillEngine.Instance.Get(key);
-                switch (skill.skillType)
+                var name = strs_t[0];
+                var hp = int.Parse(strs_t[1]);
+                var mp = int.Parse(strs_t[2]);
+                var atp = int.Parse(strs_t[3]);
+                var mtp = int.Parse(strs_t[4]);
+                var df = int.Parse(strs_t[5]);
+                var speed = int.Parse(strs_t[6]);
+                var professionName = strs_t[7];
+
+                var friend = new FriendChara(name, hp, mp, atp, mtp, df, speed, professionName);
+
+                dictionary.Add(i / 2, friend);
+            }
+            else
+            {
+                var friend = dictionary[i / 2];
+
+                foreach (var keyStr in strs_t)
                 {
-                    case Skill.SkillType.Normal:
-                        friend.normalSkillKey = key;
-                        break;
-                    case Skill.SkillType.Skill:
-                        friend.skillKeys.Add(key);
-                        break;
-                    case Skill.SkillType.Magic:
-                        friend.magicKeys.Add(key);
-                        break;
+                    var key = int.Parse(keyStr);
+                    var skill = SkillEngine.Instance.Get(key);
+                    switch (skill.skillType)
+                    {
+                        case Skill.SkillType.Normal:
+                            friend.normalSkillKey = key;
+                            break;
+                        case Skill.SkillType.Skill:
+                            friend.skillKeys.Add(key);
+                            break;
+                        case Skill.SkillType.Magic:
+                            friend.magicKeys.Add(key);
+                            break;
+                    }
                 }
+
             }
 
-            dictionary.Add(j, friend);
-            j++;
-        }        
+            i++;
+        }
     }
 }

@@ -15,8 +15,18 @@ public abstract class Engine<T> : SingletonMonoBehaviour<Engine<T>>
     {
         base.Awake();
 
-        var textAsset = Resources.Load<TextAsset>(loadTextPath);
-        LoadDictionary(textAsset);
+        if(System.IO.File.Exists("Assets/Resources/" + loadTextPath + ".txt"))
+        {
+            var textAsset = Resources.Load<TextAsset>(loadTextPath);
+            if (textAsset)
+            {
+                LoadDictionary(textAsset);
+            }
+        }
+        else
+        {
+            Debug.LogError("Not Found: " + loadTextPath);
+        }
     }
 
     //テキストファイルから読み込み追加していく
