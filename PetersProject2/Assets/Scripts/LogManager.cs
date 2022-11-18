@@ -42,7 +42,6 @@ public class LogManager : MonoBehaviour
     //列を表示するのに空ける時間(バトルのみ)
     private float printButtleStrInterval = 1;
 
-
     // Start is called before the first frame update
     void Start()
     {
@@ -148,7 +147,6 @@ public class LogManager : MonoBehaviour
         //指定列から表示列分を足す
         for(var i = 0; i < printRow; i++)
         {
-            //str += strs[row + i].str + '\n';
             printLogs.Add(logEvent.logs[row + i]);
         }
 
@@ -172,15 +170,17 @@ public class LogManager : MonoBehaviour
 
                     if (!isFastPrint)
                     {
-                        if (i != len - 1)
-                        {
-                            //少し待つ
-                            yield return new WaitForSeconds(0.3f);
-                        }
+                        //if (i != len - 1)
+                        //{
+                        //    //少し待つ
+                        //    yield return new WaitForSeconds(0.3f);
+                        //}
                         //ほんの少し待つ
                         yield return new WaitForSeconds(printCharInterval);
                     }
                 }
+
+                text.text += "\n";
             }
         }
         //for (var i = 0; i < str.Length; i++)

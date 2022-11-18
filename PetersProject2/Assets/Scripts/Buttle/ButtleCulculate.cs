@@ -5,15 +5,11 @@ using UnityEngine;
 
 public class ButtleCulculate
 {
-    private List<string> strs = new List<string>();
-
     private ButtleChara offence = null;
     public List<ButtleChara> defences = null;
     private Thing thing = null;
 
     public int speed { get; private set; }
-
-    private ButtleManager buttleManager = null;
 
     //替えが必要か
     public bool isNeedAlternate
@@ -27,23 +23,23 @@ public class ButtleCulculate
         }
     }
 
-    public ButtleCulculate(ButtleChara offence, List<ButtleChara> defences, Thing thing, ButtleManager buttleManager)
+    public ButtleCulculate(ButtleChara offence, List<ButtleChara> defences, Thing thing)
     {
         this.offence = offence;
         this.defences = defences;
         this.thing = thing;
 
         this.speed = offence.speed;
-
-        this.buttleManager = buttleManager;
     }
 
-    public void Culculate()
+    public List<Log> Culculate()
     {
+        var buttleLogs = new List<Log>();
+
         //攻撃側が死んでいるのなら
         if (offence.isDead)
             //終わり
-            return;
+            return buttleLogs;
 
         var offencePoint = thing.power;
 
@@ -74,17 +70,19 @@ public class ButtleCulculate
                     break;
                 default:
                     Debug.LogError("知らない技のタイプだよ");
-                    return;
+                    return buttleLogs;
             }
 
             //ログリストに追加
-            buttleManager.buttleLogs.Add(new Log(useSkillName, useSkillFunc));
+            buttleLogs.Add(new Log(useSkillName, useSkillFunc));
 
             //mpが足りないなら
             if (offence.mp < skill.consumeMP)
             {
                 //ログリストに追加
-                buttleManager.buttleLogs.Add(new Log("しかしMPが足りない！"));
+                buttleLogs.Add(new Log("しかしMPが足りない！"));
+                //何もしない(ダメージを与えない)
+                return buttleLogs;
             }
 
             switch (skill.skillType)
@@ -104,8 +102,9 @@ public class ButtleCulculate
 
         foreach (ButtleChara defence in defences)
         {
+            //守備が死んでいるなら飛ばす
             if (defence.isDead)
-                return;
+                continue;
 
             var defencePoint = thing.isCure ? 0 : (int)(defence.df + defence.df / 1000f);
             var actualPoint = defence.GetChangeHPORMPValue(offencePoint - defencePoint, thing.isCure, thing.isMP);
@@ -150,7 +149,7 @@ public class ButtleCulculate
             }
 
             //ログリストに追加
-            buttleManager.buttleLogs.Add(new Log(changePointName, changePointFunc));
+            buttleLogs.Add(new Log(changePointName, changePointFunc));
 
             string deathName = null;
             Action deathCheckFunc = () =>
@@ -169,7 +168,9 @@ public class ButtleCulculate
             };
 
             //ログリストに追加(死んでいないとき(deathNameがnullのとき)はログ表示されないようになってる)
-            buttleManager.buttleLogs.Add(new Log(deathName, deathCheckFunc));
+            buttleLogs.Add(new Log(deathName, deathCheckFunc));
         }
+
+        return buttleLogs;
     }
 }

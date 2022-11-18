@@ -710,6 +710,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blackPanelImage: {fileID: 1274971297248273506}
+  logManager: {fileID: 1274971297200335800}
 --- !u!114 &1274971296135671893
 MonoBehaviour:
   m_ObjectHideFlags: 0

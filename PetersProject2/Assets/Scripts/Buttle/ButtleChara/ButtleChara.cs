@@ -37,7 +37,7 @@ public abstract class ButtleChara
         this.mp = mp;
 
         this.maxHP = hp;
-        this.maxHP = mp;
+        this.maxMP = mp;
         this.atp = atp;
         this.mtp = mtp;
         this.df = df;

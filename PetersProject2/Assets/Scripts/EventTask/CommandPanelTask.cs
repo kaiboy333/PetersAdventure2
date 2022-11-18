@@ -13,8 +13,6 @@ public class CommandPanelTask : EventTask
     private FriendChara friendChara = null;
     private bool isFirstMake = false;
 
-    private CommandPanel commandPanelRoot = null;
-
     public CommandPanelTask(ButtleManager buttleManager, FriendChara friendChara, bool isFirstMake)
     {
         this.buttleManager = buttleManager;
@@ -52,9 +50,6 @@ public class CommandPanelTask : EventTask
 
         var commandPanel1 = CommandManager.Instance.MakeCommandPanel(new List<string> { "こうげき", "じゅもん", "とくぎ", "どうぐ" }, 4, 1, commandPanelfirstPos, buttleCommand, false, true);
         var commands1 = commandPanel1.GetCommands();
-
-        //今回のパネルのルートを決める
-        commandPanelRoot = buttleCommand ? buttleCommandPanel : commandPanel1;
 
         //こうげきを選択したら
         MakeThingPanel(new List<int>(friendChara.normalSkillKey), commands1[0], true);
@@ -132,7 +127,7 @@ public class CommandPanelTask : EventTask
                     thingCommand.SetAction(() =>
                     {
                         //計算リストに追加
-                        buttleManager.buttleCulculates.Add(new ButtleCulculate(friendChara, defences, thing, buttleManager));
+                        buttleManager.buttleCulculates.Add(new ButtleCulculate(friendChara, defences, thing));
                         //最後の選択だった場合
                         if (friendChara == friendCharas[friendCharas.Count - 1])
                         {
@@ -161,7 +156,7 @@ public class CommandPanelTask : EventTask
                         targetCommand.SetAction(() =>
                         {
                             //計算リストに追加
-                            buttleManager.buttleCulculates.Add(new ButtleCulculate(friendChara, new List<ButtleChara>() { target }, thing, buttleManager));
+                            buttleManager.buttleCulculates.Add(new ButtleCulculate(friendChara, new List<ButtleChara>() { target }, thing));
                             //最後の選択だった場合
                             if (friendChara == friendCharas[friendCharas.Count - 1])
                             {
