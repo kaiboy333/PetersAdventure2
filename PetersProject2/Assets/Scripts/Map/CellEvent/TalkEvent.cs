@@ -22,13 +22,13 @@ public class TalkEvent : CellEvent
             //改行で分ける
             var strs = talkStr.Split('\n');
             //Logたちをセット
-            var logs = new List<Log>();
+            var logs = new List<string>();
             foreach(var str in strs)
             {
-                logs.Add(new Log(str));
+                logs.Add(str);
             }
 
-            eventTaskManager.PushTask(new LogEvent(logManager, logs, false));
+            eventTaskManager.PushTask(new LogEvent(logManager, logs));
         }
     }
 }

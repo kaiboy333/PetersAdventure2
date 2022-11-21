@@ -4,16 +4,14 @@ using UnityEngine;
 
 public class LogEvent : EventTask
 {
-    public List<Log> logs = null;
-    public bool isButtle = false;
+    public List<string> logs = null;
     private LogManager logManager = null;
     private bool isFirst = true;
 
-    public LogEvent(LogManager logManager, List<Log> logs, bool isButtle)
+    public LogEvent(LogManager logManager, List<string> logs)
     {
         //Logセット
         this.logs = logs;
-        this.isButtle = isButtle;
         this.logManager = logManager;
     }
 

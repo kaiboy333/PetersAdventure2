@@ -34,7 +34,14 @@ public class ButtleManager : MonoBehaviour
         EventTaskManager.Instance.PushTask(new DoNowTask(() =>
         {
             //ステータスパネル作成
-            statusPanel = CommandManager.Instance.MakeCommandPanel(new List<string> { "?", "HP:?", "MP:?", "Lv:?" }, 4, 1, new Vector2(100, 1000), null, true, true);
+            //for (int i = 0; i < friendCharas.Count; i++)
+            //{
+            //    var friendChara = friendCharas[i];
+            //    string[] strs = new string[]{ friendChara.name, "HP:" + friendChara.hp.ToString(), "MP:" + friendChara.mp.ToString(), "Lv:" + ((FriendChara)friendChara).level.ToString() };
+            //}
+            //statusPanel = CommandManager.Instance.MakeCommandPanel(, 4, 1, new Vector2(100, 1000), null, true, true);
+            //ステータスパネルの名前変更
+            //statusPanel.gameObject.name = "StatusPanel";
             //敵画像生成
         }));
 
@@ -80,7 +87,10 @@ public class ButtleManager : MonoBehaviour
         //戦闘計算の並び替え
         EventTaskManager.Instance.PushTask(new DoNowTask(SortButtleCulculate));
         //バトル開始
-        EventTaskManager.Instance.PushTask(new DoNowTask(ButtleCulculate));
+        EventTaskManager.Instance.PushTask(new DoNowTask(() =>
+        {
+            StartCoroutine(ButtleCulculate());
+        }));
     }
 
     //敵の技を決める
@@ -134,66 +144,57 @@ public class ButtleManager : MonoBehaviour
         });
     }
 
-    public void ButtleCulculate()
+    IEnumerator ButtleCulculate()
     {
         foreach (var buttleCulculate in buttleCulculates)
         {
-            EventTaskManager.Instance.PushTask(new DoNowTask(() =>
+            //替えが必要なら
+            if (buttleCulculate.isNeedAlternate)
             {
-                //替えが必要なら
-                if (buttleCulculate.isNeedAlternate)
+                var buttleChara = buttleCulculate.defences[0];
+                //変えの候補を取得
+                var alliveDefences = buttleChara.isFriend ? GetAlliveChara(friendCharas) : GetAlliveChara(enemyCharas);
+                //誰か替えがいるなら
+                if (alliveDefences.Count != 0)
                 {
-                    var buttleChara = buttleCulculate.defences[0];
-                    //変えの候補を取得
-                    var alliveDefences = buttleChara.isFriend ? GetAlliveChara(friendCharas) : GetAlliveChara(enemyCharas);
-                    //誰か替えがいるなら
-                    if (alliveDefences.Count != 0)
-                    {
-                        //最初のやつを変えにする
-                        buttleCulculate.defences = new List<ButtleChara>() { alliveDefences[0] };
-                    }
+                    //最初のやつを変えにする
+                    buttleCulculate.defences = new List<ButtleChara>() { alliveDefences[0] };
                 }
+            }
 
-                //バトルの計算(buttleLogsに入れるだけ)
-                var buttleLogs = buttleCulculate.Culculate();
-                //buttleLogsをLogEventに入れてログ表示
-                EventTaskManager.Instance.PushTask(new LogEvent(logManager, buttleLogs, false));
-                //終了チェック
-                EventTaskManager.Instance.PushTask(new DoNowTask(() =>
-                {
-                    //バトルの計算が最後なら
-                    if (buttleCulculate == buttleCulculates[buttleCulculates.Count - 1])
-                    {
-                        //バトル計算のリセット
-                        buttleCulculates.Clear();
+            //バトルの計算
+            yield return buttleCulculate.Culculate(logManager);
+        }
 
-                        //終了したかをチェック
-                        isFinished = IsFinished(out bool isWin);
+        //ログを見えなくする
+        logManager.gameObject.SetActive(false);
 
-                        //戦闘が終了なら
-                        if (isFinished)
-                        {
-                            //タスクを全消去
-                            EventTaskManager.Instance.RemoveAll();
+        //バトル計算のリセット
+        buttleCulculates.Clear();
 
-                            if (isWin)
-                            {
-                                Debug.Log("Win");
-                            }
-                            else
-                            {
-                                Debug.Log("Lose");
-                            }
-                        }
-                        else
-                        {
-                            Debug.Log("Dont Finish");
-                            //一連のバトルの流れを行う
-                            ButtleLoop();
-                        }
-                    }
-                }));
-            }));
+        //終了したかをチェック
+        isFinished = IsFinished(out bool isWin);
+
+        //戦闘が終了なら
+        if (isFinished)
+        {
+            //タスクを全消去
+            EventTaskManager.Instance.RemoveAll();
+
+            if (isWin)
+            {
+                Debug.Log("Win");
+            }
+            else
+            {
+                Debug.Log("Lose");
+            }
+        }
+        else
+        {
+            Debug.Log("Dont Finish");
+            //一連のバトルの流れを行う
+            ButtleLoop();
         }
     }
 

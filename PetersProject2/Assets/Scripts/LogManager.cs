@@ -23,7 +23,8 @@ public class LogManager : MonoBehaviour
     //高速にするか
     private bool isFastPrint = false;
 
-    private bool isPrinting = false;
+    //表示中か
+    public bool isPrinting { get; private set; }
     private bool isLastPrint = false;
 
     //private bool isMoving = false;
@@ -39,8 +40,9 @@ public class LogManager : MonoBehaviour
     //自動でスクロールするか
     private bool isAutoScroll = false;
 
-    //列を表示するのに空ける時間(バトルのみ)
-    private float printButtleStrInterval = 1;
+    //列を表示するのに空ける時間
+    private const float PRINT_STR__NORMAL_INTERVAL = 0.3f;
+    private float printStrInterval = PRINT_STR__NORMAL_INTERVAL;
 
     // Start is called before the first frame update
     void Start()
@@ -92,14 +94,13 @@ public class LogManager : MonoBehaviour
                     StartCoroutine(Scroll());
 
                     //表示
-                    StartCoroutine(PrintStr());
+                    StartCoroutine(PrintStr(logEvent.logs));
                 }
             }
             //表示中なら
             else
             {
                 //表示を高速にする
-                //printInterval = FAST_PRINT_INTERVAL;
                 isFastPrint = true;
             }
         }
@@ -110,36 +111,43 @@ public class LogManager : MonoBehaviour
         this.logEvent = logEvent;
 
         //初期化
+        ResetLog(false);
+
+        //表示
+        StartCoroutine(PrintStr(logEvent.logs));
+    }
+
+    public void ResetLog(bool isButtle)
+    {
+        //初期化
         row = 0;
         isPrinting = false;
         isLastPrint = false;
         contentRectTransform.anchoredPosition = firstContentPos;
         //バトルならオートスクロール
-        isAutoScroll = logEvent.isButtle;
+        isAutoScroll = isButtle;
         //バトルなら表示を速く
-        isFastPrint = logEvent.isButtle;
+        isFastPrint = isButtle;
 
         //文字列リセット
         text.text = "";
 
         //見えるように
         gameObject.SetActive(true);
-
-        //表示
-        StartCoroutine(PrintStr());
     }
 
-    IEnumerator PrintStr()
+    public IEnumerator PrintStr(List<string> logs)
     {
         //表示するLogたち
-        var printLogs = new List<Log>();
+        var printLogs = new List<string>();
         var printRow = PRINT_MAX_ROW;
+        var logCount = logs.Count;
 
         //表示が最後なら
-        if (row + PRINT_MAX_ROW >= logEvent.logs.Count)
+        if (row + PRINT_MAX_ROW >= logCount)
         {
             //表示列数を調整
-            printRow = logEvent.logs.Count - row;
+            printRow = logCount - row;
             //最後boolをtrue
             isLastPrint = true;
         }
@@ -147,34 +155,23 @@ public class LogManager : MonoBehaviour
         //指定列から表示列分を足す
         for(var i = 0; i < printRow; i++)
         {
-            printLogs.Add(logEvent.logs[row + i]);
+            printLogs.Add(logs[row + i]);
         }
 
         isPrinting = true;
         //一文字ずつ表示
-        foreach(var printLog in printLogs)
+        foreach (var printLog in printLogs)
         {
-            //関数を呼ぶ
-            if(printLog.action != null)
+            if (printLog != null)
             {
-                printLog.action();
-            }
-
-            if(printLog.str != null)
-            {
-                for (int i = 0, len = printLog.str.Length; i < len; i++)
+                for (int i = 0, len = printLog.Length; i < len; i++)
                 {
-                    var c = printLog.str[i];
+                    var c = printLog[i];
 
                     text.text += c;
 
                     if (!isFastPrint)
                     {
-                        //if (i != len - 1)
-                        //{
-                        //    //少し待つ
-                        //    yield return new WaitForSeconds(0.3f);
-                        //}
                         //ほんの少し待つ
                         yield return new WaitForSeconds(printCharInterval);
                     }
@@ -183,46 +180,13 @@ public class LogManager : MonoBehaviour
                 text.text += "\n";
             }
         }
-        //for (var i = 0; i < str.Length; i++)
-        //{
-        //    text.text += str[i];
-        //    if (!isFastPrint)
-        //    {
-        //        //改行かつ、最後の改行ではないなら
-        //        if (str[i] == '\n')
-        //        {
-        //            if(i != str.Length - 1)
-        //            {
-        //                //少し待つ
-        //                yield return new WaitForSeconds(0.3f);
-        //            }
-        //            line++;
-        //            if (logActions != null)
-        //            {
-        //                //line行めに行う関数があるなら
-        //                if (logActions.ContainsKey(line))
-        //                {
-        //                    //関数を呼ぶ
-        //                    logActions[line]();
-        //                }
-        //            }
-        //        }
-        //        //ほんの少し待つ
-        //        yield return new WaitForSeconds(printInterval);
-        //    }
-        //}
         isPrinting = false;
 
         //オートスクロールなら
         if (isAutoScroll)
         {
-            //表示が最後なら
-            if (isLastPrint)
-            {
-                FinishAllPrint();
-            }
-            //まだなら
-            else
+            //表示が最後でないなら
+            if (!isLastPrint)
             {
                 //スクロール
                 StartCoroutine(Scroll());
@@ -256,17 +220,5 @@ public class LogManager : MonoBehaviour
 
         //LogEventを終わり判定にする
         logEvent.isFinished = true;
-    }
-}
-
-public class Log
-{
-    public string str { get; private set; }
-    public Action action { get; private set; }
-
-    public Log(string str, Action action = null)
-    {
-        this.str = str;
-        this.action = action;
     }
 }

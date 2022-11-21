@@ -11,6 +11,9 @@ public class ButtleCulculate
 
     public int speed { get; private set; }
 
+    //バトルログのインターバル
+    private const float BUTTLE_LOG_INTERVAL = 1;
+
     //替えが必要か
     public bool isNeedAlternate
     {
@@ -32,66 +35,70 @@ public class ButtleCulculate
         this.speed = offence.speed;
     }
 
-    public List<Log> Culculate()
+    public IEnumerator Culculate(LogManager logManager)
     {
-        var buttleLogs = new List<Log>();
-
         //攻撃側が死んでいるのなら
         if (offence.isDead)
             //終わり
-            return buttleLogs;
+            yield break;
 
-        var offencePoint = thing.power;
+        var offencePoint = 0;
+
+        //ログの初期化
+        logManager.ResetLog(true);
 
         //thingが技なら
         if (thing is Skill skill)
         {
-            Action useSkillFunc = () => {
-                //mpがあるなら
-                if (offence.mp >= skill.consumeMP)
-                {
-                    //mp消費
-                    offence.mp -= skill.consumeMP;
-                }
-            };
-
-            string useSkillName;
+            string useSkillLog = null;
 
             switch (skill.skillType)
             {
                 case Skill.SkillType.Normal:
-                    useSkillName = offence.name + "の攻撃！";
+                    useSkillLog = offence.name + "のこうげき！";
                     break;
                 case Skill.SkillType.Skill:
-                    useSkillName = offence.name + "は" + thing.name + "を使った！";
+                    useSkillLog = offence.name + "は" + skill.name + "を使った！";
                     break;
                 case Skill.SkillType.Magic:
-                    useSkillName = offence.name + "は" + thing.name + "を唱えた！";
+                    useSkillLog = offence.name + "は" + skill.name + "を唱えた！";
                     break;
-                default:
-                    Debug.LogError("知らない技のタイプだよ");
-                    return buttleLogs;
             }
 
-            //ログリストに追加
-            buttleLogs.Add(new Log(useSkillName, useSkillFunc));
+
+            //mpがあるなら
+            if (offence.mp >= skill.consumeMP)
+            {
+                //mp消費
+                offence.mp -= skill.consumeMP;
+            }
+
+            //ログの追加表示
+            yield return logManager.PrintStr(new List<string>() { useSkillLog });
+            //少し待つ
+            yield return new WaitForSeconds(BUTTLE_LOG_INTERVAL);
 
             //mpが足りないなら
             if (offence.mp < skill.consumeMP)
             {
-                //ログリストに追加
-                buttleLogs.Add(new Log("しかしMPが足りない！"));
-                //何もしない(ダメージを与えない)
-                return buttleLogs;
+                //ログ
+                string noMPLog = "しかしMPが足りない！";
+                //ログの追加表示
+                yield return logManager.PrintStr(new List<string>() { noMPLog });
+                //少し待つ
+                yield return new WaitForSeconds(BUTTLE_LOG_INTERVAL);
+                //終わり
+                yield break;
             }
+
 
             switch (skill.skillType)
             {
                 case Skill.SkillType.Magic:
-                    offencePoint = (int)(offencePoint + offence.mtp / 1000f);
+                    offencePoint = (int)(offence.mtp * thing.power);
                     break;
                 default:
-                    offencePoint = (int)(offencePoint + offence.atp / 1000f);
+                    offencePoint = (int)(offence.atp + thing.power);
                     break;
             }
         }
@@ -106,71 +113,76 @@ public class ButtleCulculate
             if (defence.isDead)
                 continue;
 
-            var defencePoint = thing.isCure ? 0 : (int)(defence.df + defence.df / 1000f);
-            var actualPoint = defence.GetChangeHPORMPValue(offencePoint - defencePoint, thing.isCure, thing.isMP);
+
+            var defencePoint = thing.isCure ? 1 : defence.df;
+            var actualPoint = defence.GetChangeHPORMPValue((int)((float)offencePoint / defencePoint), thing.isCure, thing.isMP);
             var actualPointABS = Mathf.Abs(actualPoint);
             var pointName = thing.isMP ? "MP" : "HP";
 
-            Action changePointFunc = () =>
+            if (thing.isMP)
             {
-                if (thing.isMP)
-                {
-                    defence.mp += actualPoint;
-                }
-                else
-                {
-                    defence.hp += actualPoint;
-                }
-            };
+                defence.mp += actualPoint;
+            }
+            else
+            {
+                defence.hp += actualPoint;
+            }
 
-            var changePointName = "";
+            string changePointLog = null;
 
             if (thing.isCure)
             {
-                changePointName = defence.name + "の" + pointName + "が" + actualPointABS + "回復した！";
+                changePointLog = defence.name + "の" + pointName + "が" + actualPointABS + "回復した！";
             }
             else
             {
                 if (thing.isMP)
                 {
-                    changePointName = defence.name + "の" + pointName + "が" + actualPointABS + "減った！";
+                    changePointLog = defence.name + "の" + pointName + "が" + actualPointABS + "減った！";
                 }
                 else
                 {
-                    if (defence.isFriend)
+                    if (actualPointABS != 0)
                     {
-                        changePointName = defence.name + "は" + actualPointABS + "のダメージを受けた！";
+                        if (defence.isFriend)
+                        {
+                            changePointLog = defence.name + "は" + actualPointABS + "のダメージを受けた！";
+                        }
+                        else
+                        {
+                            changePointLog = defence.name + "に" + actualPointABS + "のダメージを与えた！";
+                        }
                     }
                     else
                     {
-                        changePointName = defence.name + "に" + actualPointABS + "のダメージを与えた！";
+                        changePointLog = "ミス！" + offence.name + "はダメージを与えられない！";
                     }
                 }
             }
 
-            //ログリストに追加
-            buttleLogs.Add(new Log(changePointName, changePointFunc));
+            //ログの追加表示
+            yield return logManager.PrintStr(new List<string>() { changePointLog });
+            //少し待つ
+            yield return new WaitForSeconds(BUTTLE_LOG_INTERVAL);
 
-            string deathName = null;
-            Action deathCheckFunc = () =>
+            if (defence.isDead)
             {
-                if (defence.isDead)
+                string deadlog = null;
+
+                if (defence.isFriend)
                 {
-                    if (defence.isFriend)
-                    {
-                        deathName = defence.name + "は死んでしまった！";
-                    }
-                    else
-                    {
-                        deathName = defence.name + "を倒した！";
-                    }
+                    deadlog = defence.name + "は死んでしまった！";
                 }
-            };
+                else
+                {
+                    deadlog = defence.name + "を倒した！";
+                }
 
-            //ログリストに追加(死んでいないとき(deathNameがnullのとき)はログ表示されないようになってる)
-            buttleLogs.Add(new Log(deathName, deathCheckFunc));
+                //ログの追加表示
+                yield return logManager.PrintStr(new List<string>() { deadlog });
+                //少し待つ
+                yield return new WaitForSeconds(BUTTLE_LOG_INTERVAL);
+            }
         }
-
-        return buttleLogs;
     }
 }

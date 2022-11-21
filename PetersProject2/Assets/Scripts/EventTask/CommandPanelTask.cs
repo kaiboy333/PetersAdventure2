@@ -52,7 +52,7 @@ public class CommandPanelTask : EventTask
         var commands1 = commandPanel1.GetCommands();
 
         //こうげきを選択したら
-        MakeThingPanel(new List<int>(friendChara.normalSkillKey), commands1[0], true);
+        MakeThingPanel(new List<int>() { friendChara.normalSkillKey }, commands1[0], true);
 
         //じゅもんを選択したら
         MakeThingPanel(friendChara.magicKeys, commands1[1], true);
@@ -86,6 +86,9 @@ public class CommandPanelTask : EventTask
 
         if (things != null)
         {
+            if (things.Count == 0)
+                return;
+
             //thingの名前たち
             var thingNames = new List<string>();
 
@@ -171,4 +174,4 @@ public class CommandPanelTask : EventTask
             }
         }
     }
-    }
+}
