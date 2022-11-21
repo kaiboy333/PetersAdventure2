@@ -27,6 +27,7 @@ public abstract class Thing : ICloneable
 
     public object Clone()
     {
-        return (Thing)this.MemberwiseClone();
+        var thing = (Thing)this.MemberwiseClone();
+        return thing;
     }
 }

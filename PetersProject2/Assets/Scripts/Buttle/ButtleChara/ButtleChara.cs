@@ -69,6 +69,7 @@ public abstract class ButtleChara : ICloneable
 
     public object Clone()
     {
-        return (ButtleChara)this.MemberwiseClone();
+        var buttleChara = (ButtleChara)this.MemberwiseClone();
+        return buttleChara;
     }
 }

@@ -19,7 +19,7 @@ public class ButtleManager : MonoBehaviour
     private bool isFinished = false;
 
     //LogManager
-    private LogManager logManager = null;
+    [SerializeField] private LogManager logManager = null;
 
     //バトルログのインターバル
     public const float BUTTLE_LOG_INTERVAL = 1;
@@ -27,9 +27,6 @@ public class ButtleManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //logManager取得
-        logManager = FindObjectOfType<LogManager>();
-
         //味方がいないなら
         if(friendCharas == null)
         {

@@ -221,9 +221,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellType: 0
   areaNo: 0
-  enemyNumMin: 1
+  enemyNumMin: 2
   enemyNumMax: 3
-  encountRate: 0.05
+  encountRate: 1
   blackPanelImage: {fileID: 1295597597}
 --- !u!61 &197553677
 BoxCollider2D:
@@ -509,9 +509,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellType: 0
   areaNo: 0
-  enemyNumMin: 1
+  enemyNumMin: 2
   enemyNumMax: 3
-  encountRate: 0.05
+  encountRate: 1
   blackPanelImage: {fileID: 1295597597}
 --- !u!61 &744816796
 BoxCollider2D:
@@ -15527,9 +15527,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellType: 0
   areaNo: 0
-  enemyNumMin: 1
+  enemyNumMin: 2
   enemyNumMax: 3
-  encountRate: 0.05
+  encountRate: 1
   blackPanelImage: {fileID: 1295597597}
 --- !u!61 &1894155732
 BoxCollider2D:
@@ -20720,9 +20720,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellType: 0
   areaNo: 0
-  enemyNumMin: 1
+  enemyNumMin: 2
   enemyNumMax: 3
-  encountRate: 0.05
+  encountRate: 1
   blackPanelImage: {fileID: 1295597597}
 --- !u!61 &2116768158
 BoxCollider2D:
