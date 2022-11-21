@@ -7,16 +7,8 @@ public class CommandManager : SingletonMonoBehaviour<CommandManager>
 {
     private CommandPanel nowCommandPanel = null;
     [SerializeField] private GameObject commandPanelPrefab;
-    private RectTransform canvasRect;
 
     protected override bool dontDestroyOnLoad => true;
-
-    protected override void Awake()
-    {
-        base.Awake();
-
-        canvasRect = FindObjectOfType<Canvas>().GetComponent<RectTransform>();
-    }
 
     // Start is called before the first frame update
     void Start()
@@ -61,6 +53,7 @@ public class CommandManager : SingletonMonoBehaviour<CommandManager>
     public CommandPanel MakeCommandPanel(List<string> strs, int row, int col, Vector2 pos, Command command, bool isOnlyPrint, bool isColScroll)
     {
         CommandPanel commandPanel = null;
+        var canvasRect = FindObjectOfType<Canvas>().GetComponent<RectTransform>();
 
         //コマンドパネル生成
         var commandPanelObj = Instantiate(commandPanelPrefab, canvasRect);

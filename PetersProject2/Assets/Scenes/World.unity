@@ -223,7 +223,7 @@ MonoBehaviour:
   areaNo: 0
   enemyNumMin: 1
   enemyNumMax: 3
-  encountParcent: 1
+  encountRate: 0.05
   blackPanelImage: {fileID: 1295597597}
 --- !u!61 &197553677
 BoxCollider2D:
@@ -511,7 +511,7 @@ MonoBehaviour:
   areaNo: 0
   enemyNumMin: 1
   enemyNumMax: 3
-  encountParcent: 1
+  encountRate: 0.05
   blackPanelImage: {fileID: 1295597597}
 --- !u!61 &744816796
 BoxCollider2D:
@@ -1885,6 +1885,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6497857868804366335, guid: cc27692a1a333443a893eeda19a9f11a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6497857868829236458, guid: cc27692a1a333443a893eeda19a9f11a, type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -15525,7 +15529,7 @@ MonoBehaviour:
   areaNo: 0
   enemyNumMin: 1
   enemyNumMax: 3
-  encountParcent: 1
+  encountRate: 0.05
   blackPanelImage: {fileID: 1295597597}
 --- !u!61 &1894155732
 BoxCollider2D:
@@ -20616,7 +20620,7 @@ MonoBehaviour:
   areaNo: 0
   enemyNumMin: 1
   enemyNumMax: 3
-  encountParcent: 1
+  encountRate: 0.05
   blackPanelImage: {fileID: 1295597597}
 --- !u!1 &2116768154
 GameObject:
@@ -20718,7 +20722,7 @@ MonoBehaviour:
   areaNo: 0
   enemyNumMin: 1
   enemyNumMax: 3
-  encountParcent: 1
+  encountRate: 0.05
   blackPanelImage: {fileID: 1295597597}
 --- !u!61 &2116768158
 BoxCollider2D:
