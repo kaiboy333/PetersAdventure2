@@ -1,11 +1,11 @@
 #name,hp,mp,atp,mtp,df,speed,tribeName,imagePath
 #skillKey,...
 
-ペッタン,10,0,2,0,1,2,キューバン族,pettan
+ペッタン,10,0,1,0,1,2,キューバン族,pettan
 1
-かぼちゃちゃ,17,5,2,3,2,3,ユーレイ族,kabochacha
+かぼちゃちゃ,17,3,2,3,2,3,ユーレイ族,kabochacha
 5
 デカメムシ,20,0,2,0,5,2,虫族,dekamemushi
 6
-ピューイ,25,10,7,0,5,5,鳥族,pyui
+ピューイ,25,10,5,0,5,5,鳥族,pyui
 7

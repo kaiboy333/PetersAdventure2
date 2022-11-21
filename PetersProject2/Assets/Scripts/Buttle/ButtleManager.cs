@@ -109,6 +109,7 @@ public class ButtleManager : MonoBehaviour
         {
             //技リストを取得
             var skillKeys = new List<int>();
+            skillKeys.Add(enemyChara.normalSkillKey);
             skillKeys.AddRange(enemyChara.skillKeys);
             skillKeys.AddRange(enemyChara.magicKeys);
 

@@ -65,6 +65,7 @@ public class EncountEvent : CellEvent
                                 //追加するのをリストのアルファベット+1にする
                                 AddButtleEnemyChara.name = AddButtleEnemyChara.originalName + (char)(1 + alphabet);
                             }
+                            break;
                         }
                     }
                     //生成した敵を追加
