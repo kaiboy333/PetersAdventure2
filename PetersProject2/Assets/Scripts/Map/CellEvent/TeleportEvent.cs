@@ -10,8 +10,6 @@ public class TeleportEvent : CellEvent
     [SerializeField] private string sceneName;
     //使うパネル
     [SerializeField] private Image panelImage;
-    ////プレイヤーのScript
-    //private YushaController yushaController;
     //飛んだ先の位置
     [SerializeField] private Vector2 teleportPosition;
 
@@ -19,7 +17,8 @@ public class TeleportEvent : CellEvent
     {
         base.Start();
 
-        //yushaController = FindObjectOfType<YushaController>();
+        //優先順位を高くする
+        priorityNo = 1;
     }
 
     public override void CallEvent()

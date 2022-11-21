@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,7 +38,8 @@ public abstract class Engine<T> : SingletonMonoBehaviour<Engine<T>>
     {
         if (dictionary.ContainsKey(key))
         {
-            return dictionary[key];
+            var cloneValue = CloneValue(dictionary[key]);
+            return cloneValue;
         }
 
         return default(T);
@@ -57,4 +59,7 @@ public abstract class Engine<T> : SingletonMonoBehaviour<Engine<T>>
 
         return values;
     }
+
+    //Tクラスを複製する
+    public abstract T CloneValue(T t);
 }

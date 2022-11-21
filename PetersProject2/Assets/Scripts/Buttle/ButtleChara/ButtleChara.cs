@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public abstract class ButtleChara
+public abstract class ButtleChara : ICloneable
 {
     //ステータス
     public int hp = 0;  //HitPoint
@@ -57,5 +58,17 @@ public abstract class ButtleChara
         newPoint = Mathf.Clamp(newPoint + dir * point, 0, maxPoint);
 
         return newPoint - beforePoint;
+    }
+
+    //全回復
+    public void CureAll()
+    {
+        hp = maxHP;
+        mp = maxMP;
+    }
+
+    public object Clone()
+    {
+        return (ButtleChara)this.MemberwiseClone();
     }
 }

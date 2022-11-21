@@ -102,6 +102,7 @@ public class YushaController : CharaController
 
     private CellEvent GetCellEvent(Vector2 targetPos, CellEvent.CellType cellType)
     {
+        var cellEvents = new List<CellEvent>();
         var hitColliders = Physics2D.OverlapCircleAll(targetPos, moveDistance / 4.0f, cellMask);
 
         foreach (var hitCollider in hitColliders)
@@ -116,13 +117,26 @@ public class YushaController : CharaController
                     //CellTypeが一致したら
                     if(cellEvent.cellType == cellType)
                     {
-                        return cellEvent;
+                        cellEvents.Add(cellEvent);
                     }
                 }
             }
         }
 
-        return null;
+        //イベントがあるなら
+        if(cellEvents.Count != 0)
+        {
+            //優先順位でソート
+            cellEvents.Sort((a, b) =>
+            {
+                return b.priorityNo - a.priorityNo;
+            });
+            return cellEvents[0];
+        }
+        else
+        {
+            return null;
+        }
     }
 
     protected override void ArriveTargetPos()

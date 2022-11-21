@@ -3,16 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ButtleCulculate
+public class ButtleCulculate : ICloneable
 {
     private ButtleChara offence = null;
     public List<ButtleChara> defences = null;
     private Thing thing = null;
 
     public int speed { get; private set; }
-
-    //バトルログのインターバル
-    private const float BUTTLE_LOG_INTERVAL = 1;
 
     //替えが必要か
     public bool isNeedAlternate
@@ -37,8 +34,8 @@ public class ButtleCulculate
 
     public IEnumerator Culculate(LogManager logManager)
     {
-        //攻撃側が死んでいるのなら
-        if (offence.isDead)
+        //計算できない状態なら
+        if (!CanCulculate())
             //終わり
             yield break;
 
@@ -74,9 +71,9 @@ public class ButtleCulculate
             }
 
             //ログの追加表示
-            yield return logManager.PrintStr(new List<string>() { useSkillLog });
+            yield return logManager.PrintStr(useSkillLog);
             //少し待つ
-            yield return new WaitForSeconds(BUTTLE_LOG_INTERVAL);
+            yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
 
             //mpが足りないなら
             if (offence.mp < skill.consumeMP)
@@ -84,9 +81,9 @@ public class ButtleCulculate
                 //ログ
                 string noMPLog = "しかしMPが足りない！";
                 //ログの追加表示
-                yield return logManager.PrintStr(new List<string>() { noMPLog });
+                yield return logManager.PrintStr(noMPLog);
                 //少し待つ
-                yield return new WaitForSeconds(BUTTLE_LOG_INTERVAL);
+                yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
                 //終わり
                 yield break;
             }
@@ -161,9 +158,9 @@ public class ButtleCulculate
             }
 
             //ログの追加表示
-            yield return logManager.PrintStr(new List<string>() { changePointLog });
+            yield return logManager.PrintStr(changePointLog);
             //少し待つ
-            yield return new WaitForSeconds(BUTTLE_LOG_INTERVAL);
+            yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
 
             if (defence.isDead)
             {
@@ -179,10 +176,30 @@ public class ButtleCulculate
                 }
 
                 //ログの追加表示
-                yield return logManager.PrintStr(new List<string>() { deadlog });
+                yield return logManager.PrintStr(deadlog);
                 //少し待つ
-                yield return new WaitForSeconds(BUTTLE_LOG_INTERVAL);
+                yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
             }
         }
+    }
+
+    private bool CanCulculate()
+    {
+        if (offence.isDead)
+            return false;
+
+        bool isEnemyAllDead = true;
+
+        foreach(var defence in defences)
+        {
+            isEnemyAllDead &= defence.isDead;
+        }
+
+        return !isEnemyAllDead;
+    }
+
+    public object Clone()
+    {
+        return (ButtleChara)this.MemberwiseClone();
     }
 }

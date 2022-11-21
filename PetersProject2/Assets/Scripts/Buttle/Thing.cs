@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public abstract class Thing
+public abstract class Thing : ICloneable
 {
     //名前
     public string name { get; protected set; }
@@ -22,5 +23,10 @@ public abstract class Thing
         this.isCure = isCure;
         this.isAll = isAll;
         this.isMP = isMP;
+    }
+
+    public object Clone()
+    {
+        return (Thing)this.MemberwiseClone();
     }
 }

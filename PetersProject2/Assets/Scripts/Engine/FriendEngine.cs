@@ -6,6 +6,11 @@ public class FriendEngine : Engine<FriendChara>
 {
     protected override string loadTextPath => "FriendEngine";
 
+    public override FriendChara CloneValue(FriendChara t)
+    {
+        return (FriendChara)t.Clone();
+    }
+
     protected override void LoadDictionary(TextAsset textAsset)
     {
         var strs = textAsset.text.Split('\n');

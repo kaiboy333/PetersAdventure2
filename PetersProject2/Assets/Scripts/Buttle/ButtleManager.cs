@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class ButtleManager : MonoBehaviour
 {
@@ -10,8 +11,8 @@ public class ButtleManager : MonoBehaviour
 
     private CommandPanel statusPanel = null;
 
-    public static List<ButtleChara> friendCharas = new List<ButtleChara>();
-    public static List<ButtleChara> enemyCharas = new List<ButtleChara>();
+    public static List<ButtleChara> friendCharas = null;
+    public static List<ButtleChara> enemyCharas = null;
 
     public List<ButtleCulculate> buttleCulculates = new List<ButtleCulculate>();
 
@@ -20,16 +21,27 @@ public class ButtleManager : MonoBehaviour
     //LogManager
     private LogManager logManager = null;
 
+    //バトルログのインターバル
+    public const float BUTTLE_LOG_INTERVAL = 1;
+
     // Start is called before the first frame update
     void Start()
     {
         //logManager取得
         logManager = FindObjectOfType<LogManager>();
 
-        //味方生成
-        friendCharas.Add(FriendEngine.Instance.Get(0));
-        //敵生成
-        enemyCharas.Add(EnemyEngine.Instance.Get(0));
+        //味方がいないなら
+        if(friendCharas == null)
+        {
+            //味方生成
+            friendCharas = new List<ButtleChara>() { FriendEngine.Instance.Get(0) };
+        }
+        //敵がいないなら
+        if (enemyCharas == null)
+        {
+            //敵生成
+            enemyCharas = new List<ButtleChara>() { EnemyEngine.Instance.Get(0) };
+        }
 
         EventTaskManager.Instance.PushTask(new DoNowTask(() =>
         {
@@ -178,21 +190,62 @@ public class ButtleManager : MonoBehaviour
         //戦闘が終了なら
         if (isFinished)
         {
-            //タスクを全消去
-            EventTaskManager.Instance.RemoveAll();
-
             if (isWin)
             {
-                Debug.Log("Win");
+                logManager.ResetLog(false);
+                //ログの追加表示
+                yield return logManager.PrintStr("魔物を全滅させた！");
+                yield return logManager.PrintStr("");
+                yield return logManager.PrintStr("");
+                //スペース押すまで待機
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+                //ログの追加表示
+                yield return logManager.PrintStr("0の経験値を獲得！");
+                yield return logManager.PrintStr("");
+                yield return logManager.PrintStr("");
+                //スペース押すまで待機
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+                //少し待つ
+                yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
+
+                //画面を暗くする
+                EventTaskManager.Instance.PushTask(new AlphaManager(blackPanelImage, false));
+                //シーン移動
+                EventTaskManager.Instance.PushTask(new DoNowTask(() =>
+                {
+                    //ワールドへ移動
+                    SceneManager.LoadScene("World");
+                }));
             }
             else
             {
-                Debug.Log("Lose");
+                logManager.ResetLog(false);
+                //ログの追加表示
+                yield return logManager.PrintStr("全滅してしまった！");
+                //スペース押すまで待機
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+                //少し待つ
+                yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
+
+                //ステータス全快
+                foreach(var friendChara in friendCharas)
+                {
+                    friendChara.CureAll();
+                }
+
+                //画面を暗くする
+                EventTaskManager.Instance.PushTask(new AlphaManager(blackPanelImage, false));
+                //シーン移動
+                EventTaskManager.Instance.PushTask(new DoNowTask(() =>
+                {
+                    //城へ移動
+                    SceneManager.LoadScene("Castle");
+                }));
             }
         }
         else
         {
-            Debug.Log("Dont Finish");
+            //Debug.Log("Dont Finish");
             //一連のバトルの流れを行う
             ButtleLoop();
         }

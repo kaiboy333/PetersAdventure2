@@ -6,6 +6,11 @@ public class EnemyEngine : Engine<EnemyChara>
 {
     protected override string loadTextPath => "EnemyEngine";
 
+    public override EnemyChara CloneValue(EnemyChara t)
+    {
+        return (EnemyChara)t.Clone();
+    }
+
     protected override void LoadDictionary(TextAsset textAsset)
     {
         var strs = textAsset.text.Split('\n');

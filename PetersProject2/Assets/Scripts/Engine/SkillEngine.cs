@@ -7,6 +7,11 @@ public class SkillEngine : Engine<Skill>
 {
     protected override string loadTextPath => "SkillEngine";
 
+    public override Skill CloneValue(Skill t)
+    {
+        return (Skill)t.Clone();
+    }
+
     protected override void LoadDictionary(TextAsset textAsset)
     {
         var strs = textAsset.text.Split('\n');
