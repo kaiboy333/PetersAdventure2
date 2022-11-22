@@ -5,13 +5,14 @@ using System.Linq;
 
 public class CommandPanelTask : EventTask
 {
-    private bool isSelecting = false;
     private Vector2 commandPanelfirstPos = new Vector2(100, 500);
     private Vector2 enemySelectPanelPos = new Vector2(1000, 500);
     private ButtleManager buttleManager = null;
 
     private FriendChara friendChara = null;
     private bool isFirstMake = false;
+
+    private bool isFinished = false;
 
     public CommandPanelTask(ButtleManager buttleManager, FriendChara friendChara, bool isFirstMake)
     {
@@ -21,16 +22,14 @@ public class CommandPanelTask : EventTask
 
     }
 
-    protected override bool Event()
+    public override IEnumerator Event()
     {
-        if (!isSelecting)
+        SelectFriendAction();
+
+        while (!isFinished)
         {
-            SelectFriendAction();
-            isSelecting = true;
+            yield return null;
         }
-
-        return false;
-
     }
 
     public void SelectFriendAction()

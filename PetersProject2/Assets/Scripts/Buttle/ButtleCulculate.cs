@@ -71,7 +71,7 @@ public class ButtleCulculate : ICloneable
             }
 
             //ログの追加表示
-            yield return logManager.PrintStr(useSkillLog);
+            yield return logManager.PrintButtleStr(useSkillLog);
             //少し待つ
             yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
 
@@ -81,7 +81,7 @@ public class ButtleCulculate : ICloneable
                 //ログ
                 string noMPLog = "しかしMPが足りない！";
                 //ログの追加表示
-                yield return logManager.PrintStr(noMPLog);
+                yield return logManager.PrintButtleStr(noMPLog);
                 //少し待つ
                 yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
                 //終わり
@@ -158,7 +158,7 @@ public class ButtleCulculate : ICloneable
             }
 
             //ログの追加表示
-            yield return logManager.PrintStr(changePointLog);
+            yield return logManager.PrintButtleStr(changePointLog);
             //少し待つ
             yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
 
@@ -176,7 +176,7 @@ public class ButtleCulculate : ICloneable
                 }
 
                 //ログの追加表示
-                yield return logManager.PrintStr(deadlog);
+                yield return logManager.PrintButtleStr(deadlog);
                 //少し待つ
                 yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
             }

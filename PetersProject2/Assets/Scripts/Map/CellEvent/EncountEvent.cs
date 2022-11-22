@@ -23,12 +23,15 @@ public class EncountEvent : CellEvent
         yushaController = FindObjectOfType<YushaController>();
     }
 
-    public override void CallEvent()
+    public override IEnumerator CallEvent()
     {
         var parcent = Random.Range(0f, 1f);
         //遭遇するなら
         if (parcent <= encountRate)
         {
+            //動かないようにする
+            CharaController.canMove = false;
+
             //プレイヤーの初期位置を記憶
             YushaController.firstPos = yushaController.gameObject.transform.position;
 
@@ -76,14 +79,15 @@ public class EncountEvent : CellEvent
             ButtleManager.enemyCharas = buttleEnemyCharas.Cast<ButtleChara>().ToList();
 
             //戦闘へ転換する演出をする
-            EventTaskManager.Instance.PushTask(new AlphaManager(blackPanelImage, false));
+            var alphaManager = new AlphaManager(blackPanelImage, false);
+            yield return alphaManager.Event();
+
+            //動けるようにする
+            CharaController.canMove = true;
 
             //シーン移動
-            EventTaskManager.Instance.PushTask(new DoNowTask(() =>
-            {
-                //バトルシーンへ
-                SceneManager.LoadScene("Buttle");
-            }));
+            //バトルシーンへ
+            SceneManager.LoadScene("Buttle");
         }
     }
 }

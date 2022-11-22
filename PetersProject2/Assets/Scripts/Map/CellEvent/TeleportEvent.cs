@@ -9,7 +9,7 @@ public class TeleportEvent : CellEvent
     //飛ぶシーンの名前
     [SerializeField] private string sceneName;
     //使うパネル
-    [SerializeField] private Image panelImage;
+    [SerializeField] private Image blackPanelImage;
     //飛んだ先の位置
     [SerializeField] private Vector2 teleportPosition;
 
@@ -21,21 +21,22 @@ public class TeleportEvent : CellEvent
         priorityNo = 1;
     }
 
-    public override void CallEvent()
+    public override IEnumerator CallEvent()
     {
-        //タスクマネージャーがあるなら
-        if (eventTaskManager && panelImage)
+        //動かないようにする
+        CharaController.canMove = false;
+
+        if (blackPanelImage)
         {
-            //タスクマネージャーが動いていないなら
-            if (!eventTaskManager.IsWorking)
-            {
-                //指定位置に移動するように設定
-                eventTaskManager.PushTask(new DoNowTask(() => { YushaController.firstPos = teleportPosition; }));
-                //暗くする
-                eventTaskManager.PushTask(new AlphaManager(panelImage, false));
-                //シーン移動
-                eventTaskManager.PushTask(new DoNowTask(() => { SceneManager.LoadScene(sceneName); }));
-            }
+            //指定位置に移動するように設定
+            YushaController.firstPos = teleportPosition;
+            //暗くする
+            var alphaManager = new AlphaManager(blackPanelImage, false);
+            yield return alphaManager.Event();
+            //動けるようにする
+            CharaController.canMove = true;
+            //シーン移動
+            SceneManager.LoadScene(sceneName);
         }
     }
 }

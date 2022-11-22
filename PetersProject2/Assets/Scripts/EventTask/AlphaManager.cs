@@ -21,20 +21,27 @@ public class AlphaManager : EventTask
         lastAlpha = firstAlpha ^ 1;
     }
 
-    protected override bool Event()
+    public override IEnumerator Event()
     {
-        time += Time.deltaTime;
+        while (true) {
+            time += Time.deltaTime;
 
-        //透明度を求める
-        float alpha = Mathf.Lerp(firstAlpha, lastAlpha, time / seconds);
+            //透明度を求める
+            float alpha = Mathf.Lerp(firstAlpha, lastAlpha, time / seconds);
 
-        if (image)
-        {
-            //透明度を適用
-            image.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
+            if (image)
+            {
+                //透明度を適用
+                image.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
+            }
+
+            //最終的なものになったらtrue
+            if(alpha == lastAlpha)
+            {
+                break;
+            }
+
+            yield return null;
         }
-
-        //最終的なものになったらtrue
-        return alpha == lastAlpha;
     }
 }

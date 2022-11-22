@@ -18,7 +18,7 @@ public class SoldierController : CharaController
     // Update is called once per frame
     void Update()
     {
-        if (!CanMove)
+        if (!canMove)
             return;
 
         Move();

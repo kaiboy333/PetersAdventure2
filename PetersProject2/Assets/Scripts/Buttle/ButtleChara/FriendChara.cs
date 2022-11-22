@@ -7,7 +7,7 @@ public class FriendChara : ButtleChara
     //職業名
     public string professionName = "No Professsion";
 
-    public int level { get; private set; }
+    public int level { get; private set; } = 1;
 
     public FriendChara(string name, int hp, int mp, int atp, int mtp, int df, int speed, string professionName) : base(name, hp, mp, atp, mtp, df, speed)
     {

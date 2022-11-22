@@ -8,7 +8,7 @@ public class Command : MonoBehaviour
 {
     //選択されたときに実行する関数
     private Action action = null;
-    private Text text = null;
+    public Text text = null;
     public string Name
     {
         get { return text.text; }

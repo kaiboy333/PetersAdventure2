@@ -6,7 +6,6 @@ using UnityEngine.Tilemaps;
 public abstract class CellEvent : MonoBehaviour
 {
     private Tilemap tilemap = null;
-    protected EventTaskManager eventTaskManager = null;
 
     //優先順位(大きいと優先される)
     public int priorityNo { get; protected set; } = 0;
@@ -20,8 +19,6 @@ public abstract class CellEvent : MonoBehaviour
 
     protected virtual void Start()
     {
-        eventTaskManager = FindObjectOfType<EventTaskManager>();
-
         //タイルマップの位置調整
         tilemap = FindObjectOfType<Tilemap>();
 
@@ -35,5 +32,5 @@ public abstract class CellEvent : MonoBehaviour
         }
     }
 
-    public abstract void CallEvent();
+    public abstract IEnumerator CallEvent();
 }

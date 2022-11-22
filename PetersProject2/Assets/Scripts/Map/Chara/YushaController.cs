@@ -77,8 +77,7 @@ public class YushaController : CharaController
             key = Key.NONE;
         }
 
-        //イベント発生中は何もできない
-        if (!CanMove)
+        if (!canMove)
             return;
 
         Move();
@@ -94,7 +93,7 @@ public class YushaController : CharaController
                 if (cellEvent)
                 {
                     //イベントを呼ぶ
-                    cellEvent.CallEvent();
+                    StartCoroutine(cellEvent.CallEvent());
                 }
             }
         }
@@ -147,7 +146,7 @@ public class YushaController : CharaController
         if (cellEvent)
         {
             //イベントを呼ぶ
-            cellEvent.CallEvent();
+            StartCoroutine(cellEvent.CallEvent());
         }
     }
 

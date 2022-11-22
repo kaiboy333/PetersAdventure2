@@ -24,8 +24,11 @@ public class ButtleManager : MonoBehaviour
     //バトルログのインターバル
     public const float BUTTLE_LOG_INTERVAL = 1;
 
+    //バトル中か
+    private bool isButtle = false;
+
     // Start is called before the first frame update
-    void Start()
+    private IEnumerator Start()
     {
         //味方がいないなら
         if(friendCharas == null)
@@ -40,46 +43,76 @@ public class ButtleManager : MonoBehaviour
             enemyCharas = new List<ButtleChara>() { EnemyEngine.Instance.Get(0) };
         }
 
-        EventTaskManager.Instance.PushTask(new DoNowTask(() =>
+        var allStrs = new List<List<string>>();
+        //ステータスパネル作成
+        for (int i = 0; i < friendCharas.Count; i++)
         {
-            //ステータスパネル作成
-            //for (int i = 0; i < friendCharas.Count; i++)
-            //{
-            //    var friendChara = friendCharas[i];
-            //    string[] strs = new string[]{ friendChara.name, "HP:" + friendChara.hp.ToString(), "MP:" + friendChara.mp.ToString(), "Lv:" + ((FriendChara)friendChara).level.ToString() };
-            //}
-            //statusPanel = CommandManager.Instance.MakeCommandPanel(, 4, 1, new Vector2(100, 1000), null, true, true);
-            //ステータスパネルの名前変更
-            //statusPanel.gameObject.name = "StatusPanel";
-            //敵画像生成
-        }));
+            var friendChara = friendCharas[i];
+            var strs = new List<string>() { friendChara.name, "HP:" + friendChara.hp.ToString(), "MP:" + friendChara.mp.ToString(), "Lv:" + ((FriendChara)friendChara).level.ToString() };
+            allStrs.Add(strs);
+        }
+        var strs_t = new List<string>();
+        for(int i = 0, len = allStrs[0].Count;i < len; i++)
+        {
+            for (int j = 0, len2 = allStrs.Count; j < len2; j++)
+            {
+                var str = allStrs[j][i];
+                strs_t.Add(str);
+            }
+        }
+        statusPanel = CommandManager.Instance.MakeCommandPanel(strs_t, 4, strs_t.Count / 4, new Vector2(100, 1000), null, true, true);
+        //ステータスパネルの名前変更
+        statusPanel.gameObject.name = "StatusPanel";
+        //敵画像生成
 
         //明るくする
-        EventTaskManager.Instance.PushTask(new AlphaManager(blackPanelImage, true));
+        yield return new AlphaManager(blackPanelImage, true).Event();
 
-        EventTaskManager.Instance.PushTask(new DoNowTask(() =>
-        {
-            //敵名表示(Log)
-        }));
-        //数秒まつ
+        //ログ初期化
+        logManager.ResetLog(true);
+        //ログ表示
+        yield return logManager.PrintButtleStr("魔物が現れた！");
 
-        EventTaskManager.Instance.PushTask(new DoNowTask(() =>
-        {
-            //一連のバトルの流れを行う
-            ButtleLoop();
-        }));
+        yield return new WaitForSeconds(2f);
+
+        //見えなくする
+        logManager.gameObject.SetActive(false);
+
+        //一連のバトルの流れを行う
+        yield return ButtleLoop();
     }
 
     private void Update()
     {
         //ステータスパネルの更新
-        if (statusPanel)
+        if (statusPanel && isButtle)
         {
-
+            var friendCharasNum = friendCharas.Count;
+            var commands = statusPanel.GetCommands();
+            for(int len = commands.Count, i = friendCharasNum; i < len; i++)
+            {
+                var rowNo = i / friendCharasNum;
+                var colNo = i % friendCharasNum;
+                switch (rowNo)
+                {
+                    //hp
+                    case 1:
+                        commands[i].text.text = "HP:" + friendCharas[colNo].hp.ToString();
+                        break;
+                    //mp
+                    case 2:
+                        commands[i].text.text = "MP:" + friendCharas[colNo].mp.ToString();
+                        break;
+                    //lv
+                    case 3:
+                        commands[i].text.text = "Lv:" + ((FriendChara)friendCharas[colNo]).level.ToString();
+                        break;
+                }
+            }
         }
     }
 
-    public void ButtleLoop()
+    public IEnumerator ButtleLoop()
     {
         //生きている仲間を取得
         var alliveFriendCharas = GetAlliveChara(friendCharas);
@@ -89,17 +122,14 @@ public class ButtleManager : MonoBehaviour
             var alliveFriendChara = alliveFriendCharas[i];
             bool isFirstMake = i == 0;
             //コマンドパネル生成、選択が終わるまで進まない
-            EventTaskManager.Instance.PushTask(new CommandPanelTask(this, (FriendChara)alliveFriendChara, isFirstMake));
+            yield return new CommandPanelTask(this, (FriendChara)alliveFriendChara, isFirstMake).Event();
         }
         //敵の技を決める
-        EventTaskManager.Instance.PushTask(new DoNowTask(DesideEnemyTurn));
+        DesideEnemyTurn();
         //戦闘計算の並び替え
-        EventTaskManager.Instance.PushTask(new DoNowTask(SortButtleCulculate));
+        SortButtleCulculate();
         //バトル開始
-        EventTaskManager.Instance.PushTask(new DoNowTask(() =>
-        {
-            StartCoroutine(ButtleCulculate());
-        }));
+        yield return ButtleCulculate();
     }
 
     //敵の技を決める
@@ -156,6 +186,7 @@ public class ButtleManager : MonoBehaviour
 
     IEnumerator ButtleCulculate()
     {
+        isButtle = true;
         foreach (var buttleCulculate in buttleCulculates)
         {
             //替えが必要なら
@@ -176,9 +207,6 @@ public class ButtleManager : MonoBehaviour
             yield return buttleCulculate.Culculate(logManager);
         }
 
-        //ログを見えなくする
-        logManager.gameObject.SetActive(false);
-
         //バトル計算のリセット
         buttleCulculates.Clear();
 
@@ -192,34 +220,32 @@ public class ButtleManager : MonoBehaviour
             {
                 logManager.ResetLog(false);
                 //ログの追加表示
-                yield return logManager.PrintStr("魔物を全滅させた！");
-                yield return logManager.PrintStr("");
-                yield return logManager.PrintStr("");
+                yield return logManager.PrintButtleStr("魔物を全滅させた！");
+                yield return logManager.PrintButtleStr("");
+                yield return logManager.PrintButtleStr("");
                 //スペース押すまで待機
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
                 //ログの追加表示
-                yield return logManager.PrintStr("0の経験値を獲得！");
-                yield return logManager.PrintStr("");
-                yield return logManager.PrintStr("");
+                yield return logManager.PrintButtleStr("0の経験値を獲得！");
+                yield return logManager.PrintButtleStr("");
+                yield return logManager.PrintButtleStr("");
                 //スペース押すまで待機
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
                 //少し待つ
                 yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
 
+                var alphaManager = new AlphaManager(blackPanelImage, false);
                 //画面を暗くする
-                EventTaskManager.Instance.PushTask(new AlphaManager(blackPanelImage, false));
+                yield return alphaManager.Event();
                 //シーン移動
-                EventTaskManager.Instance.PushTask(new DoNowTask(() =>
-                {
-                    //ワールドへ移動
-                    SceneManager.LoadScene("World");
-                }));
+                //ワールドへ移動
+                SceneManager.LoadScene("World");
             }
             else
             {
                 logManager.ResetLog(false);
                 //ログの追加表示
-                yield return logManager.PrintStr("全滅してしまった！");
+                yield return logManager.PrintButtleStr("全滅してしまった！");
                 //スペース押すまで待機
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
                 //少し待つ
@@ -231,22 +257,22 @@ public class ButtleManager : MonoBehaviour
                     friendChara.CureAll();
                 }
 
+                var alphaManager = new AlphaManager(blackPanelImage, false);
                 //画面を暗くする
-                EventTaskManager.Instance.PushTask(new AlphaManager(blackPanelImage, false));
+                yield return alphaManager.Event();
                 //シーン移動
-                EventTaskManager.Instance.PushTask(new DoNowTask(() =>
-                {
-                    //城へ移動
-                    SceneManager.LoadScene("Castle");
-                }));
+                //城へ移動
+                SceneManager.LoadScene("Castle");
             }
         }
         else
         {
-            //Debug.Log("Dont Finish");
+            //ログを見えなくする
+            logManager.gameObject.SetActive(false);
             //一連のバトルの流れを行う
-            ButtleLoop();
+            yield return ButtleLoop();
         }
+        isButtle = false;
     }
 
     public List<ButtleChara> GetAlliveChara(List<ButtleChara> buttleCharas)

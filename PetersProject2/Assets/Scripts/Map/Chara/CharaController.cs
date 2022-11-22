@@ -21,9 +21,7 @@ public abstract class CharaController : MonoBehaviour
 
     protected Key key = Key.NONE;
 
-    private EventTaskManager eventTaskManager = null;
-    public bool CanMove { get { return !eventTaskManager.IsWorking; } }
-
+    public static bool canMove = true;
     //当たり判定に使う球の半径
     protected float sphereRadious = 0;
 
@@ -63,8 +61,6 @@ public abstract class CharaController : MonoBehaviour
 
         //目標位置初期化
         targetPos = transform.position;
-
-        eventTaskManager = FindObjectOfType<EventTaskManager>();
     }
 
     //目的地まで歩けるか
