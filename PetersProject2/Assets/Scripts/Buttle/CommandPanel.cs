@@ -64,7 +64,7 @@ public class CommandPanel : MonoBehaviour
         var nowColNo = nowNo % col;
 
         //最後の行の最大列番号
-        var lastRowNoColMaxNo = (nowRowNo == row - 1) ? commands.Count % col : col - 1;
+        var lastRowNoColMaxNo = (nowRowNo == row - 1) ? commands.Count % (col + 1) : col - 1;
 
         //前回として記憶
         var beforeNo = nowNo;

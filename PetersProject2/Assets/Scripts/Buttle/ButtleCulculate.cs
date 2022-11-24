@@ -52,8 +52,9 @@ public class ButtleCulculate
         {
             string useSkillLog = null;
 
+            bool isUseMP = offence.mp >= skill.consumeMP;
             //mpがあるなら
-            if (offence.mp >= skill.consumeMP)
+            if (isUseMP)
             {
                 //mp消費
                 offence.mp -= skill.consumeMP;
@@ -89,7 +90,7 @@ public class ButtleCulculate
             }
 
             //mpがないなら
-            if (offence.mp < skill.consumeMP)
+            if (!isUseMP)
             {
                 //ログ
                 string noMPLog = "しかしMPが足りない！";

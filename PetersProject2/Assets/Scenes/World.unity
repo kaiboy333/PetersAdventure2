@@ -221,8 +221,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellType: 0
   areaNo: 0
-  enemyNumMin: 1
-  enemyNumMax: 2
+  enemyNumMin: 5
+  enemyNumMax: 5
   encountRate: 0.05
   blackPanelImage: {fileID: 1084287239}
 --- !u!61 &197553677
@@ -466,8 +466,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellType: 0
   areaNo: 0
-  enemyNumMin: 1
-  enemyNumMax: 2
+  enemyNumMin: 5
+  enemyNumMax: 5
   encountRate: 0.05
   blackPanelImage: {fileID: 1084287239}
 --- !u!61 &744816796
@@ -15760,8 +15760,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellType: 0
   areaNo: 0
-  enemyNumMin: 1
-  enemyNumMax: 2
+  enemyNumMin: 5
+  enemyNumMax: 5
   encountRate: 0.05
   blackPanelImage: {fileID: 1084287239}
 --- !u!61 &1894155732
@@ -20953,8 +20953,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellType: 0
   areaNo: 0
-  enemyNumMin: 1
-  enemyNumMax: 2
+  enemyNumMin: 5
+  enemyNumMax: 5
   encountRate: 0.05
   blackPanelImage: {fileID: 1084287239}
 --- !u!61 &2116768158
