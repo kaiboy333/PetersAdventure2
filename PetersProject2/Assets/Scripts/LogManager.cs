@@ -37,9 +37,6 @@ public class LogManager : MonoBehaviour
 
     private const float MOVE_SPEED = 400;
 
-    //自動でスクロールするか
-    private bool isAutoScroll = false;
-
     ////列を表示するのに空ける時間
     //private const float PRINT_STR__NORMAL_INTERVAL = 0.3f;
     //private float printStrInterval = PRINT_STR__NORMAL_INTERVAL;
@@ -73,6 +70,16 @@ public class LogManager : MonoBehaviour
     {
         //if (!text)
         //    return;
+
+        if (isPrinting)
+        {
+            //スペースを途中で押したら
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                //表示を速くする
+                isFastPrint = true;
+            }
+        }
 
         ////スペースキーを押したら
         //if (Input.GetKeyDown(KeyCode.Space) && !isAutoScroll)
@@ -127,12 +134,12 @@ public class LogManager : MonoBehaviour
 
             yield return PrintButtleStr(log);
 
-            //速くなっているなら元の早さに戻す
-            isFastPrint = false;
-
             //最後ではなく次ページがあるなら
             if ((i + 1) % PRINT_MAX_ROW == 0 && !(i == len - 1))
             {
+                //速くなっているなら元の早さに戻す
+                isFastPrint = false;
+
                 //スペース押すまで待機
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
 
@@ -157,8 +164,6 @@ public class LogManager : MonoBehaviour
         row = 0;
         isPrinting = false;
         contentRectTransform.anchoredPosition = firstContentPos;
-        //バトルならオートスクロール
-        isAutoScroll = isButtle;
         //バトルなら表示を速く
         isFastPrint = isButtle;
 
@@ -185,13 +190,6 @@ public class LogManager : MonoBehaviour
         {
             for (int i = 0, len = log.Length; i < len; i++)
             {
-                //スペースを途中で押したら
-                if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    //表示を速くする
-                    isFastPrint = true;
-                }
-
                 var c = log[i];
 
                 text.text += c;
