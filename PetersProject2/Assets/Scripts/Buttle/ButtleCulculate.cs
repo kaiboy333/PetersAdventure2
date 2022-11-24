@@ -125,18 +125,18 @@ public class ButtleCulculate
 
 
             var defencePoint = thing.isCure ? 1 : defence.df;
-            var actualPoint = defence.GetChangeHPORMPValue((int)((float)offencePoint / defencePoint), thing.isCure, thing.isMP);
+            var actualPoint = defence.ChangeHPORMPValue((int)((float)offencePoint / defencePoint), thing.isCure, thing.isMP);
             var actualPointABS = Mathf.Abs(actualPoint);
             var pointName = thing.isMP ? "MP" : "HP";
 
-            if (thing.isMP)
-            {
-                defence.mp += actualPoint;
-            }
-            else
-            {
-                defence.hp += actualPoint;
-            }
+            //if (thing.isMP)
+            //{
+            //    defence.mp += actualPoint;
+            //}
+            //else
+            //{
+            //    defence.hp += actualPoint;
+            //}
 
             string changePointLog = null;
 

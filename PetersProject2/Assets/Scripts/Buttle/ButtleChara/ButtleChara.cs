@@ -47,17 +47,37 @@ public abstract class ButtleChara : ICloneable
         this.name = name;
     }
 
-    //HPかMPの変化分の値を取得する
-    public int GetChangeHPORMPValue(int point, bool isCure, bool isMP)
+    //HPかMPの変化分の値を取得する&更新
+    public int ChangeHPORMPValue(int point, bool isCure, bool isMP)
     {
         var newPoint = isMP ? mp : hp;
         var beforePoint = newPoint;
         var maxPoint = isMP ? maxMP : maxHP;
         var dir = isCure ? 1 : -1;
 
-        newPoint = Mathf.Clamp(newPoint + dir * point, 0, maxPoint);
+        newPoint += dir * point;
 
-        return newPoint - beforePoint;
+        int changeValue = newPoint;
+
+        //HPが減った場合以外は
+        if (isCure || isMP)
+        {
+            //変わった値はクランプ
+            changeValue = Mathf.Clamp(changeValue, 0, maxPoint);
+        }
+        //実際の値をクランプ
+        newPoint = Mathf.Clamp(newPoint, 0, maxPoint);
+        //HPorMP更新
+        if (isMP)
+        {
+            mp = newPoint;
+        }
+        else
+        {
+            hp = newPoint;
+        }
+
+        return changeValue - beforePoint;
     }
 
     //全回復

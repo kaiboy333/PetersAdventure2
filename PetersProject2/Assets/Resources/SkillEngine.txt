@@ -9,3 +9,4 @@
 臭い息,1,false,true,false,0,1
 風起こし,4,false,true,false,8,1
 渾身斬り,2,false,false,false,1,1
+回転斬り,1,false,true,false,3,1
