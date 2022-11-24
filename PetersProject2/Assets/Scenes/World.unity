@@ -577,6 +577,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2587743294704635560, guid: f72b697bff9ea4f1d82fdf04ff7d3774, type: 3}
+      propertyPath: charaController
+      value: 
+      objectReference: {fileID: 936911714}
     - target: {fileID: 2587743294704635561, guid: f72b697bff9ea4f1d82fdf04ff7d3774, type: 3}
       propertyPath: m_Name
       value: Main Camera
@@ -627,6 +631,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f72b697bff9ea4f1d82fdf04ff7d3774, type: 3}
+--- !u!114 &936911714 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5362191648449631175, guid: fc22b5ab2f13e4e1da0537b5869f596f, type: 3}
+  m_PrefabInstance: {fileID: 1510928706}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4384423bc49443018b57398cb026b77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &940026973
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15486,11 +15501,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5362191648449631171, guid: fc22b5ab2f13e4e1da0537b5869f596f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 959.76
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5362191648449631171, guid: fc22b5ab2f13e4e1da0537b5869f596f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 539.67004
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5362191648449631171, guid: fc22b5ab2f13e4e1da0537b5869f596f, type: 3}
       propertyPath: m_LocalPosition.z

@@ -36,9 +36,11 @@ public class EnemyEngine : Engine<EnemyChara>
                 var df = int.Parse(strs_t[5]);
                 var speed = int.Parse(strs_t[6]);
                 var tribeName = strs_t[7];
-                var imagePath = strs_t[8];
+                var spritePath = strs_t[8];
+                var width = int.Parse(strs_t[9]);
+                var height = int.Parse(strs_t[10]);
 
-                var enemy = new EnemyChara(name, hp, mp, atp, mtp, df, speed, tribeName, imagePath);
+                var enemy = new EnemyChara(name, hp, mp, atp, mtp, df, speed, tribeName, spritePath, width, height);
 
                 dictionary.Add(i / 2, enemy);
             }

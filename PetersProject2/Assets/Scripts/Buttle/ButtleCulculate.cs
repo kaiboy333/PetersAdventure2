@@ -62,6 +62,10 @@ public class ButtleCulculate : ICloneable
                     break;
             }
 
+            //ログの追加表示
+            yield return logManager.PrintButtleStr(useSkillLog);
+            //少し待つ
+            yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
 
             //mpがあるなら
             if (offence.mp >= skill.consumeMP)
@@ -69,14 +73,7 @@ public class ButtleCulculate : ICloneable
                 //mp消費
                 offence.mp -= skill.consumeMP;
             }
-
-            //ログの追加表示
-            yield return logManager.PrintButtleStr(useSkillLog);
-            //少し待つ
-            yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
-
-            //mpが足りないなら
-            if (offence.mp < skill.consumeMP)
+            else
             {
                 //ログ
                 string noMPLog = "しかしMPが足りない！";

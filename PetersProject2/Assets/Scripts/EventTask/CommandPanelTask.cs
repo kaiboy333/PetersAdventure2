@@ -14,12 +14,14 @@ public class CommandPanelTask : EventTask
 
     private bool isFinished = false;
 
-    public CommandPanelTask(ButtleManager buttleManager, FriendChara friendChara, bool isFirstMake)
+    private RectTransform parentRect = null;
+
+    public CommandPanelTask(ButtleManager buttleManager, FriendChara friendChara, bool isFirstMake, RectTransform parentRect)
     {
         this.buttleManager = buttleManager;
         this.friendChara = friendChara;
         this.isFirstMake = isFirstMake;
-
+        this.parentRect = parentRect;
     }
 
     public override IEnumerator Event()
@@ -42,12 +44,12 @@ public class CommandPanelTask : EventTask
         if (isFirstMake)
         {
             //バトルパネル
-            buttleCommandPanel = CommandManager.Instance.MakeCommandPanel(new List<string> { "たたかう", "にげる", "さくせん" }, 3, 1, commandPanelfirstPos, null, false, true);
+            buttleCommandPanel = CommandManager.Instance.MakeCommandPanel(new List<string> { "たたかう", "にげる", "さくせん" }, 3, 1, commandPanelfirstPos, null, false, true, parentRect);
             var buttleCommands = buttleCommandPanel.GetCommands();
             buttleCommand = buttleCommands[0];
         }
 
-        var commandPanel1 = CommandManager.Instance.MakeCommandPanel(new List<string> { "こうげき", "じゅもん", "とくぎ", "どうぐ" }, 4, 1, commandPanelfirstPos, buttleCommand, false, true);
+        var commandPanel1 = CommandManager.Instance.MakeCommandPanel(new List<string> { "こうげき", "じゅもん", "とくぎ", "どうぐ" }, 4, 1, commandPanelfirstPos, buttleCommand, false, true, parentRect);
         var commands1 = commandPanel1.GetCommands();
 
         //こうげきを選択したら
@@ -97,7 +99,7 @@ public class CommandPanelTask : EventTask
             }
 
             //技パネル表示
-            var thingPanel = CommandManager.Instance.MakeCommandPanel(thingNames, 3, 2, commandPanelfirstPos, parentCommand, false, true);
+            var thingPanel = CommandManager.Instance.MakeCommandPanel(thingNames, 3, 2, commandPanelfirstPos, parentCommand, false, true, parentRect);
             //技コマンド取得
             var thingCommands = thingPanel.GetCommands();
             for (int i = 0, len = thingCommands.Count; i < len; i++)
@@ -146,7 +148,7 @@ public class CommandPanelTask : EventTask
                     //守備の名前取得
                     var targetNames = buttleManager.GetCharaName(targets);
                     //守備パネル表示
-                    var targetPanel = CommandManager.Instance.MakeCommandPanel(targetNames, targetNames.Count, 1, enemySelectPanelPos, thingCommand, false, true);
+                    var targetPanel = CommandManager.Instance.MakeCommandPanel(targetNames, targetNames.Count, 1, enemySelectPanelPos, thingCommand, false, true, parentRect);
                     //守備コマンド取得
                     var targetCommands = targetPanel.GetCommands();
                     for (int j = 0, len2 = targetNames.Count; j < len2; j++)

@@ -27,6 +27,10 @@ public class ButtleManager : MonoBehaviour
     //バトル中か
     private bool isButtle = false;
 
+    [SerializeField] private GameObject enemyPrefab = null;
+
+    [SerializeField] private RectTransform backGroundRect = null;
+
     // Start is called before the first frame update
     private IEnumerator Start()
     {
@@ -43,6 +47,38 @@ public class ButtleManager : MonoBehaviour
             enemyCharas = new List<ButtleChara>() { EnemyEngine.Instance.Get(0) };
         }
 
+        var sumWidth = 0;
+        //敵画像生成
+        foreach(var enemyChara in enemyCharas)
+        {
+            var castedEnemyChara = (EnemyChara)enemyChara;
+
+            //敵画像のゲームオブジェクト生成
+            GameObject enemyObj = Instantiate(enemyPrefab, backGroundRect);
+            //敵画像をセット
+            enemyObj.GetComponent<Image>().sprite = castedEnemyChara.sprite;
+            //縦、横幅セット
+            enemyObj.GetComponent<RectTransform>().sizeDelta = new Vector2(castedEnemyChara.width, castedEnemyChara.height);
+            //横幅を加算
+            sumWidth += castedEnemyChara.width;
+
+            //敵クラスに登録
+            castedEnemyChara.enemyObj = enemyObj;
+        }
+        var xPos = -sumWidth / 2;
+        foreach (var enemyChara in enemyCharas)
+        {
+            var castedEnemyChara = (EnemyChara)enemyChara;
+
+            //敵画像のゲームオブジェクト取得
+            GameObject enemyObj = castedEnemyChara.enemyObj;
+            //敵画像のx位置を調整
+            var rect = enemyObj.GetComponent<RectTransform>();
+            rect.anchoredPosition = new Vector2(xPos, rect.anchoredPosition.y);
+            //横幅分だけ右に移動
+            xPos += (int)rect.sizeDelta.x;
+        }
+
         var allStrs = new List<List<string>>();
         //ステータスパネル作成
         for (int i = 0; i < friendCharas.Count; i++)
@@ -52,7 +88,7 @@ public class ButtleManager : MonoBehaviour
             allStrs.Add(strs);
         }
         var strs_t = new List<string>();
-        for(int i = 0, len = allStrs[0].Count;i < len; i++)
+        for (int i = 0, len = allStrs[0].Count; i < len; i++)
         {
             for (int j = 0, len2 = allStrs.Count; j < len2; j++)
             {
@@ -60,10 +96,9 @@ public class ButtleManager : MonoBehaviour
                 strs_t.Add(str);
             }
         }
-        statusPanel = CommandManager.Instance.MakeCommandPanel(strs_t, 4, strs_t.Count / 4, new Vector2(100, 1000), null, true, true);
+        statusPanel = CommandManager.Instance.MakeCommandPanel(strs_t, 4, strs_t.Count / 4, new Vector2(100, 1000), null, true, true, backGroundRect);
         //ステータスパネルの名前変更
         statusPanel.gameObject.name = "StatusPanel";
-        //敵画像生成
 
         //明るくする
         yield return new AlphaManager(blackPanelImage, true).Event();
@@ -122,7 +157,7 @@ public class ButtleManager : MonoBehaviour
             var alliveFriendChara = alliveFriendCharas[i];
             bool isFirstMake = i == 0;
             //コマンドパネル生成、選択が終わるまで進まない
-            yield return new CommandPanelTask(this, (FriendChara)alliveFriendChara, isFirstMake).Event();
+            yield return new CommandPanelTask(this, (FriendChara)alliveFriendChara, isFirstMake, backGroundRect).Event();
         }
         //敵の技を決める
         DesideEnemyTurn();
@@ -251,15 +286,16 @@ public class ButtleManager : MonoBehaviour
                 //少し待つ
                 yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
 
+                var alphaManager = new AlphaManager(blackPanelImage, false);
+                //画面を暗くする
+                yield return alphaManager.Event();
+
                 //ステータス全快
-                foreach(var friendChara in friendCharas)
+                foreach (var friendChara in friendCharas)
                 {
                     friendChara.CureAll();
                 }
 
-                var alphaManager = new AlphaManager(blackPanelImage, false);
-                //画面を暗くする
-                yield return alphaManager.Event();
                 //シーン移動
                 //城へ移動
                 SceneManager.LoadScene("Castle");

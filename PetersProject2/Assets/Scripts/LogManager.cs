@@ -127,6 +127,9 @@ public class LogManager : MonoBehaviour
 
             yield return PrintButtleStr(log);
 
+            //速くなっているなら元の早さに戻す
+            isFastPrint = false;
+
             //最後ではなく次ページがあるなら
             if ((i + 1) % PRINT_MAX_ROW == 0 && !(i == len - 1))
             {
@@ -182,6 +185,13 @@ public class LogManager : MonoBehaviour
         {
             for (int i = 0, len = log.Length; i < len; i++)
             {
+                //スペースを途中で押したら
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    //表示を速くする
+                    isFastPrint = true;
+                }
+
                 var c = log[i];
 
                 text.text += c;

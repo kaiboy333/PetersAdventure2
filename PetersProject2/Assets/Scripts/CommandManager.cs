@@ -50,13 +50,12 @@ public class CommandManager : SingletonMonoBehaviour<CommandManager>
         }
     }
 
-    public CommandPanel MakeCommandPanel(List<string> strs, int row, int col, Vector2 pos, Command command, bool isOnlyPrint, bool isColScroll)
+    public CommandPanel MakeCommandPanel(List<string> strs, int row, int col, Vector2 pos, Command command, bool isOnlyPrint, bool isColScroll, RectTransform parentRect)
     {
         CommandPanel commandPanel = null;
-        var canvasRect = FindObjectOfType<Canvas>().GetComponent<RectTransform>();
 
         //コマンドパネル生成
-        var commandPanelObj = Instantiate(commandPanelPrefab, canvasRect);
+        var commandPanelObj = Instantiate(commandPanelPrefab, parentRect);
         commandPanel = commandPanelObj.GetComponent<CommandPanel>();
         //コマンドパネル初期化
         commandPanel.Init(pos, strs, row, col, isColScroll, isOnlyPrint);
