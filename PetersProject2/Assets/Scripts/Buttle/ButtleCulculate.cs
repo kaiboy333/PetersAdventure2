@@ -3,13 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ButtleCulculate : ICloneable
+public class ButtleCulculate
 {
     private ButtleChara offence = null;
     public List<ButtleChara> defences = null;
     private Thing thing = null;
 
     public int speed { get; private set; }
+
+    //敵が点滅している時間
+    private float blinkTime = 0.8f;
 
     //替えが必要か
     public bool isNeedAlternate
@@ -49,6 +52,13 @@ public class ButtleCulculate : ICloneable
         {
             string useSkillLog = null;
 
+            //mpがあるなら
+            if (offence.mp >= skill.consumeMP)
+            {
+                //mp消費
+                offence.mp -= skill.consumeMP;
+            }
+
             switch (skill.skillType)
             {
                 case Skill.SkillType.Normal:
@@ -64,16 +74,22 @@ public class ButtleCulculate : ICloneable
 
             //ログの追加表示
             yield return logManager.PrintButtleStr(useSkillLog);
-            //少し待つ
-            yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
-
-            //mpがあるなら
-            if (offence.mp >= skill.consumeMP)
+            //敵の攻撃なら
+            if (!offence.isFriend)
             {
-                //mp消費
-                offence.mp -= skill.consumeMP;
+                //画像を点滅(明暗を切り替え)
+                yield return ((EnemyChara)offence).enemyObj.GetComponent<BlinkImage>().BlinkEnemyImage(blinkTime, false);
+                //少し待つ
+                yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL - blinkTime);
             }
             else
+            {
+                //少し待つ
+                yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
+            }
+
+            //mpがないなら
+            if (offence.mp < skill.consumeMP)
             {
                 //ログ
                 string noMPLog = "しかしMPが足りない！";
@@ -156,8 +172,24 @@ public class ButtleCulculate : ICloneable
 
             //ログの追加表示
             yield return logManager.PrintButtleStr(changePointLog);
-            //少し待つ
-            yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
+            if (!defence.isFriend)
+            {
+                //画像を点滅(透明度を切り替え)
+                yield return ((EnemyChara)defence).enemyObj.GetComponent<BlinkImage>().BlinkEnemyImage(blinkTime, true);
+                //死んでしまったら
+                if (defence.isDead)
+                {
+                    //敵の画像を非表示にする
+                    ((EnemyChara)defence).enemyObj.SetActive(false);
+                }
+                //少し待つ
+                yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL - blinkTime);
+            }
+            else
+            {
+                //少し待つ
+                yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
+            }
 
             if (defence.isDead)
             {
