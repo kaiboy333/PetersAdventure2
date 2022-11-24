@@ -106,7 +106,7 @@ public class ButtleManager : MonoBehaviour
         //ログ初期化
         logManager.ResetLog(true);
         //ログ表示
-        yield return logManager.PrintButtleStr("魔物が現れた！");
+        yield return logManager.PrintStr("魔物が現れた！");
 
         yield return new WaitForSeconds(2f);
 
@@ -255,15 +255,15 @@ public class ButtleManager : MonoBehaviour
             {
                 logManager.ResetLog(false);
                 //ログの追加表示
-                yield return logManager.PrintButtleStr("魔物を全滅させた！");
-                yield return logManager.PrintButtleStr("");
-                yield return logManager.PrintButtleStr("");
+                yield return logManager.PrintStr("魔物を全滅させた！");
+                yield return logManager.PrintStr("");
+                yield return logManager.PrintStr("");
                 //スペース押すまで待機
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
                 //ログの追加表示
-                yield return logManager.PrintButtleStr("0の経験値を獲得！");
-                yield return logManager.PrintButtleStr("");
-                yield return logManager.PrintButtleStr("");
+                yield return logManager.PrintStr("?の経験値を獲得！");
+                yield return logManager.PrintStr("");
+                yield return logManager.PrintStr("");
                 //スペース押すまで待機
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
                 //少し待つ
@@ -280,7 +280,7 @@ public class ButtleManager : MonoBehaviour
             {
                 logManager.ResetLog(false);
                 //ログの追加表示
-                yield return logManager.PrintButtleStr("全滅してしまった！");
+                yield return logManager.PrintStr("全滅してしまった！");
                 //スペース押すまで待機
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
                 //少し待つ

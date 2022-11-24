@@ -42,10 +42,10 @@ public class ButtleCulculate
             //終わり
             yield break;
 
-        var offencePoint = 0;
-
         //ログの初期化
         logManager.ResetLog(true);
+
+        var offencePoint = thing.power;
 
         //thingが技なら
         if (thing is Skill skill)
@@ -74,7 +74,7 @@ public class ButtleCulculate
             }
 
             //ログの追加表示
-            yield return logManager.PrintButtleStr(useSkillLog);
+            yield return logManager.PrintStr(useSkillLog);
             //敵の攻撃なら
             if (!offence.isFriend)
             {
@@ -95,21 +95,34 @@ public class ButtleCulculate
                 //ログ
                 string noMPLog = "しかしMPが足りない！";
                 //ログの追加表示
-                yield return logManager.PrintButtleStr(noMPLog);
+                yield return logManager.PrintStr(noMPLog);
                 //少し待つ
                 yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
                 //終わり
                 yield break;
             }
 
-
             switch (skill.skillType)
             {
                 case Skill.SkillType.Magic:
-                    offencePoint = (int)(offence.mtp * thing.power);
+                    if (skill.isCure || skill.isMP)
+                    {
+                        offencePoint += offence.mtp;
+                    }
+                    else
+                    {
+                        offencePoint *= offence.mtp;
+                    }
                     break;
                 default:
-                    offencePoint = (int)(offence.atp + thing.power);
+                    if (skill.isCure || skill.isMP)
+                    {
+                        offencePoint += offence.atp;
+                    }
+                    else
+                    {
+                        offencePoint *= offence.atp;
+                    }
                     break;
             }
         }
@@ -172,7 +185,7 @@ public class ButtleCulculate
             }
 
             //ログの追加表示
-            yield return logManager.PrintButtleStr(changePointLog);
+            yield return logManager.PrintStr(changePointLog);
             if (!defence.isFriend)
             {
                 //画像を点滅(透明度を切り替え)
@@ -206,7 +219,7 @@ public class ButtleCulculate
                 }
 
                 //ログの追加表示
-                yield return logManager.PrintButtleStr(deadlog);
+                yield return logManager.PrintStr(deadlog);
                 //少し待つ
                 yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
             }

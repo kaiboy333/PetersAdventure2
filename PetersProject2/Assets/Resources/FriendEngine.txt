@@ -1,5 +1,5 @@
 #name,hp,mp,atp,mtp,df,speed,professionName
 #skillKey,...
 
-ピーター,100,50,2,2,2,2,偽勇者
-8,9
+ピーター,23,10,2,2,2,2,偽勇者
+8,9,10

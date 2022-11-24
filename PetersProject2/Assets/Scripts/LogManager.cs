@@ -132,7 +132,7 @@ public class LogManager : MonoBehaviour
         {
             var log = logs[i];
 
-            yield return PrintButtleStr(log);
+            yield return PrintStr(log);
 
             //最後ではなく次ページがあるなら
             if ((i + 1) % PRINT_MAX_ROW == 0 && !(i == len - 1))
@@ -174,7 +174,7 @@ public class LogManager : MonoBehaviour
         gameObject.SetActive(true);
     }
 
-    public IEnumerator PrintButtleStr(string log)
+    public IEnumerator PrintStr(string log)
     {
         var allLogCount = text.text.Split('\n').Length - 1 + 1;
 
