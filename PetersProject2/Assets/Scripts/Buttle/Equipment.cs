@@ -10,10 +10,12 @@ public class Equipment : Thing
 
     public Skill useSkill = null;
 
-    public Equipment(string name, int atp, int mtp, int df) : base(name)
+    public Equipment(string name, int atp, int mtp, int df, int skillKey) : base(name)
     {
         this.atp = atp;
         this.mtp = mtp;
         this.df = df;
+        //SkillEngineからskillをセット(ないならnullになる)
+        useSkill = SkillEngine.Instance.Get(skillKey);
     }
 }
