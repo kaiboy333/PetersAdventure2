@@ -210,7 +210,7 @@ public class ButtleManager : MonoBehaviour
             else
             {
                 //ログの追加表示
-                yield return logManager.PrintStr("しかし、現実はそう甘くなかった");
+                yield return logManager.PrintStr("しかし、現実はそう甘くなかった。");
 
                 //待つ
                 yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL * 2);

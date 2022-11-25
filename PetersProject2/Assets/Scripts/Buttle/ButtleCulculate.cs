@@ -45,50 +45,78 @@ public class ButtleCulculate
         //ログの初期化
         logManager.ResetLog(true);
 
-        var offencePoint = thing.power;
-
-        //thingが技なら
-        if (thing is Skill skill)
+        Skill skill = null;
+        if (thing is Skill)
         {
-            string useSkillLog = null;
+            skill = (Skill)thing;
+        }
+        else
+        {
+            skill = ((Equipment)thing).useSkill;
+        }
 
-            bool isUseMP = offence.mp >= skill.consumeMP;
-            //mpがあるなら
-            if (isUseMP)
-            {
-                //mp消費
-                offence.mp -= skill.consumeMP;
-            }
-
+        string useSkillLog = null;
+        //技なら
+        if (thing is Skill)
+        {
             switch (skill.skillType)
             {
                 case Skill.SkillType.Normal:
                     useSkillLog = offence.name + "のこうげき！";
                     break;
                 case Skill.SkillType.Skill:
-                    useSkillLog = offence.name + "は" + skill.name + "を使った！";
+                    useSkillLog = offence.name + "は" + thing.name + "を使った！";
                     break;
                 case Skill.SkillType.Magic:
-                    useSkillLog = offence.name + "は" + skill.name + "を唱えた！";
+                    useSkillLog = offence.name + "は" + thing.name + "を唱えた！";
+                    break;
+                case Skill.SkillType.Item:
+                    useSkillLog = offence.name + "は" + thing.name + "を使った！";
                     break;
             }
+        }
+        //装備なら
+        else if (thing is Equipment)
+        {
+            useSkillLog = offence.name + "は" + thing.name + "を使った！";
+        }
 
-            //ログの追加表示
-            yield return logManager.PrintStr(useSkillLog);
-            //敵の攻撃なら
-            if (!offence.isFriend)
-            {
-                //画像を点滅(明暗を切り替え)
-                yield return ((EnemyChara)offence).enemyObj.GetComponent<BlinkImage>().BlinkEnemyImage(blinkTime, false);
-                //少し待つ
-                yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL - blinkTime);
-            }
-            else
-            {
-                //少し待つ
-                yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
-            }
+        //攻撃実数値
+        var offencePoint = 0f;
+        //MPが使えたか
+        var isUseMP = false;
+        //技があるならMPを消費
+        if (skill != null)
+        {
+            offencePoint = skill.power;
 
+            isUseMP = offence.mp >= skill.consumeMP;
+            //mpがあるなら
+            if (isUseMP)
+            {
+                //mp消費
+                offence.mp -= skill.consumeMP;
+            }
+        }
+        //ログの追加表示
+        yield return logManager.PrintStr(useSkillLog);
+        //敵の攻撃なら
+        if (!offence.isFriend)
+        {
+            //画像を点滅(明暗を切り替え)
+            yield return ((EnemyChara)offence).enemyObj.GetComponent<BlinkImage>().BlinkEnemyImage(blinkTime, false);
+            //少し待つ
+            yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL - blinkTime);
+        }
+        else
+        {
+            //少し待つ
+            yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
+        }
+
+        //技が使えるなら
+        if (skill != null)
+        {
             //mpがないなら
             if (!isUseMP)
             {
@@ -125,104 +153,105 @@ public class ButtleCulculate
                     }
                     break;
             }
-        }
-        else
-        {
 
-        }
-
-        foreach (ButtleChara defence in defences)
-        {
-            //守備が死んでいるなら飛ばす
-            if (defence.isDead)
-                continue;
-
-
-            var defencePoint = thing.isCure ? 1 : defence.df;
-            var actualPoint = defence.ChangeHPORMPValue((int)((float)offencePoint / defencePoint), thing.isCure, thing.isMP);
-            var actualPointABS = Mathf.Abs(actualPoint);
-            var pointName = thing.isMP ? "MP" : "HP";
-
-            //if (thing.isMP)
-            //{
-            //    defence.mp += actualPoint;
-            //}
-            //else
-            //{
-            //    defence.hp += actualPoint;
-            //}
-
-            string changePointLog = null;
-
-            if (thing.isCure)
+            foreach (ButtleChara defence in defences)
             {
-                changePointLog = defence.name + "の" + pointName + "が" + actualPointABS + "回復した！";
-            }
-            else
-            {
-                if (thing.isMP)
+                //守備が死んでいるなら飛ばす
+                if (defence.isDead)
+                    continue;
+
+
+                var defencePoint = skill.isCure ? 1 : defence.df;
+                var actualPoint = defence.ChangeHPORMPValue((int)((float)offencePoint / defencePoint), skill.isCure, skill.isMP);
+                var actualPointABS = Mathf.Abs(actualPoint);
+                var pointName = skill.isMP ? "MP" : "HP";
+
+                string changePointLog = null;
+
+                if (skill.isCure)
                 {
-                    changePointLog = defence.name + "の" + pointName + "が" + actualPointABS + "減った！";
+                    changePointLog = defence.name + "の" + pointName + "が" + actualPointABS + "回復した！";
                 }
                 else
                 {
-                    if (actualPointABS != 0)
+                    if (skill.isMP)
                     {
-                        if (defence.isFriend)
-                        {
-                            changePointLog = defence.name + "は" + actualPointABS + "のダメージを受けた！";
-                        }
-                        else
-                        {
-                            changePointLog = defence.name + "に" + actualPointABS + "のダメージを与えた！";
-                        }
+                        changePointLog = defence.name + "の" + pointName + "が" + actualPointABS + "減った！";
                     }
                     else
                     {
-                        changePointLog = "ミス！" + offence.name + "はダメージを与えられない！";
+                        if (actualPointABS != 0)
+                        {
+                            if (defence.isFriend)
+                            {
+                                changePointLog = defence.name + "は" + actualPointABS + "のダメージを受けた！";
+                            }
+                            else
+                            {
+                                changePointLog = defence.name + "に" + actualPointABS + "のダメージを与えた！";
+                            }
+                        }
+                        else
+                        {
+                            changePointLog = "ミス！" + offence.name + "はダメージを与えられない！";
+                        }
                     }
-                }
-            }
-
-            //ログの追加表示
-            yield return logManager.PrintStr(changePointLog);
-            if (!defence.isFriend)
-            {
-                //画像を点滅(透明度を切り替え)
-                yield return ((EnemyChara)defence).enemyObj.GetComponent<BlinkImage>().BlinkEnemyImage(blinkTime, true);
-                //死んでしまったら
-                if (defence.isDead)
-                {
-                    //敵の画像を非表示にする
-                    ((EnemyChara)defence).enemyObj.SetActive(false);
-                }
-                //少し待つ
-                yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL - blinkTime);
-            }
-            else
-            {
-                //少し待つ
-                yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
-            }
-
-            if (defence.isDead)
-            {
-                string deadlog = null;
-
-                if (defence.isFriend)
-                {
-                    deadlog = defence.name + "は死んでしまった！";
-                }
-                else
-                {
-                    deadlog = defence.name + "を倒した！";
                 }
 
                 //ログの追加表示
-                yield return logManager.PrintStr(deadlog);
-                //少し待つ
-                yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
+                yield return logManager.PrintStr(changePointLog);
+                if (!defence.isFriend)
+                {
+                    //画像を点滅(透明度を切り替え)
+                    yield return ((EnemyChara)defence).enemyObj.GetComponent<BlinkImage>().BlinkEnemyImage(blinkTime, true);
+                    //死んでしまったら
+                    if (defence.isDead)
+                    {
+                        //敵の画像を非表示にする
+                        ((EnemyChara)defence).enemyObj.SetActive(false);
+                    }
+                    //少し待つ
+                    yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL - blinkTime);
+                }
+                else
+                {
+                    //少し待つ
+                    yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
+                }
+
+                if (defence.isDead)
+                {
+                    string deadlog = null;
+
+                    if (defence.isFriend)
+                    {
+                        deadlog = defence.name + "は死んでしまった！";
+                    }
+                    else
+                    {
+                        deadlog = defence.name + "を倒した！";
+                    }
+
+                    //ログの追加表示
+                    yield return logManager.PrintStr(deadlog);
+                    //少し待つ
+                    yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
+                }
             }
+        }
+        else
+        {
+            //ログの追加表示
+            yield return logManager.PrintStr("...");
+            //少し待つ
+            yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL * 2);
+
+            //ログの追加表示
+            yield return logManager.PrintStr("しかし、何も起こらなかった。");
+            //少し待つ
+            yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
+            //終わり
+            yield break;
         }
     }
 

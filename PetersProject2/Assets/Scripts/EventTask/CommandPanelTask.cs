@@ -44,7 +44,7 @@ public class CommandPanelTask : EventTask
         if (isFirstMake)
         {
             //バトルパネル
-            buttleCommandPanel = CommandManager.Instance.MakeCommandPanel(new List<string> { "たたかう", "にげる", "さくせん" }, 3, 1, commandPanelfirstPos, null, false, true, parentRect);
+            buttleCommandPanel = CommandManager.Instance.MakeCommandPanel(new List<string> { "たたかう", "にげる", "さくせん(仮)" }, 3, 1, commandPanelfirstPos, null, false, true, parentRect);
             var buttleCommands = buttleCommandPanel.GetCommands();
             buttleCommand = buttleCommands[0];
 
@@ -85,93 +85,77 @@ public class CommandPanelTask : EventTask
         //thingたち
         List<Thing> things = null;
 
-        //技を取得したいなら
         if (isSkill)
         {
+            //SkillEngineから取得
             things = SkillEngine.Instance.Gets(thingKeys).Cast<Thing>().ToList();
         }
-        //道具なら
         else
         {
-
+            //EquipmentEngineから取得
         }
 
-        if (things != null)
-        {
-            if (things.Count == 0)
-                return;
-
-            //thingの名前たち
-            var thingNames = new List<string>();
-
-            foreach (var thing in things)
+            if (things != null)
             {
-                thingNames.Add(thing.name);
-            }
+                if (things.Count == 0)
+                    return;
 
-            //技パネル表示
-            var thingPanel = CommandManager.Instance.MakeCommandPanel(thingNames, 3, 2, commandPanelfirstPos, parentCommand, false, true, parentRect);
-            //技コマンド取得
-            var thingCommands = thingPanel.GetCommands();
-            for (int i = 0, len = thingCommands.Count; i < len; i++)
-            {
-                var thingCommand = thingCommands[i];
-                var thing = things[i];
+                //thingの名前たち
+                var thingNames = new List<string>();
 
-                List<ButtleChara> targets = null;
-                List<ButtleChara> defences = null;
-
-                //回復なら
-                if (thing.isCure)
+                foreach (var thing in things)
                 {
-                    //ターゲットは味方にする
-                    targets = friendCharas;
+                    thingNames.Add(thing.name);
                 }
+
+                //技パネル表示
+                var thingPanel = CommandManager.Instance.MakeCommandPanel(thingNames, 3, 2, commandPanelfirstPos, parentCommand, false, true, parentRect);
+                //技コマンド取得
+                var thingCommands = thingPanel.GetCommands();
+                for (int i = 0, len = thingCommands.Count; i < len; i++)
+                {
+                    var thingCommand = thingCommands[i];
+                    var thing = things[i];
+
+                    List<ButtleChara> targets = null;
+                    List<ButtleChara> defences = null;
+
+                Skill skill = null;
+                //技なら
+                if (isSkill)
+                {
+                    skill = (Skill)thing;
+                }
+                //装備なら
                 else
                 {
-                    //ターゲットは敵にする
-                    targets = enemyCharas;
+                    skill = ((Equipment)thing).useSkill;
                 }
 
-                //全体こうげきなら
-                if (thing.isAll)
+                if(skill != null)
                 {
-                    defences = targets;
-
-                    //技を選択したら
-                    thingCommand.SetAction(() =>
+                    //回復なら
+                    if (skill.isCure)
                     {
-                        //計算リストに追加
-                        buttleManager.buttleCulculates.Add(new ButtleCulculate(friendChara, defences, thing));
-                        //最後の選択だった場合
-                        if (friendChara == friendCharas[friendCharas.Count - 1])
-                        {
-                            //終わりの合図
-                            isFinished = true;
-                            //コマンドパネルを全削除
-                            CommandManager.Instance.RemoveAllButtleCommandPanel();
-                        }
-                    });
-                }
-                //単体こうげきなら
-                else
-                {
-                    //守備の名前取得
-                    var targetNames = buttleManager.GetCharaName(targets);
-                    //守備パネル表示
-                    var targetPanel = CommandManager.Instance.MakeCommandPanel(targetNames, targetNames.Count, 1, enemySelectPanelPos, thingCommand, false, true, parentRect);
-                    //守備コマンド取得
-                    var targetCommands = targetPanel.GetCommands();
-                    for (int j = 0, len2 = targetNames.Count; j < len2; j++)
+                        //ターゲットは味方にする
+                        targets = friendCharas;
+                    }
+                    else
                     {
-                        var targetCommand = targetCommands[j];
-                        var target = targets[j];
+                        //ターゲットは敵にする
+                        targets = enemyCharas;
+                    }
 
-                        //敵を選択したら
-                        targetCommand.SetAction(() =>
+                    //全体こうげきなら
+                    if (skill.isAll)
+                    {
+                        defences = targets;
+
+                        //技を選択したら
+                        thingCommand.SetAction(() =>
                         {
                             //計算リストに追加
-                            buttleManager.buttleCulculates.Add(new ButtleCulculate(friendChara, new List<ButtleChara>() { target }, thing));
+                            buttleManager.buttleCulculates.Add(new ButtleCulculate(friendChara, defences, thing));
                             //最後の選択だった場合
                             if (friendChara == friendCharas[friendCharas.Count - 1])
                             {
@@ -182,6 +166,54 @@ public class CommandPanelTask : EventTask
                             }
                         });
                     }
+                    //単体こうげきなら
+                    else
+                    {
+                        //守備の名前取得
+                        var targetNames = buttleManager.GetCharaName(targets);
+                        //守備パネル表示
+                        var targetPanel = CommandManager.Instance.MakeCommandPanel(targetNames, targetNames.Count, 1, enemySelectPanelPos, thingCommand, false, true, parentRect);
+                        //守備コマンド取得
+                        var targetCommands = targetPanel.GetCommands();
+                        for (int j = 0, len2 = targetNames.Count; j < len2; j++)
+                        {
+                            var targetCommand = targetCommands[j];
+                            var target = targets[j];
+
+                            //敵を選択したら
+                            targetCommand.SetAction(() =>
+                            {
+                                //計算リストに追加
+                                buttleManager.buttleCulculates.Add(new ButtleCulculate(friendChara, new List<ButtleChara>() { target }, thing));
+                                //最後の選択だった場合
+                                if (friendChara == friendCharas[friendCharas.Count - 1])
+                                {
+                                    //終わりの合図
+                                    isFinished = true;
+                                    //コマンドパネルを全削除
+                                    CommandManager.Instance.RemoveAllButtleCommandPanel();
+                                }
+                            });
+                        }
+                    }
+                }
+                //技がない(装備が使えないもの)なら
+                else
+                {
+                    //技を選択したら
+                    thingCommand.SetAction(() =>
+                    {
+                        //計算リストに追加
+                        buttleManager.buttleCulculates.Add(new ButtleCulculate(friendChara, null, thing));
+                        //最後の選択だった場合
+                        if (friendChara == friendCharas[friendCharas.Count - 1])
+                        {
+                            //終わりの合図
+                            isFinished = true;
+                            //コマンドパネルを全削除
+                            CommandManager.Instance.RemoveAllButtleCommandPanel();
+                        }
+                    });
                 }
             }
         }
