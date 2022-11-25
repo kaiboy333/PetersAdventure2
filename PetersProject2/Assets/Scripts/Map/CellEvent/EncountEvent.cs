@@ -20,6 +20,9 @@ public class EncountEvent : CellEvent
     {
         //base.Start();
 
+        //0~1までにクランプ
+        encountRate = Mathf.Clamp(encountRate, 0f, 1f);
+
         yushaController = FindObjectOfType<YushaController>();
     }
 

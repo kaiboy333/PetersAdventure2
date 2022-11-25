@@ -47,6 +47,17 @@ public class CommandPanelTask : EventTask
             buttleCommandPanel = CommandManager.Instance.MakeCommandPanel(new List<string> { "たたかう", "にげる", "さくせん" }, 3, 1, commandPanelfirstPos, null, false, true, parentRect);
             var buttleCommands = buttleCommandPanel.GetCommands();
             buttleCommand = buttleCommands[0];
+
+            //逃げるを選択したら
+            buttleCommands[1].SetAction(() =>
+            {
+                //逃げようとするboolをtrueに
+                buttleManager.isEscape = true;
+                //終わりの合図
+                isFinished = true;
+                //コマンドパネルを全削除
+                CommandManager.Instance.RemoveAllButtleCommandPanel();
+            });
         }
 
         var commandPanel1 = CommandManager.Instance.MakeCommandPanel(new List<string> { "こうげき", "じゅもん", "とくぎ", "どうぐ" }, 4, 1, commandPanelfirstPos, buttleCommand, false, true, parentRect);

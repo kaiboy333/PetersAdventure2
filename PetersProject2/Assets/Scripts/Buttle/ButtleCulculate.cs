@@ -240,9 +240,4 @@ public class ButtleCulculate
 
         return !isEnemyAllDead;
     }
-
-    public object Clone()
-    {
-        return (ButtleChara)this.MemberwiseClone();
-    }
 }

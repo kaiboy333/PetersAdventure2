@@ -31,6 +31,8 @@ public class ButtleManager : MonoBehaviour
 
     [SerializeField] private RectTransform backGroundRect = null;
 
+    public bool isEscape = false;
+
     // Start is called before the first frame update
     private IEnumerator Start()
     {
@@ -159,6 +161,13 @@ public class ButtleManager : MonoBehaviour
             //コマンドパネル生成、選択が終わるまで進まない
             yield return new CommandPanelTask(this, (FriendChara)alliveFriendChara, isFirstMake, backGroundRect).Event();
         }
+        //逃げようとしているなら
+        if (isEscape)
+        {
+            //逃げるのを試みる
+            yield return TryEscape();
+            isEscape = false;
+        }
         //敵の技を決める
         DesideEnemyTurn();
         //戦闘計算の並び替え
@@ -167,10 +176,56 @@ public class ButtleManager : MonoBehaviour
         yield return ButtleCulculate();
     }
 
+    private IEnumerator TryEscape()
+    {
+        //逃げたいなら
+        if (isEscape)
+        {
+            logManager.ResetLog(true);
+
+            //ログの追加表示
+            yield return logManager.PrintStr("逃げ出そうと試みた！");
+
+            //待つ
+            yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL * 2);
+
+            //逃げ切れるなら
+            if (CanEscape())
+            {
+                //ログの追加表示
+                yield return logManager.PrintStr("うまく逃げ切れた！");
+
+                //待つ
+                yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL * 2);
+
+                //画面を暗くする
+                var alphaManager = new AlphaManager(blackPanelImage, false);
+                yield return alphaManager.Event();
+
+                //シーン移動
+                SceneManager.LoadScene("World");
+
+            }
+            //逃げ切れないなら
+            else
+            {
+                //ログの追加表示
+                yield return logManager.PrintStr("しかし、現実はそう甘くなかった");
+
+                //待つ
+                yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL * 2);
+
+                //終わり
+                yield break;
+            }
+
+        }
+    }
+
     //敵の技を決める
     public void DesideEnemyTurn()
     {
-        foreach(var enemyChara in GetAlliveChara(enemyCharas))
+        foreach (var enemyChara in GetAlliveChara(enemyCharas))
         {
             //技リストを取得
             var skillKeys = new List<int>();
@@ -369,5 +424,33 @@ public class ButtleManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    //逃げ切れるか
+    private bool CanEscape()
+    {
+        var friendSpeed = 0f;
+        var enemySpeed = 0f;
+
+        //味方の素早さの平均値
+        foreach (var friendChara in GetAlliveChara(friendCharas))
+        {
+            friendSpeed += friendChara.speed;
+        }
+        friendSpeed /= friendCharas.Count;
+
+        //相手の素早さの平均値
+        foreach (var enemyChara in GetAlliveChara(enemyCharas))
+        {
+            enemySpeed += enemyChara.speed;
+        }
+        enemySpeed /= enemyCharas.Count;
+
+        var escapeRate = Mathf.Clamp(friendSpeed / (2 * enemySpeed), 0, 1);
+
+        var rate = Random.Range(0f, 1f);
+
+        //逃走率以下なら逃げ切れる
+        return rate <= escapeRate;
     }
 }
