@@ -1,0 +1,27 @@
+#Skill,name,power,isCure,isAll,isMP,consumeMP
+#Equipment,name,atp,mtp,df,useSkillKey
+
+#Normal 0~0
+Normal,こうげき,1,false,false,false,0
+
+#Skill 1~8
+Skill,ひっつく,2,false,false,false,0
+Skill,癒しの歌声,2,true,true,false,10
+Skill,突き,2,false,false,false,2
+Skill,吸い取る踊り,2,false,false,true,4
+Skill,臭い息,1,false,true,false,0
+Skill,風起こし,4,false,true,false,8
+Skill,渾身斬り,2,false,false,false,1
+Skill,回転斬り,1,false,true,false,2
+
+#Magic 9~10
+Magic,チェル,3,false,false,false,3
+Magic,ポア,30,true,false,false,3
+
+#Item 11~11
+Item,魔法の絆創膏,20,true,false,false,0
+
+#Equipment 12~14
+Equipment,コスプレの剣,1,0,0,-1
+Equipment,コスプレの服,0,0,2,-1
+Equipment,コスプレの盾,0,0,1,-1

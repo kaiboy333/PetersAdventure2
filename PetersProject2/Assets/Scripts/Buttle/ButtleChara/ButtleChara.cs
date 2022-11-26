@@ -32,6 +32,9 @@ public abstract class ButtleChara : ICloneable
     //通常攻撃
     public int normalSkillKey = 0;
 
+    //アイテム
+    public List<Thing> items = new List<Thing>();
+
     public ButtleChara(string name, int hp, int mp, int atp, int mtp, int df, int speed)
     {
         this.hp = hp;

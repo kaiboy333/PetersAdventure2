@@ -1,3 +1,0 @@
-#name,atp,mtp,df,skillKey
-
-きのぼう,2,0,0,-1

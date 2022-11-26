@@ -19,6 +19,9 @@ public class ButtleCulculate
     {
         get
         {
+            if (defences == null)
+                return false;
+
             if (defences.Count != 1)
                 return false;
 
@@ -52,7 +55,7 @@ public class ButtleCulculate
         }
         else
         {
-            skill = ((Equipment)thing).useSkill;
+            skill = (Skill)ThingEngine.Instance.Get(((Equipment)thing).useSkillKey);
         }
 
         string useSkillLog = null;
@@ -71,6 +74,8 @@ public class ButtleCulculate
                     useSkillLog = offence.name + "は" + thing.name + "を唱えた！";
                     break;
                 case Skill.SkillType.Item:
+                    //アイテムを消費
+                    offence.items.Remove(skill);
                     useSkillLog = offence.name + "は" + thing.name + "を使った！";
                     break;
             }
@@ -257,8 +262,12 @@ public class ButtleCulculate
 
     private bool CanCulculate()
     {
+
         if (offence.isDead)
             return false;
+
+        if (defences == null)
+            return true;
 
         bool isEnemyAllDead = true;
 

@@ -64,72 +64,61 @@ public class CommandPanelTask : EventTask
         var commands1 = commandPanel1.GetCommands();
 
         //こうげきを選択したら
-        MakeThingPanel(new List<int>() { friendChara.normalSkillKey }, commands1[0], true);
+        MakeThingPanel(ThingEngine.Instance.Gets(new List<int>() { friendChara.normalSkillKey }), commands1[0]);
 
         //じゅもんを選択したら
-        MakeThingPanel(friendChara.magicKeys, commands1[1], true);
+        MakeThingPanel(ThingEngine.Instance.Gets(friendChara.magicKeys), commands1[1]);
 
         //とくぎを選択したら
-        MakeThingPanel(friendChara.skillKeys, commands1[2], true);
+        MakeThingPanel(ThingEngine.Instance.Gets(friendChara.skillKeys), commands1[2]);
 
         //道具を選択したら
+        MakeThingPanel(friendChara.items, commands1[3]);
     }
 
-    public void MakeThingPanel(List<int> thingKeys, Command parentCommand, bool isSkill)
+    public void MakeThingPanel(List<Thing> things, Command parentCommand)
     {
         //生きている味方
         var friendCharas = buttleManager.GetAlliveChara(ButtleManager.friendCharas);
         //生きている敵
         var enemyCharas = buttleManager.GetAlliveChara(ButtleManager.enemyCharas);
 
-        //thingたち
-        List<Thing> things = null;
 
-        if (isSkill)
+        if (things != null)
         {
-            //SkillEngineから取得
-            things = SkillEngine.Instance.Gets(thingKeys).Cast<Thing>().ToList();
-        }
-        else
-        {
-            //EquipmentEngineから取得
-        }
+            if (things.Count == 0)
+                return;
 
-            if (things != null)
+            //thingの名前たち
+            var thingNames = new List<string>();
+
+            foreach (var thing in things)
             {
-                if (things.Count == 0)
-                    return;
+                thingNames.Add(thing.name);
+            }
 
-                //thingの名前たち
-                var thingNames = new List<string>();
+            //技パネル表示
+            var thingPanel = CommandManager.Instance.MakeCommandPanel(thingNames, 3, 2, commandPanelfirstPos, parentCommand, false, true, parentRect);
+            //技コマンド取得
+            var thingCommands = thingPanel.GetCommands();
+            for (int i = 0, len = thingCommands.Count; i < len; i++)
+            {
+                var thingCommand = thingCommands[i];
+                var thing = things[i];
 
-                foreach (var thing in things)
-                {
-                    thingNames.Add(thing.name);
-                }
-
-                //技パネル表示
-                var thingPanel = CommandManager.Instance.MakeCommandPanel(thingNames, 3, 2, commandPanelfirstPos, parentCommand, false, true, parentRect);
-                //技コマンド取得
-                var thingCommands = thingPanel.GetCommands();
-                for (int i = 0, len = thingCommands.Count; i < len; i++)
-                {
-                    var thingCommand = thingCommands[i];
-                    var thing = things[i];
-
-                    List<ButtleChara> targets = null;
-                    List<ButtleChara> defences = null;
+                List<ButtleChara> targets = null;
+                List<ButtleChara> defences = null;
 
                 Skill skill = null;
                 //技なら
-                if (isSkill)
+                if (thing is Skill)
                 {
                     skill = (Skill)thing;
                 }
                 //装備なら
                 else
                 {
-                    skill = ((Equipment)thing).useSkill;
+                    skill = (Skill)ThingEngine.Instance.Get(((Equipment)thing).useSkillKey);
                 }
 
                 if(skill != null)

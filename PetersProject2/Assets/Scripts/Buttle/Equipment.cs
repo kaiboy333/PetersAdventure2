@@ -8,14 +8,13 @@ public class Equipment : Thing
     public int mtp = 0; //MagicAttackPower
     public int df = 0;  //Defence
 
-    public Skill useSkill = null;
+    public int useSkillKey = 0;
 
-    public Equipment(string name, int atp, int mtp, int df, int skillKey) : base(name)
+    public Equipment(string name, int atp, int mtp, int df, int useSkillKey) : base(name)
     {
         this.atp = atp;
         this.mtp = mtp;
         this.df = df;
-        //SkillEngineからskillをセット(ないならnullになる)
-        useSkill = SkillEngine.Instance.Get(skillKey);
+        this.useSkillKey = useSkillKey;
     }
 }

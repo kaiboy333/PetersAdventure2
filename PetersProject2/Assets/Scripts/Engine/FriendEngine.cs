@@ -6,6 +6,8 @@ public class FriendEngine : Engine<FriendChara>
 {
     protected override string loadTextPath => "FriendEngine";
 
+    private const int READ_MAX_ROW = 2;
+
     public override FriendChara CloneValue(FriendChara t)
     {
         return (FriendChara)t.Clone();
@@ -26,7 +28,7 @@ public class FriendEngine : Engine<FriendChara>
 
             var strs_t = str.Split(',');
 
-            if (i % 2 == 0)
+            if (i % READ_MAX_ROW == 0)
             {
                 var name = strs_t[0];
                 var hp = int.Parse(strs_t[1]);
@@ -39,27 +41,38 @@ public class FriendEngine : Engine<FriendChara>
 
                 var friend = new FriendChara(name, hp, mp, atp, mtp, df, speed, professionName);
 
-                dictionary.Add(i / 2, friend);
+                dictionary.Add(i / READ_MAX_ROW, friend);
             }
-            else
+            else if(i % READ_MAX_ROW == 1)
             {
-                var friend = dictionary[i / 2];
+                var friend = dictionary[i / READ_MAX_ROW];
 
                 foreach (var keyStr in strs_t)
                 {
                     var key = int.Parse(keyStr);
-                    var skill = SkillEngine.Instance.Get(key);
-                    switch (skill.skillType)
+                    var thing = ThingEngine.Instance.Get(key);
+                    if(thing is Skill)
                     {
-                        case Skill.SkillType.Normal:
-                            friend.normalSkillKey = key;
-                            break;
-                        case Skill.SkillType.Skill:
-                            friend.skillKeys.Add(key);
-                            break;
-                        case Skill.SkillType.Magic:
-                            friend.magicKeys.Add(key);
-                            break;
+                        var skill = (Skill)thing;
+                        switch (skill.skillType)
+                        {
+                            case Skill.SkillType.Normal:
+                                friend.normalSkillKey = key;
+                                break;
+                            case Skill.SkillType.Skill:
+                                friend.skillKeys.Add(key);
+                                break;
+                            case Skill.SkillType.Magic:
+                                friend.magicKeys.Add(key);
+                                break;
+                            case Skill.SkillType.Item:
+                                friend.items.Add(skill);
+                                break;
+                        }
+                    }
+                    else if (thing is Equipment)
+                    {
+                        friend.items.Add(thing);
                     }
                 }
 

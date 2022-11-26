@@ -1,5 +1,6 @@
 #name,hp,mp,atp,mtp,df,speed,professionName
 #skillKey,...
+#equipmentKey,...
 
 ピーター,23,10,2,2,2,2,偽勇者
-8,9,10
+7,8,11,12,13,14

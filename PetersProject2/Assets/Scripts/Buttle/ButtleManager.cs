@@ -235,7 +235,7 @@ public class ButtleManager : MonoBehaviour
 
             //技リストからランダムに選ぶ
             var skillKey = skillKeys[Random.Range(0, skillKeys.Count)];
-            var skill = SkillEngine.Instance.Get(skillKey);
+            var skill = (Skill)ThingEngine.Instance.Get(skillKey);
 
             List<ButtleChara> defences = null;
 
@@ -393,13 +393,13 @@ public class ButtleManager : MonoBehaviour
         return charaNames;
     }
 
-    public List<string> GetSkillNames(List<int> keys)
+    public List<string> GetThingNames(List<int> keys)
     {
         var skillNames = new List<string>();
 
         foreach (var key in keys)
         {
-            skillNames.Add(SkillEngine.Instance.Get(key).name);
+            skillNames.Add(ThingEngine.Instance.Get(key).name);
         }
 
         return skillNames;

@@ -515,7 +515,7 @@ GameObject:
   - component: {fileID: 1270925443}
   - component: {fileID: 1270925444}
   m_Layer: 0
-  m_Name: SkillEngine
+  m_Name: ThingEngine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -712,6 +712,7 @@ MonoBehaviour:
   logManager: {fileID: 3606992267436260383}
   enemyPrefab: {fileID: 5904941546438647070, guid: 88992581e393d496984cc1f39f5bc39e, type: 3}
   backGroundRect: {fileID: 1920515084}
+  isEscape: 0
 --- !u!224 &1274971297200335801 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2575786275968620455, guid: 66e8199cd71c34f4ba8eab2b68295b75, type: 3}

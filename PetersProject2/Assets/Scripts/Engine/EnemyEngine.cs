@@ -6,6 +6,8 @@ public class EnemyEngine : Engine<EnemyChara>
 {
     protected override string loadTextPath => "EnemyEngine";
 
+    private const int READ_MAX_ROW = 2;
+
     public override EnemyChara CloneValue(EnemyChara t)
     {
         return (EnemyChara)t.Clone();
@@ -26,7 +28,7 @@ public class EnemyEngine : Engine<EnemyChara>
 
             var strs_t = str.Split(',');
 
-            if(i % 2 == 0)
+            if(i % READ_MAX_ROW == 0)
             {
                 var name = strs_t[0];
                 var hp = int.Parse(strs_t[1]);
@@ -42,30 +44,40 @@ public class EnemyEngine : Engine<EnemyChara>
 
                 var enemy = new EnemyChara(name, hp, mp, atp, mtp, df, speed, tribeName, spritePath, width, height);
 
-                dictionary.Add(i / 2, enemy);
+                dictionary.Add(i / READ_MAX_ROW, enemy);
             }
-            else
+            else if(i % READ_MAX_ROW == 1)
             {
-                var enemy = dictionary[i / 2];
+                var enemy = dictionary[i / READ_MAX_ROW];
 
                 foreach (var keyStr in strs_t)
                 {
                     var key = int.Parse(keyStr);
-                    var skill = SkillEngine.Instance.Get(key);
-                    switch (skill.skillType)
+                    var thing = ThingEngine.Instance.Get(key);
+                    if (thing is Skill)
                     {
-                        case Skill.SkillType.Normal:
-                            enemy.normalSkillKey = key;
-                            break;
-                        case Skill.SkillType.Skill:
-                            enemy.skillKeys.Add(key);
-                            break;
-                        case Skill.SkillType.Magic:
-                            enemy.magicKeys.Add(key);
-                            break;
+                        var skill = (Skill)thing;
+                        switch (skill.skillType)
+                        {
+                            case Skill.SkillType.Normal:
+                                enemy.normalSkillKey = key;
+                                break;
+                            case Skill.SkillType.Skill:
+                                enemy.skillKeys.Add(key);
+                                break;
+                            case Skill.SkillType.Magic:
+                                enemy.magicKeys.Add(key);
+                                break;
+                            case Skill.SkillType.Item:
+                                enemy.items.Add(skill);
+                                break;
+                        }
+                    }
+                    else if (thing is Equipment)
+                    {
+                        enemy.items.Add(thing);
                     }
                 }
-
             }
 
             i++;
