@@ -17,7 +17,7 @@ public abstract class CharaController : MonoBehaviour
 
     protected Vector2 targetPos;
 
-    protected bool isMoving = false;
+    public bool isMoving { get; protected set; }
 
     protected Key key = Key.NONE;
 

@@ -5,7 +5,7 @@ using System;
 
 public class CommandManager : SingletonMonoBehaviour<CommandManager>
 {
-    private CommandPanel nowCommandPanel = null;
+    public CommandPanel nowCommandPanel { get; private set; }
     [SerializeField] private GameObject commandPanelPrefab;
 
     protected override bool dontDestroyOnLoad => true;
@@ -21,6 +21,11 @@ public class CommandManager : SingletonMonoBehaviour<CommandManager>
     {
         if (nowCommandPanel)
         {
+            //非アクティブなら
+            if (!nowCommandPanel.gameObject.activeInHierarchy)
+                //終わり
+                return;
+
             //矢印を動かす
             nowCommandPanel.MoveArrow();
 

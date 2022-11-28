@@ -49,6 +49,19 @@ public class CommandPanel : MonoBehaviour
         arrowWidth = arrowPrefabRect.sizeDelta.x;
     }
 
+    //非アクティブになったら
+    private void OnDisable()
+    {
+        //番号を0にして
+        nowNo = 0;
+        if (arrowRect)
+        {
+            //矢印を移動
+            //指定のコマンドの左に設定
+            arrowRect.anchoredPosition = commands[nowNo].GetComponent<RectTransform>().anchoredPosition - Vector2.right * arrowWidth;
+        }
+    }
+
     public void MoveArrow()
     {
         //表示だけなら終わり
