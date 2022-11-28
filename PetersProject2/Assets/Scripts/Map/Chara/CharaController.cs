@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public abstract class CharaController : MonoBehaviour
 {
@@ -21,9 +22,13 @@ public abstract class CharaController : MonoBehaviour
 
     protected Key key = Key.NONE;
 
-    public static bool canMove = true;
+    //ログとコマンドパネルが見えないかつ、ブラックパネルのアルファ値が0なら
+    public bool canMove { get { return !logManager.gameObject.activeInHierarchy && !CommandManager.Instance.nowCommandPanel && blackPanelImage.color.a == 0; } }
     //当たり判定に使う球の半径
     protected float sphereRadious = 0;
+
+    private LogManager logManager = null;
+    [SerializeField] private Image blackPanelImage = null;
 
     public enum Key
     {
@@ -32,6 +37,11 @@ public abstract class CharaController : MonoBehaviour
         UP,
         DOWN,
         NONE,
+    }
+
+    private void Awake()
+    {
+        logManager = FindObjectOfType<LogManager>();
     }
 
     protected virtual void Start()
@@ -123,7 +133,7 @@ public abstract class CharaController : MonoBehaviour
         }
     }
 
-    protected Vector2 GetNextTargetPos(Vector2 direction)
+    public Vector2 GetNextTargetPos(Vector2 direction)
     {
         return (Vector2)transform.position + direction * moveDistance;
     }

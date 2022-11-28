@@ -44,7 +44,7 @@ public class CommandPanelTask : EventTask
         if (isFirstMake)
         {
             //バトルパネル
-            buttleCommandPanel = CommandManager.Instance.MakeCommandPanel(new List<string> { "たたかう", "にげる", "さくせん" }, 3, 1, commandPanelfirstPos, null, false, true, parentRect, 4);
+            buttleCommandPanel = CommandManager.Instance.MakeCommandPanel(new List<string> { "たたかう", "にげる", "さくせん" }, 3, 1, commandPanelfirstPos, null, false, true, parentRect);
             var buttleCommands = buttleCommandPanel.GetCommands();
             buttleCommand = buttleCommands[0];
 
@@ -79,9 +79,9 @@ public class CommandPanelTask : EventTask
     public void MakeThingPanel(List<Thing> things, Command parentCommand)
     {
         //生きている味方
-        var friendCharas = buttleManager.GetAlliveChara(ButtleManager.friendCharas);
+        var friendCharas = ButtleManager.GetAlliveChara(ButtleManager.friendCharas);
         //生きている敵
-        var enemyCharas = buttleManager.GetAlliveChara(ButtleManager.enemyCharas);
+        var enemyCharas = ButtleManager.GetAlliveChara(ButtleManager.enemyCharas);
 
 
         if (things != null)
@@ -159,7 +159,7 @@ public class CommandPanelTask : EventTask
                     else
                     {
                         //守備の名前取得
-                        var targetNames = buttleManager.GetCharaName(targets);
+                        var targetNames = ButtleManager.GetCharaName(targets);
                         //守備パネル表示
                         var targetPanel = CommandManager.Instance.MakeCommandPanel(targetNames, targetNames.Count, 1, enemySelectPanelPos, thingCommand, false, true, parentRect);
                         //守備コマンド取得

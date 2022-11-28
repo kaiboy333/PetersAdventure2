@@ -32,9 +32,6 @@ public class EncountEvent : CellEvent
         //遭遇するなら
         if (parcent <= encountRate)
         {
-            //動かないようにする
-            CharaController.canMove = false;
-
             //プレイヤーの初期位置を記憶
             YushaController.firstPos = yushaController.gameObject.transform.position;
 
@@ -84,9 +81,6 @@ public class EncountEvent : CellEvent
             //戦闘へ転換する演出をする
             var alphaManager = new AlphaManager(blackPanelImage, false);
             yield return alphaManager.Event();
-
-            //動けるようにする
-            CharaController.canMove = true;
 
             //シーン移動
             //バトルシーンへ

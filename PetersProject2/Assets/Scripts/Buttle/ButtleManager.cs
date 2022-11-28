@@ -19,7 +19,7 @@ public class ButtleManager : MonoBehaviour
     private bool isFinished = false;
 
     //LogManager
-    [SerializeField] private LogManager logManager = null;
+    private LogManager logManager = null;
 
     //バトルログのインターバル
     public const float BUTTLE_LOG_INTERVAL = 1;
@@ -31,13 +31,15 @@ public class ButtleManager : MonoBehaviour
 
     [SerializeField] private RectTransform backGroundRect = null;
 
-    public bool isEscape = false;
+    [HideInInspector] public bool isEscape = false;
 
     // Start is called before the first frame update
     private IEnumerator Start()
     {
+        logManager = FindObjectOfType<LogManager>();
+
         //味方がいないなら
-        if(friendCharas == null)
+        if (friendCharas == null)
         {
             //味方生成
             friendCharas = new List<ButtleChara>() { FriendEngine.Instance.Get(0) };
@@ -366,7 +368,7 @@ public class ButtleManager : MonoBehaviour
         isButtle = false;
     }
 
-    public List<ButtleChara> GetAlliveChara(List<ButtleChara> buttleCharas)
+    public static List<ButtleChara> GetAlliveChara(List<ButtleChara> buttleCharas)
     {
         var alliveCharas = new List<ButtleChara>();
 
@@ -381,7 +383,7 @@ public class ButtleManager : MonoBehaviour
         return alliveCharas;
     }
 
-    public List<string> GetCharaName(List<ButtleChara> buttleCharas)
+    public static List<string> GetCharaName(List<ButtleChara> buttleCharas)
     {
         var charaNames = new List<string>();
 
@@ -393,7 +395,7 @@ public class ButtleManager : MonoBehaviour
         return charaNames;
     }
 
-    public List<string> GetThingNames(List<int> keys)
+    public static  List<string> GetThingNames(List<int> keys)
     {
         var skillNames = new List<string>();
 

@@ -25,6 +25,7 @@ public class LogManager : MonoBehaviour
 
     //表示中か
     public bool isPrinting { get; private set; }
+
     //private bool isLastPrint = false;
 
     //private bool isMoving = false;
@@ -80,49 +81,7 @@ public class LogManager : MonoBehaviour
                 isFastPrint = true;
             }
         }
-
-        ////スペースキーを押したら
-        //if (Input.GetKeyDown(KeyCode.Space) && !isAutoScroll)
-        //{
-        //    //表示中ではないなら
-        //    if (!isPrinting)
-        //    {
-        //        //最後の表示だったなら
-        //        if (isLastPrint)
-        //        {
-        //            FinishAllPrint();
-        //        }
-        //        else
-        //        {
-        //            //列を表示分ずらす
-        //            row += PRINT_MAX_ROW;
-
-        //            //スクロールを行う
-        //            StartCoroutine(Scroll());
-
-        //            //表示
-        //            StartCoroutine(PrintStr(logEvent.logs));
-        //        }
-        //    }
-        //    //表示中なら
-        //    else
-        //    {
-        //        //表示を高速にする
-        //        isFastPrint = true;
-        //    }
-        //}
     }
-
-    //public void SetLogEvent(LogEvent logEvent)
-    //{
-    //    this.logEvent = logEvent;
-
-    //    //初期化
-    //    ResetLog(false);
-
-    //    //表示
-    //    StartCoroutine(PrintLog());
-    //}
 
     public IEnumerator PrintLog(List<string> logs)
     {

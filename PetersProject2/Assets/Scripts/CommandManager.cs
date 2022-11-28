@@ -10,6 +10,8 @@ public class CommandManager : SingletonMonoBehaviour<CommandManager>
 
     protected override bool dontDestroyOnLoad => true;
 
+    //private LogManager logManager = null;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,10 +23,13 @@ public class CommandManager : SingletonMonoBehaviour<CommandManager>
     {
         if (nowCommandPanel)
         {
-            //非アクティブなら
-            if (!nowCommandPanel.gameObject.activeInHierarchy)
+            //コマンドパネルがnullなら
+            if (!nowCommandPanel)
                 //終わり
                 return;
+            ////ログが表示されているなら
+            //if (logManager.gameObject.activeInHierarchy)
+            //    return;
 
             //矢印を動かす
             nowCommandPanel.MoveArrow();
@@ -91,7 +96,7 @@ public class CommandManager : SingletonMonoBehaviour<CommandManager>
                 //見えるようにする
                 commandPanel.gameObject.SetActive(true);
                 //操作するパネルを今のにする
-                this.nowCommandPanel = commandPanel;
+                nowCommandPanel = commandPanel;
             });
         }
         else
@@ -99,7 +104,7 @@ public class CommandManager : SingletonMonoBehaviour<CommandManager>
             //見えるようにする
             commandPanel.gameObject.SetActive(true);
             //操作するパネルを今のにする
-            this.nowCommandPanel = commandPanel;
+            nowCommandPanel = commandPanel;
         }
 
         return commandPanel;

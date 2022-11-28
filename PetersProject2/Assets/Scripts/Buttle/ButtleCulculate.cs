@@ -38,15 +38,21 @@ public class ButtleCulculate
         this.speed = offence.speed;
     }
 
-    public IEnumerator Culculate(LogManager logManager)
+    public IEnumerator Culculate(LogManager logManager, bool isButttle = true)
     {
         //計算できない状態なら
         if (!CanCulculate())
             //終わり
             yield break;
 
+        float logInterVal = 0;
+        if (isButttle)
+        {
+            logInterVal = ButtleManager.BUTTLE_LOG_INTERVAL;
+        }
+
         //ログの初期化
-        logManager.ResetLog(true);
+        logManager.ResetLog(isButttle);
 
         Skill skill = null;
         if (thing is Skill)
@@ -55,7 +61,12 @@ public class ButtleCulculate
         }
         else
         {
-            skill = (Skill)ThingEngine.Instance.Get(((Equipment)thing).useSkillKey);
+            //バトルなら
+            if (isButttle)
+            {
+                //技を取得
+                skill = (Skill)ThingEngine.Instance.Get(((Equipment)thing).useSkillKey);
+            }
         }
 
         string useSkillLog = null;
@@ -111,12 +122,12 @@ public class ButtleCulculate
             //画像を点滅(明暗を切り替え)
             yield return ((EnemyChara)offence).enemyObj.GetComponent<BlinkImage>().BlinkEnemyImage(blinkTime, false);
             //少し待つ
-            yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL - blinkTime);
+            yield return new WaitForSeconds(logInterVal - blinkTime);
         }
         else
         {
             //少し待つ
-            yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
+            yield return new WaitForSeconds(logInterVal);
         }
 
         //技が使えるなら
@@ -130,7 +141,7 @@ public class ButtleCulculate
                 //ログの追加表示
                 yield return logManager.PrintStr(noMPLog);
                 //少し待つ
-                yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
+                yield return new WaitForSeconds(logInterVal);
                 //終わり
                 yield break;
             }
@@ -216,12 +227,12 @@ public class ButtleCulculate
                         ((EnemyChara)defence).enemyObj.SetActive(false);
                     }
                     //少し待つ
-                    yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL - blinkTime);
+                    yield return new WaitForSeconds(logInterVal - blinkTime);
                 }
                 else
                 {
                     //少し待つ
-                    yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
+                    yield return new WaitForSeconds(logInterVal);
                 }
 
                 if (defence.isDead)
@@ -240,7 +251,7 @@ public class ButtleCulculate
                     //ログの追加表示
                     yield return logManager.PrintStr(deadlog);
                     //少し待つ
-                    yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
+                    yield return new WaitForSeconds(logInterVal);
                 }
             }
         }
@@ -249,12 +260,12 @@ public class ButtleCulculate
             //ログの追加表示
             yield return logManager.PrintStr("...");
             //少し待つ
-            yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL * 2);
+            yield return new WaitForSeconds(logInterVal * 2);
 
             //ログの追加表示
             yield return logManager.PrintStr("しかし、何も起こらなかった。");
             //少し待つ
-            yield return new WaitForSeconds(ButtleManager.BUTTLE_LOG_INTERVAL);
+            yield return new WaitForSeconds(logInterVal);
             //終わり
             yield break;
         }

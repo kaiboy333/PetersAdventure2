@@ -20,9 +20,6 @@ public class TalkEvent : CellEvent
 
     public override IEnumerator CallEvent()
     {
-        //動かないようにする
-        CharaController.canMove = false;
-
         if (logManager)
         {
             //改行で分ける
@@ -36,8 +33,5 @@ public class TalkEvent : CellEvent
 
             yield return logManager.PrintLog(logs);
         }
-
-        //動けるようにする
-        CharaController.canMove = true;
     }
 }

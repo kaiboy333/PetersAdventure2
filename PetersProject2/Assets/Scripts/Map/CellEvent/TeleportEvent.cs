@@ -23,9 +23,6 @@ public class TeleportEvent : CellEvent
 
     public override IEnumerator CallEvent()
     {
-        //動かないようにする
-        CharaController.canMove = false;
-
         if (blackPanelImage)
         {
             //指定位置に移動するように設定
@@ -33,8 +30,6 @@ public class TeleportEvent : CellEvent
             //暗くする
             var alphaManager = new AlphaManager(blackPanelImage, false);
             yield return alphaManager.Event();
-            //動けるようにする
-            CharaController.canMove = true;
             //シーン移動
             SceneManager.LoadScene(sceneName);
         }

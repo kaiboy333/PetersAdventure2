@@ -10,7 +10,7 @@ public class YushaController : CharaController
     public static Vector2 firstPos;
 
     //向いている方向
-    private Vector2 direction;
+    public Vector2 direction { get; private set; }
 
     // Start is called before the first frame update
     protected override void Start()
@@ -99,7 +99,7 @@ public class YushaController : CharaController
         }
     }
 
-    private CellEvent GetCellEvent(Vector2 targetPos, CellEvent.CellType cellType)
+    public CellEvent GetCellEvent(Vector2 targetPos, CellEvent.CellType cellType)
     {
         var cellEvents = new List<CellEvent>();
         var hitColliders = Physics2D.OverlapCircleAll(targetPos, moveDistance / 4.0f, cellMask);
