@@ -44,7 +44,7 @@ public class CommandPanelTask : EventTask
         if (isFirstMake)
         {
             //バトルパネル
-            buttleCommandPanel = CommandManager.Instance.MakeCommandPanel(new List<string> { "たたかう", "にげる", "さくせん(仮)" }, 3, 1, commandPanelfirstPos, null, false, true, parentRect);
+            buttleCommandPanel = CommandManager.Instance.MakeCommandPanel(new List<string> { "たたかう", "にげる", "さくせん" }, 3, 1, commandPanelfirstPos, null, false, true, parentRect, 4);
             var buttleCommands = buttleCommandPanel.GetCommands();
             buttleCommand = buttleCommands[0];
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CommandPanel : MonoBehaviour
 {
@@ -43,15 +44,9 @@ public class CommandPanel : MonoBehaviour
 
     private void Awake()
     {
-        //コマンドの幅高さ取得
-        var commandRect = commandPrefab.GetComponent<RectTransform>();
-        commandSizeDelta = new Vector2(commandRect.sizeDelta.x, commandRect.sizeDelta.y);
         //矢印の横幅取得
-        var arrowRect = arrowPrefab.GetComponent<RectTransform>();
-        arrowWidth = arrowRect.sizeDelta.x;
-
-        //一個動く距離は余白*2とコマンドの高さを足した値
-        scrollDistance = BLANK * 2 + commandSizeDelta.y;
+        var arrowPrefabRect = arrowPrefab.GetComponent<RectTransform>();
+        arrowWidth = arrowPrefabRect.sizeDelta.x;
     }
 
     public void MoveArrow()
@@ -199,6 +194,7 @@ public class CommandPanel : MonoBehaviour
         //maxPage = length / (row * col);
         //今回追加したやつの番号を取得
         var nowNo = length - 1;
+
         //位置調整(Contentを基準に移動)
         var commandRect = command.gameObject.GetComponent<RectTransform>();
         //var a = nowNo % (row * col);
@@ -208,6 +204,9 @@ public class CommandPanel : MonoBehaviour
         var deltaHeight = (h + 1) * BLANK + h * (commandSizeDelta.y + BLANK);
 
         commandRect.anchoredPosition = new Vector2(deltaWidth, -deltaHeight);
+
+        //幅高さ調整
+        commandRect.sizeDelta = commandSizeDelta;
     }
 
     //public void RemoveCommand(Command command)
@@ -215,7 +214,7 @@ public class CommandPanel : MonoBehaviour
     //    commands.Remove(command.Name);
     //}
 
-    public void Init(Vector2 framePos, List<string> strs, int printRow, int printCol, bool isColScroll, bool isOnlyPrint)
+    public void Init(Vector2 framePos, List<string> strs, int printRow, int printCol, bool isColScroll, bool isOnlyPrint, int maxStrLength)
     {
         var lastNo = strs.Count - 1;
         this.row = (lastNo / printCol) + 1;
@@ -230,6 +229,24 @@ public class CommandPanel : MonoBehaviour
             //矢印の幅なしにする
             arrowWidth = 0;
         }
+
+        //最大文字数が0なら
+        if(maxStrLength == 0)
+        {
+            //最大文字数を取得する
+            foreach (var str in strs)
+            {
+                maxStrLength = Mathf.Max(maxStrLength, str.Length);
+            }
+        }
+
+        var commandRect = commandPrefab.GetComponent<RectTransform>();
+
+        //コマンドの幅高さ取得
+        commandSizeDelta = new Vector2(commandPrefab.GetComponent<Text>().fontSize * maxStrLength, commandRect.sizeDelta.y);
+
+        //一個動く距離は余白*2とコマンドの高さを足した値
+        scrollDistance = BLANK * 2 + commandSizeDelta.y;
 
         //フレームの位置調整
         frameRect.position = framePos;

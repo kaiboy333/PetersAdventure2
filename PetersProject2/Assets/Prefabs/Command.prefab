@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 40, y: 0}
-  m_SizeDelta: {x: 275, y: 62}
+  m_SizeDelta: {x: 0, y: 56}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &463058163277498423
 CanvasRenderer:
@@ -69,10 +69,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 55
+    m_FontSize: 50
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 3
+    m_MinSize: 0
     m_MaxSize: 60
     m_Alignment: 3
     m_AlignByGeometry: 0
@@ -80,7 +80,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u3042\u3044\u3046\u3048\u304A"
+  m_Text: "\u30B3\u30B9\u30D7\u30EC\u306E\u670D"
 --- !u!114 &463058163277498422
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93,7 +93,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalFit: 0
+  m_HorizontalFit: 2
   m_VerticalFit: 0
 --- !u!114 &463058163277498421
 MonoBehaviour:
@@ -107,5 +107,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b35f7524820c4d5aa979504c38a8e75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  text: {fileID: 0}
   commandPanel: {fileID: 0}
   childPanel: {fileID: 0}
