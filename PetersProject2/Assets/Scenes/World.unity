@@ -268,7 +268,7 @@ MonoBehaviour:
   enemyNumMin: 1
   enemyNumMax: 3
   encountRate: 0.05
-  blackPanelImage: {fileID: 0}
+  blackPanelImage: {fileID: 1588197461}
 --- !u!61 &197553677
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -396,7 +396,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellType: 0
   sceneName: Castle
-  blackPanelImage: {fileID: 0}
+  blackPanelImage: {fileID: 1588197461}
   teleportPosition: {x: 0.173, y: -3.488}
 --- !u!4 &582546965
 Transform:
@@ -513,7 +513,7 @@ MonoBehaviour:
   enemyNumMin: 1
   enemyNumMax: 3
   encountRate: 0.05
-  blackPanelImage: {fileID: 0}
+  blackPanelImage: {fileID: 1588197461}
 --- !u!61 &744816796
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -598,7 +598,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellType: 0
   sceneName: Castle
-  blackPanelImage: {fileID: 0}
+  blackPanelImage: {fileID: 1588197461}
   teleportPosition: {x: -0.17, y: -3.511}
 --- !u!4 &757256845
 Transform:
@@ -1990,7 +1990,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellType: 0
   sceneName: Castle
-  blackPanelImage: {fileID: 0}
+  blackPanelImage: {fileID: 1588197461}
   teleportPosition: {x: 0.173, y: -3.488}
 --- !u!4 &1452849830
 Transform:
@@ -15602,7 +15602,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellType: 0
   sceneName: Castle
-  blackPanelImage: {fileID: 0}
+  blackPanelImage: {fileID: 1588197461}
   teleportPosition: {x: -0.17, y: -3.511}
 --- !u!61 &1870934334
 BoxCollider2D:
@@ -15731,7 +15731,7 @@ MonoBehaviour:
   enemyNumMin: 1
   enemyNumMax: 3
   encountRate: 0.05
-  blackPanelImage: {fileID: 0}
+  blackPanelImage: {fileID: 1588197461}
 --- !u!61 &1894155732
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -20924,7 +20924,7 @@ MonoBehaviour:
   enemyNumMin: 1
   enemyNumMax: 3
   encountRate: 0.05
-  blackPanelImage: {fileID: 0}
+  blackPanelImage: {fileID: 1588197461}
 --- !u!61 &2116768158
 BoxCollider2D:
   m_ObjectHideFlags: 0

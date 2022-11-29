@@ -2873,7 +2873,7 @@ PrefabInstance:
     - target: {fileID: 357081875167832889, guid: d345d627195de4d07b1e9a882e669a44, type: 3}
       propertyPath: logManager
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2052105549}
     - target: {fileID: 938424938448825504, guid: d345d627195de4d07b1e9a882e669a44, type: 3}
       propertyPath: blackPanelImage
       value: 
@@ -3051,7 +3051,7 @@ PrefabInstance:
     - target: {fileID: 357081875167832889, guid: d345d627195de4d07b1e9a882e669a44, type: 3}
       propertyPath: logManager
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2052105549}
     - target: {fileID: 938424938448825504, guid: d345d627195de4d07b1e9a882e669a44, type: 3}
       propertyPath: blackPanelImage
       value: 
@@ -3189,7 +3189,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellType: 0
   sceneName: World
-  blackPanelImage: {fileID: 0}
+  blackPanelImage: {fileID: 1551059952}
   teleportPosition: {x: -1.93, y: 0.5}
 --- !u!61 &1531349483
 BoxCollider2D:
@@ -13833,7 +13833,7 @@ PrefabInstance:
     - target: {fileID: 357081875167832889, guid: d345d627195de4d07b1e9a882e669a44, type: 3}
       propertyPath: logManager
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2052105549}
     - target: {fileID: 938424938448825504, guid: d345d627195de4d07b1e9a882e669a44, type: 3}
       propertyPath: blackPanelImage
       value: 
@@ -13938,6 +13938,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2052105549 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1487696191320117702, guid: e16be79e91c5b40048fc0c64487f97cf, type: 3}
+  m_PrefabInstance: {fileID: 1227197327}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d27b826f7eacc477e9a5b45fe6c04a82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2075574623
 GameObject:
   m_ObjectHideFlags: 0
@@ -13970,7 +13981,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellType: 0
   sceneName: World
-  blackPanelImage: {fileID: 0}
+  blackPanelImage: {fileID: 1551059952}
   teleportPosition: {x: -2.23, y: 0.5}
 --- !u!61 &2075574625
 BoxCollider2D:
@@ -14026,7 +14037,7 @@ PrefabInstance:
     - target: {fileID: 357081875167832889, guid: d345d627195de4d07b1e9a882e669a44, type: 3}
       propertyPath: logManager
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2052105549}
     - target: {fileID: 938424938448825504, guid: d345d627195de4d07b1e9a882e669a44, type: 3}
       propertyPath: blackPanelImage
       value: 

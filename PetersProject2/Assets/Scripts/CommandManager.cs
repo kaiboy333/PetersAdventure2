@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
 
 public class CommandManager : SingletonMonoBehaviour<CommandManager>
 {
@@ -10,12 +11,17 @@ public class CommandManager : SingletonMonoBehaviour<CommandManager>
 
     protected override bool dontDestroyOnLoad => true;
 
-    //private LogManager logManager = null;
+    private LogManager logManager = null;
 
     // Start is called before the first frame update
     void Start()
     {
+        SceneManager.sceneLoaded += (scene, loadSceneMode) =>
+        {
+            logManager = FindObjectOfType<LogManager>();
+        };
 
+        logManager = FindObjectOfType<LogManager>();
     }
 
     // Update is called once per frame
@@ -27,9 +33,12 @@ public class CommandManager : SingletonMonoBehaviour<CommandManager>
             if (!nowCommandPanel)
                 //終わり
                 return;
-            ////ログが表示されているなら
-            //if (logManager.gameObject.activeInHierarchy)
-            //    return;
+            if (logManager)
+            {
+                //ログが表示されているなら
+                if (logManager.gameObject.activeInHierarchy)
+                    return;
+            }
 
             //矢印を動かす
             nowCommandPanel.MoveArrow();

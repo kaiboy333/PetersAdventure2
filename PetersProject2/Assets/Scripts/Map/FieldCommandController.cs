@@ -69,6 +69,13 @@ public class FieldCommandController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (logManager)
+        {
+            //ログが見えている間はreturn
+            if (logManager.gameObject.activeInHierarchy)
+                return;
+        }
+
         if (Input.GetKeyDown(KeyCode.E))
         {
             //プレイヤーが動いていないときでコマンドパネルが生成されていないなら
