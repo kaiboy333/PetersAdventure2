@@ -81,6 +81,22 @@ public class CommandManager : SingletonMonoBehaviour<CommandManager>
         //コマンドパネル生成
         var commandPanelObj = Instantiate(commandPanelPrefab, parentRect);
         commandPanel = commandPanelObj.GetComponent<CommandPanel>();
+        //位置が0なら
+        if (pos == Vector2.zero)
+        {
+            //コマンドがあるなら
+            if (command)
+            {
+                var commandPanelRoot = command.commandPanel;
+                while (commandPanelRoot.beforeCommandPanel)
+                {
+                    commandPanelRoot = commandPanelRoot.beforeCommandPanel;
+                }
+                //コマンドの端からコマンドの横幅/2がパネルの位置になる
+                var commandRect = command.GetComponent<RectTransform>();
+                pos = new Vector2(commandRect.position.x + commandRect.sizeDelta.x / 2, commandPanelRoot.frameRect.position.y);
+            }
+        }
         //コマンドパネル初期化
         commandPanel.Init(pos, strs, row, col, isColScroll, isOnlyPrint, maxStrLen);
         if (!isOnlyPrint)

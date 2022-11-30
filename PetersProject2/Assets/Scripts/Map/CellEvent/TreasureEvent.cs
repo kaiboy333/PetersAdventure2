@@ -31,10 +31,10 @@ public class TreasureEvent : CellEvent
         if (logManager)
         {
             var thing = ThingEngine.Instance.Get(thingNo);
-            if (thing is Skill)
+            if (thing is Skill skill)
             {
                 //アイテム以外なら
-                if (((Skill)thing).skillType != Skill.SkillType.Item)
+                if (skill.skillType != Skill.SkillType.Item)
                     //なしにする
                     thing = null;
             }

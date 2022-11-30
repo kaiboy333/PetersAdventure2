@@ -9,8 +9,6 @@ public class CommandPanel : MonoBehaviour
     private List<Command> commands = new List<Command>();
     private int row = 0, col = 0;
     private int printRow = 0, printCol = 0;
-    //private int maxPage = 0;
-    //private int nowPage = 0;
     //矢印が指している番号
     public int nowNo { get; private set; }
     //現在表示している行の一番上
@@ -195,42 +193,79 @@ public class CommandPanel : MonoBehaviour
     }
 
     //コマンドを追加
-    public void AddCommand(Command command)
+    public void AddCommand(string str)
     {
+        //コマンドオブジェクトを生成
+        var commandObj = Instantiate(commandPrefab, contentRect);
+        var command = commandObj.GetComponent<Command>();
+        //名前セット
+        command.Name = str;
+
         commands.Add(command);
 
         //コマンドパネルセット
         command.commandPanel = this;
-
-        var length = commands.Count;
-        //ページ数セット
-        //maxPage = length / (row * col);
-        //今回追加したやつの番号を取得
-        var nowNo = length - 1;
-
-        //位置調整(Contentを基準に移動)
-        var commandRect = command.gameObject.GetComponent<RectTransform>();
-        //var a = nowNo % (row * col);
-        var w = nowNo % col;
-        var deltaWidth = (w + 1) * (BLANK + arrowWidth) + w * commandSizeDelta.x;
-        var h = nowNo / col;
-        var deltaHeight = (h + 1) * BLANK + h * (commandSizeDelta.y + BLANK);
-
-        commandRect.anchoredPosition = new Vector2(deltaWidth, -deltaHeight);
-
-        //幅高さ調整
-        commandRect.sizeDelta = commandSizeDelta;
+        UpdateCommands();
     }
 
-    //public void RemoveCommand(Command command)
-    //{
-    //    commands.Remove(command.Name);
-    //}
+    public Command RemoveCommand(int no)
+    {
+        //存在するなら
+        if(no < commands.Count)
+        {
+            var command = commands[no];
+            //パネル参照をnullに
+            command.commandPanel = null;
+            //リストから削除
+            commands.RemoveAt(no);
+            //ゲームオブジェクトを削除
+            Destroy(command.gameObject);
+            //消した番号が矢印の場所で一番上でないなら
+            if(nowNo ==commands.Count - 1 && nowNo != 0)
+            {
+                --nowNo;
+            }
+            UpdateCommands();
+        }
+        return null;
+    }
 
     //位置の調整更新
     public void UpdateCommands()
     {
+        for(int i = 0, len = commands.Count;i < len; i++)
+        {
+            var command = commands[i];
+            //位置調整(Contentを基準に移動)
+            var commandRect = command.gameObject.GetComponent<RectTransform>();
+            var w = i % col;
+            var deltaWidth = (w + 1) * (BLANK + arrowWidth) + w * commandSizeDelta.x;
+            var h = i / col;
+            var deltaHeight = (h + 1) * BLANK + h * (commandSizeDelta.y + BLANK);
 
+            commandRect.anchoredPosition = new Vector2(deltaWidth, -deltaHeight);
+
+            //幅高さ調整
+            commandRect.sizeDelta = commandSizeDelta;
+
+            //最初は
+            if (i == 0 && !isOnlyPrint)
+            {
+                //矢印が生成されていないなら
+                if (!arrowRect)
+                {
+                    //矢印のオブジェクト生成
+                    var arrowObj = Instantiate(arrowPrefab, contentRect);
+                    arrowRect = arrowObj.GetComponent<RectTransform>();
+                }
+            }
+        }
+        //矢印があるなら
+        if (arrowRect)
+        {
+            //現在の番号のコマンドの左に設定
+            arrowRect.anchoredPosition = commands[nowNo].GetComponent<RectTransform>().anchoredPosition - Vector2.right * arrowWidth;
+        }
     }
 
     public void Init(Vector2 framePos, List<string> strs, int printRow, int printCol, bool isColScroll, bool isOnlyPrint, int maxStrLength)
@@ -267,8 +302,6 @@ public class CommandPanel : MonoBehaviour
         //一個動く距離は余白*2とコマンドの高さを足した値
         scrollDistance = BLANK * 2 + commandSizeDelta.y;
 
-        //フレームの位置調整
-        frameRect.position = framePos;
         //フレームの大きさ調整
         frameRect.sizeDelta = new Vector2(FRAME_WIDTH * 2 + BLANK * (printCol + 1) + (commandSizeDelta.x + arrowWidth) * printCol, FRAME_WIDTH * 2 + BLANK * (printRow * 2) + commandSizeDelta.y * printRow);
 
@@ -277,27 +310,13 @@ public class CommandPanel : MonoBehaviour
         //バックの大きさ調整
         backRect.sizeDelta = frameRect.sizeDelta - 2 * FRAME_WIDTH * Vector2.one;
 
-        for (int i = 0; i < strs.Count; i++)
+        //フレームの位置調整
+        frameRect.position = framePos;
+
+        foreach (var str in strs)
         {
-            var str = strs[i];
-
-            //コマンドオブジェクトを生成
-            var commandObj = Instantiate(commandPrefab, contentRect);
-            var command = commandObj.GetComponent<Command>();
-            //名前セット
-            command.Name = str;
             //コマンド追加
-            AddCommand(command);
-
-            //最初は
-            if (i == 0 && !isOnlyPrint)
-            {
-                //矢印のオブジェクト生成
-                var arrowObj = Instantiate(arrowPrefab, contentRect);
-                arrowRect = arrowObj.GetComponent<RectTransform>();
-                //最初のコマンドの左に設定
-                arrowRect.anchoredPosition = commandObj.GetComponent<RectTransform>().anchoredPosition - Vector2.right * arrowWidth;
-            }
+            AddCommand(str);
         }
 
         this.isColScroll = isColScroll;
