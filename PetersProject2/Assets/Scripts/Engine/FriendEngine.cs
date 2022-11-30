@@ -66,13 +66,13 @@ public class FriendEngine : Engine<FriendChara>
                                 friend.magicKeys.Add(key);
                                 break;
                             case Skill.SkillType.Item:
-                                friend.items.Add(skill);
+                                friend.itemBag.AddItem(skill);
                                 break;
                         }
                     }
                     else if (thing is Equipment)
                     {
-                        friend.items.Add(thing);
+                        friend.itemBag.AddItem(thing);
                     }
                 }
 

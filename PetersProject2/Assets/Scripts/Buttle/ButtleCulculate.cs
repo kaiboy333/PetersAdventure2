@@ -86,7 +86,7 @@ public class ButtleCulculate
                     break;
                 case Skill.SkillType.Item:
                     //アイテムを消費
-                    offence.items.Remove(skill);
+                    offence.itemBag.RemoveItem(skill);
                     useSkillLog = offence.name + "は" + thing.name + "を使った！";
                     break;
             }

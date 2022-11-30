@@ -590,6 +590,17 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 7869859447243509345, guid: e16be79e91c5b40048fc0c64487f97cf, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: e16be79e91c5b40048fc0c64487f97cf, type: 3}
+--- !u!114 &1841338167 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1487696191320117702, guid: e16be79e91c5b40048fc0c64487f97cf, type: 3}
+  m_PrefabInstance: {fileID: 1841338166}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d27b826f7eacc477e9a5b45fe6c04a82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1948516855
 GameObject:
   m_ObjectHideFlags: 0
@@ -677,6 +688,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blackPanelImage: {fileID: 1492484197}
+  logManager: {fileID: 1841338167}
   enemyPrefab: {fileID: 5904941546438647070, guid: 88992581e393d496984cc1f39f5bc39e, type: 3}
   backGroundRect: {fileID: 2146027737}
   isEscape: 0

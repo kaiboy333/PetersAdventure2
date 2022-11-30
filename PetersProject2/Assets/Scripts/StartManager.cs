@@ -8,10 +8,10 @@ public class StartManager : MonoBehaviour
     void Awake()
     {
         //味方がいないなら
-        if (ButtleManager.friendCharas == null)
+        if (ButtleManager.friendCharas.Count == 0)
         {
             //味方生成
-            ButtleManager.friendCharas = new List<ButtleChara>() { FriendEngine.Instance.Get(0) };
+            ButtleManager.friendCharas.Add(FriendEngine.Instance.Get(0));
         }
     }
 

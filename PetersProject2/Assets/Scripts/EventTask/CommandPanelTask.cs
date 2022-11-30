@@ -73,7 +73,7 @@ public class CommandPanelTask : EventTask
         MakeThingPanel(ThingEngine.Instance.Gets(friendChara.skillKeys), commands1[2]);
 
         //道具を選択したら
-        MakeThingPanel(friendChara.items, commands1[3]);
+        MakeThingPanel(friendChara.itemBag.items, commands1[3]);
     }
 
     public void MakeThingPanel(List<Thing> things, Command parentCommand)

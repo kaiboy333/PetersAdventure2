@@ -69,13 +69,13 @@ public class EnemyEngine : Engine<EnemyChara>
                                 enemy.magicKeys.Add(key);
                                 break;
                             case Skill.SkillType.Item:
-                                enemy.items.Add(skill);
+                                enemy.itemBag.AddItem(skill);
                                 break;
                         }
                     }
                     else if (thing is Equipment)
                     {
-                        enemy.items.Add(thing);
+                        enemy.itemBag.AddItem(thing);
                     }
                 }
             }

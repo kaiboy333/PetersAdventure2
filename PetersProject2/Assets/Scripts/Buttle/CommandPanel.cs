@@ -227,6 +227,12 @@ public class CommandPanel : MonoBehaviour
     //    commands.Remove(command.Name);
     //}
 
+    //位置の調整更新
+    public void UpdateCommands()
+    {
+
+    }
+
     public void Init(Vector2 framePos, List<string> strs, int printRow, int printCol, bool isColScroll, bool isOnlyPrint, int maxStrLength)
     {
         var lastNo = strs.Count - 1;

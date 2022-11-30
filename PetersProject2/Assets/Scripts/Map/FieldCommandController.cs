@@ -133,7 +133,7 @@ public class FieldCommandController : MonoBehaviour
                 }
                 else
                 {
-                    things = friendChara.items;
+                    things = friendChara.itemBag.items;
                 }
 
                 if (things.Count == 0)
@@ -170,7 +170,7 @@ public class FieldCommandController : MonoBehaviour
                         }
                         //守備の名前取得
                         var targetNames = ButtleManager.GetCharaName(targets);
-                        //守備パネル表示
+                        //つかうを押したら守備パネル表示
                         var targetPanel = CommandManager.Instance.MakeCommandPanel(targetNames, targetNames.Count, 1, commandPanelSelectRect.position, useCommands != null ? useCommands[0] : thingCommand, false, true, parentRect);
                         //守備コマンド取得
                         var targetCommands = targetPanel.GetCommands();
@@ -179,22 +179,32 @@ public class FieldCommandController : MonoBehaviour
                             var targetCommand = targetCommands[k];
                             var target = targets[k];
 
-                            //敵を選択したら
+                            //ターゲットを選択したら
                             targetCommand.SetAction(() =>
                             {
                                 //使用のログ表示
                                 StartCoroutine(UseThingCulculate(new ButtleCulculate(friendChara, new List<ButtleChara>() { target }, thing)));
+                                for(int l = 0, len4 = isMagic ? 1 : 2; l < len4; l++)
+                                {
+                                    //一個前に戻る
+                                    CommandManager.Instance.CommandBack();
+                                }
                             });
                         }
                     }
                     //装備なら
                     else
                     {
-                        //技を選択したら
-                        thingCommand.SetAction(() =>
+                        var usePanel = CommandManager.Instance.MakeCommandPanel(new List<string> { "つかう", "わたす", "すてる" }, 3, 1, commandPanelfirstRect.position, thingCommand, false, true, parentRect);
+                        var useCommands = usePanel.GetCommands();
+
+                        //つかうを選択したら
+                        useCommands[0].SetAction(() =>
                         {
                             //使用のログ表示
                             StartCoroutine(UseThingCulculate(new ButtleCulculate(friendChara, null, thing)));
+                            //一個前に戻る
+                            CommandManager.Instance.CommandBack();
                         });
                     }
                 }

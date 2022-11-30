@@ -26,10 +26,6 @@ public class LogManager : MonoBehaviour
     //表示中か
     public bool isPrinting { get; private set; }
 
-    //private bool isLastPrint = false;
-
-    //private bool isMoving = false;
-
     //今表示している一番上の列
     private int row = 0;
 
@@ -37,10 +33,6 @@ public class LogManager : MonoBehaviour
     //private LogEvent logEvent = null;
 
     private const float MOVE_SPEED = 400;
-
-    ////列を表示するのに空ける時間
-    //private const float PRINT_STR__NORMAL_INTERVAL = 0.3f;
-    //private float printStrInterval = PRINT_STR__NORMAL_INTERVAL;
 
     // Start is called before the first frame update
     void Start()

@@ -55,17 +55,22 @@ public class CommandManager : SingletonMonoBehaviour<CommandManager>
             //Qキーを押した時
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                //一個前のがあるなら
-                if (nowCommandPanel.beforeCommandPanel)
-                {
-                    //一個前を取得
-                    var beforeCommandPanel = nowCommandPanel.beforeCommandPanel;
-                    //パネルを見えなくする
-                    nowCommandPanel.gameObject.SetActive(false);
-                    //戻す
-                    nowCommandPanel = beforeCommandPanel;
-                }
+                CommandBack();
             }
+        }
+    }
+
+    public void CommandBack()
+    {
+        //一個前のがあるなら
+        if (nowCommandPanel.beforeCommandPanel)
+        {
+            //一個前を取得
+            var beforeCommandPanel = nowCommandPanel.beforeCommandPanel;
+            //パネルを見えなくする
+            nowCommandPanel.gameObject.SetActive(false);
+            //戻す
+            nowCommandPanel = beforeCommandPanel;
         }
     }
 

@@ -11,15 +11,16 @@ public class ButtleManager : MonoBehaviour
 
     private CommandPanel statusPanel = null;
 
-    public static List<ButtleChara> friendCharas = null;
+    public static List<ButtleChara> friendCharas = new List<ButtleChara>();
     public static List<ButtleChara> enemyCharas = null;
+    public static ItemBag itemBag = new ItemBag(false);
 
     public List<ButtleCulculate> buttleCulculates = new List<ButtleCulculate>();
 
     private bool isFinished = false;
 
     //LogManager
-    private LogManager logManager = null;
+    [SerializeField] private LogManager logManager = null;
 
     //バトルログのインターバル
     public const float BUTTLE_LOG_INTERVAL = 1;
@@ -36,13 +37,11 @@ public class ButtleManager : MonoBehaviour
     // Start is called before the first frame update
     private IEnumerator Start()
     {
-        logManager = FindObjectOfType<LogManager>();
-
         //味方がいないなら
-        if (friendCharas == null)
+        if (friendCharas.Count == 0)
         {
             //味方生成
-            friendCharas = new List<ButtleChara>() { FriendEngine.Instance.Get(0) };
+            friendCharas.Add(FriendEngine.Instance.Get(0));
         }
         //敵がいないなら
         if (enemyCharas == null)
@@ -454,5 +453,21 @@ public class ButtleManager : MonoBehaviour
 
         //逃走率以下なら逃げ切れる
         return rate <= escapeRate;
+    }
+
+    public static void GetItem(Thing thing)
+    {
+        foreach(var friendChara in friendCharas)
+        {
+            //アイテムを入れられたなら
+            if (friendChara.itemBag.AddItem(thing))
+            {
+                //終わり
+                return;
+            }
+        }
+
+        //どれも入らないならどうぐにいれる
+        itemBag.AddItem(thing);
     }
 }
