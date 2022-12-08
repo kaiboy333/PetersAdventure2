@@ -7,7 +7,8 @@ public class CommandPanel : MonoBehaviour
 {
     //コマンドたち
     private List<Command> commands = new List<Command>();
-    private int row = 0, col = 0;
+    private int row { get { return ((commands.Count - 1) / printCol) + 1; } }
+    private int col { get { return printCol; } }
     private int printRow = 0, printCol = 0;
     //矢印が指している番号
     public int nowNo { get; private set; }
@@ -278,9 +279,6 @@ public class CommandPanel : MonoBehaviour
 
     public void Init(Vector2 framePos, List<string> strs, int printRow, int printCol, bool isColScroll, bool isOnlyPrint, int maxStrLength)
     {
-        var lastNo = strs.Count - 1;
-        this.row = (lastNo / printCol) + 1;
-        this.col = printCol;
         this.printRow = printRow;
         this.printCol = printCol;
         this.isOnlyPrint = isOnlyPrint;

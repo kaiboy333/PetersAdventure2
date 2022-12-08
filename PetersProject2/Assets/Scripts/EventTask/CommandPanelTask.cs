@@ -86,9 +86,6 @@ public class CommandPanelTask : EventTask
 
         if (things != null)
         {
-            if (things.Count == 0)
-                return;
-
             //thingの名前たち
             var thingNames = new List<string>();
 
@@ -98,7 +95,7 @@ public class CommandPanelTask : EventTask
             }
 
             //技パネル表示
-            var thingPanel = CommandManager.Instance.MakeCommandPanel(thingNames, 3, 2, Vector2.zero, parentCommand, false, true, parentRect, "使えるものがない！");
+            var thingPanel = CommandManager.Instance.MakeCommandPanel(thingNames, 3, 2, Vector2.zero, parentCommand, false, true, parentRect, "使えるものがない！", 6);
             //技コマンド取得
             var thingCommands = thingPanel.GetCommands();
             for (int i = 0, len = thingCommands.Count; i < len; i++)
@@ -145,14 +142,10 @@ public class CommandPanelTask : EventTask
                         {
                             //計算リストに追加
                             buttleManager.buttleCulculates.Add(new ButtleCulculate(friendChara, defences, thing));
-                            //最後の選択だった場合
-                            if (friendChara == friendCharas[friendCharas.Count - 1])
-                            {
-                                //終わりの合図
-                                isFinished = true;
-                                //コマンドパネルを全削除
-                                CommandManager.Instance.RemoveAllButtleCommandPanel();
-                            }
+                            //終わりの合図
+                            isFinished = true;
+                            //コマンドパネルを全削除
+                            CommandManager.Instance.RemoveAllButtleCommandPanel();
                         });
                     }
                     //単体こうげきなら
@@ -174,14 +167,10 @@ public class CommandPanelTask : EventTask
                             {
                                 //計算リストに追加
                                 buttleManager.buttleCulculates.Add(new ButtleCulculate(friendChara, new List<ButtleChara>() { target }, thing));
-                                //最後の選択だった場合
-                                if (friendChara == friendCharas[friendCharas.Count - 1])
-                                {
-                                    //終わりの合図
-                                    isFinished = true;
-                                    //コマンドパネルを全削除
-                                    CommandManager.Instance.RemoveAllButtleCommandPanel();
-                                }
+                                //終わりの合図
+                                isFinished = true;
+                                //コマンドパネルを全削除
+                                CommandManager.Instance.RemoveAllButtleCommandPanel();
                             });
                         }
                     }
@@ -194,14 +183,10 @@ public class CommandPanelTask : EventTask
                     {
                         //計算リストに追加
                         buttleManager.buttleCulculates.Add(new ButtleCulculate(friendChara, null, thing));
-                        //最後の選択だった場合
-                        if (friendChara == friendCharas[friendCharas.Count - 1])
-                        {
-                            //終わりの合図
-                            isFinished = true;
-                            //コマンドパネルを全削除
-                            CommandManager.Instance.RemoveAllButtleCommandPanel();
-                        }
+                        //終わりの合図
+                        isFinished = true;
+                        //コマンドパネルを全削除
+                        CommandManager.Instance.RemoveAllButtleCommandPanel();
                     });
                 }
             }
