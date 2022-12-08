@@ -12,6 +12,7 @@ public class StartManager : MonoBehaviour
         {
             //味方生成
             ButtleManager.friendCharas.Add(FriendEngine.Instance.Get(0));
+            ButtleManager.friendCharas.Add(FriendEngine.Instance.Get(1));
         }
     }
 

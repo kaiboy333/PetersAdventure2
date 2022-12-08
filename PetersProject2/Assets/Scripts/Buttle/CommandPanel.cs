@@ -40,6 +40,9 @@ public class CommandPanel : MonoBehaviour
     //表示だけであるか
     public bool isOnlyPrint = false;
 
+    //コマンドがあるか
+    public bool hasCommand { get { return commands.Count != 0; } }
+
     private void Awake()
     {
         //矢印の横幅取得
@@ -52,7 +55,7 @@ public class CommandPanel : MonoBehaviour
     {
         //番号を0にして
         nowNo = 0;
-        if (arrowRect)
+        if (arrowRect && commands.Count != 0)
         {
             //矢印を移動
             //指定のコマンドの左に設定
@@ -193,7 +196,7 @@ public class CommandPanel : MonoBehaviour
     }
 
     //コマンドを追加
-    public void AddCommand(string str)
+    public Command AddCommand(string str)
     {
         //コマンドオブジェクトを生成
         var commandObj = Instantiate(commandPrefab, contentRect);
@@ -206,6 +209,7 @@ public class CommandPanel : MonoBehaviour
         //コマンドパネルセット
         command.commandPanel = this;
         UpdateCommands();
+        return command;
     }
 
     public Command RemoveCommand(int no)
@@ -216,14 +220,18 @@ public class CommandPanel : MonoBehaviour
             var command = commands[no];
             //パネル参照をnullに
             command.commandPanel = null;
+            //消した番号が矢印の場所で一番上でないなら
+            if (nowNo == commands.Count - 1 && nowNo != 0)
+            {
+                --nowNo;
+            }
             //リストから削除
             commands.RemoveAt(no);
             //ゲームオブジェクトを削除
             Destroy(command.gameObject);
-            //消した番号が矢印の場所で一番上でないなら
-            if(nowNo ==commands.Count - 1 && nowNo != 0)
+            if(commands.Count == 0)
             {
-                --nowNo;
+                CommandManager.Instance.CommandBack();
             }
             UpdateCommands();
         }
@@ -261,7 +269,7 @@ public class CommandPanel : MonoBehaviour
             }
         }
         //矢印があるなら
-        if (arrowRect)
+        if (arrowRect && commands.Count != 0)
         {
             //現在の番号のコマンドの左に設定
             arrowRect.anchoredPosition = commands[nowNo].GetComponent<RectTransform>().anchoredPosition - Vector2.right * arrowWidth;

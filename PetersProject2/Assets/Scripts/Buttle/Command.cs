@@ -8,7 +8,7 @@ public class Command : MonoBehaviour
 {
     //選択されたときに実行する関数
     private Action action = null;
-    public Text text = null;
+    public Text text { get { return GetComponent<Text>(); } }
     public string Name
     {
         get { return text.text; }
@@ -20,10 +20,10 @@ public class Command : MonoBehaviour
 
     public RectTransform CommandRect { get { return GetComponent<RectTransform>(); } }
 
-    private void Awake()
-    {
-        text = GetComponent<Text>();
-    }
+    //private void Awake()
+    //{
+    //    text = GetComponent<Text>();
+    //}
 
     public void DoAction()
     {

@@ -43,13 +43,16 @@ public class ItemBag
         return thing != null;
     }
 
-    public void RemoveItem(int no)
+    public Thing RemoveItem(int no)
     {
-        items.RemoveAt(no);
+        Thing item = items[no];
+        items.Remove(item);
+        return item;
     }
 
-    public void RemoveItem(Thing thing)
+    public Thing RemoveItem(Thing thing)
     {
         items.Remove(thing);
+        return thing;
     }
 }

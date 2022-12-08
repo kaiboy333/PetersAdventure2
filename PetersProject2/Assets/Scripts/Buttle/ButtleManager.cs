@@ -99,7 +99,7 @@ public class ButtleManager : MonoBehaviour
                 strs_t.Add(str);
             }
         }
-        statusPanel = CommandManager.Instance.MakeCommandPanel(strs_t, 4, strs_t.Count / 4, new Vector2(100, 1000), null, true, true, backGroundRect, 4);
+        statusPanel = CommandManager.Instance.MakeCommandPanel(strs_t, 4, strs_t.Count / 4, new Vector2(100, 1000), null, true, true, backGroundRect, "コマンドがないよ。", 4);
         //ステータスパネルの名前変更
         statusPanel.gameObject.name = "StatusPanel";
 

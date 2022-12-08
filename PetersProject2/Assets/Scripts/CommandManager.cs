@@ -74,7 +74,7 @@ public class CommandManager : SingletonMonoBehaviour<CommandManager>
         }
     }
 
-    public CommandPanel MakeCommandPanel(List<string> strs, int row, int col, Vector2 pos, Command command, bool isOnlyPrint, bool isColScroll, RectTransform parentRect, int maxStrLen = 0)
+    public CommandPanel MakeCommandPanel(List<string> strs, int row, int col, Vector2 pos, Command command, bool isOnlyPrint, bool isColScroll, RectTransform parentRect, string noCommandLog = "コマンドがないよ。", int maxStrLen = 0)
     {
         CommandPanel commandPanel = null;
 
@@ -123,10 +123,20 @@ public class CommandManager : SingletonMonoBehaviour<CommandManager>
 
             command.SetAction(() =>
             {
-                //見えるようにする
-                commandPanel.gameObject.SetActive(true);
-                //操作するパネルを今のにする
-                nowCommandPanel = commandPanel;
+                //コマンドがあるなら
+                if (commandPanel.hasCommand)
+                {
+                    //見えるようにする
+                    commandPanel.gameObject.SetActive(true);
+                    //操作するパネルを今のにする
+                    nowCommandPanel = commandPanel;
+                }
+                //ないなら
+                else
+                {
+                    //ないときのログ表示
+                    StartCoroutine(logManager.PrintLog(new List<string>() { noCommandLog }));
+                }
             });
         }
         else

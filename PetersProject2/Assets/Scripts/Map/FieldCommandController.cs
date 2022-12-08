@@ -136,9 +136,6 @@ public class FieldCommandController : MonoBehaviour
                     things = friendChara.itemBag.items;
                 }
 
-                if (things.Count == 0)
-                    return;
-
                 //thingの名前たち
                 var thingNames = new List<string>();
 
@@ -148,7 +145,7 @@ public class FieldCommandController : MonoBehaviour
                 }
 
                 //技パネル表示
-                var thingPanel = CommandManager.Instance.MakeCommandPanel(thingNames, 3, 2, Vector2.zero, friendCharaCommands[i], false, true, parentRect);
+                var thingPanel = CommandManager.Instance.MakeCommandPanel(thingNames, 8, 1, Vector2.zero, friendCharaCommands[i], false, true, parentRect, friendChara.name + (isMagic ? "は使える魔法がない。" : "は道具を持っていない。"), 6);
                 //技コマンド取得
                 var thingCommands = thingPanel.GetCommands();
 
@@ -168,38 +165,85 @@ public class FieldCommandController : MonoBehaviour
                     }
                     //守備の名前取得
                     var targetNames = ButtleManager.GetCharaName(targets);
-                    //つかうを押したら守備パネル表示
-                    var targetPanel = CommandManager.Instance.MakeCommandPanel(targetNames, targetNames.Count, 1, commandPanelSelectRect.position, useCommands != null ? useCommands[0] : thingCommand, false, true, parentRect);
-                    //守備コマンド取得
-                    var targetCommands = targetPanel.GetCommands();
-                    for (int k = 0, len3 = targetNames.Count; k < len3; k++)
+                    //装備なら
+                    if(useCommands != null && thing is Equipment)
                     {
-                        var targetCommand = targetCommands[k];
-                        var target = targets[k];
-
-                        //ターゲットを選択したら
-                        targetCommand.SetAction(() =>
+                        //使うを押したら
+                        useCommands[0].SetAction(() =>
                         {
                             //使用のログ表示
-                            StartCoroutine(UseThingCulculate(new ButtleCulculate(friendChara, new List<ButtleChara>() { target }, thing)));
-                            for(int l = 0, len4 = isMagic ? 1 : 2; l < len4; l++)
-                            {
-                                //一個前に戻る
-                                CommandManager.Instance.CommandBack();
-                            }
-                            //アイテムなら消費
-                            if (!isMagic && thing is Skill)
-                            {
-                                //アイテムをすてる
-                                friendChara.itemBag.RemoveItem(thingPanel.nowNo);
-                                //コマンド削除
-                                thingPanel.RemoveCommand(thingPanel.nowNo);
-                            }
+                            StartCoroutine(UseThingCulculate(new ButtleCulculate(friendChara, null, thing)));
+                            //一個前に戻る
+                            CommandManager.Instance.CommandBack();
                         });
+                    }
+                    else
+                    {
+                        //つかうを押したら守備パネル表示
+                        var targetPanel = CommandManager.Instance.MakeCommandPanel(targetNames, targetNames.Count, 1, commandPanelSelectRect.position, useCommands != null ? useCommands[0] : thingCommand, false, true, parentRect);
+                        //守備コマンド取得
+                        var targetCommands = targetPanel.GetCommands();
+                        for (int k = 0, len3 = targetNames.Count; k < len3; k++)
+                        {
+                            var targetCommand = targetCommands[k];
+                            var target = targets[k];
+
+                            //ターゲットを選択したら
+                            targetCommand.SetAction(() =>
+                            {
+                                //使用のログ表示
+                                StartCoroutine(UseThingCulculate(new ButtleCulculate(friendChara, new List<ButtleChara>() { target }, thing)));
+                                for (int l = 0, len4 = isMagic ? 1 : 2; l < len4; l++)
+                                {
+                                    //一個前に戻る
+                                    CommandManager.Instance.CommandBack();
+                                }
+                                //アイテムなら消費
+                                if (!isMagic && thing is Skill)
+                                {
+                                    //アイテムをすてる
+                                    friendChara.itemBag.RemoveItem(thingPanel.nowNo);
+                                    //コマンド削除
+                                    thingPanel.RemoveCommand(thingPanel.nowNo);
+                                }
+                            });
+                        }
                     }
 
                     if (useCommands != null)
                     {
+                        //わたすを押したら守備パネル表示
+                        var targetPanel2 = CommandManager.Instance.MakeCommandPanel(targetNames, targetNames.Count, 1, commandPanelSelectRect.position, useCommands[1], false, true, parentRect);
+                        //守備コマンド取得
+                        var targetCommands2 = targetPanel2.GetCommands();
+                        for (int k = 0, len3 = targetNames.Count; k < len3; k++)
+                        {
+                            var targetCommand2 = targetCommands2[k];
+                            var target = targets[k];
+                            int no = k;
+
+                            //ターゲットを選択したら
+                            targetCommand2.SetAction(() =>
+                            {
+                                //渡したときのログ表示
+                                StartCoroutine(logManager.PrintLog(new List<string>() { friendChara.name + "は" + thing.name + "を" + target.name + "に渡した。" }));
+                                for (int l = 0, len4 = 2; l < len4; l++)
+                                {
+                                    //一個前に戻る
+                                    CommandManager.Instance.CommandBack();
+                                }
+                                //アイテムを元のから消す
+                                Thing item = friendChara.itemBag.RemoveItem(thingPanel.nowNo);
+                                //コマンド削除
+                                thingPanel.RemoveCommand(thingPanel.nowNo);
+
+                                //アイテムを渡す
+                                target.itemBag.AddItem(item);
+                                //コマンド追加
+                                MakeItemCommand(friendCharas[no], item, friendCharaCommands[no].childPanel, friendCharaCommands);
+                            });
+                        }
+
                         //すてるを押したら
                         useCommands[2].SetAction(() =>
                         {
@@ -213,21 +257,97 @@ public class FieldCommandController : MonoBehaviour
                             StartCoroutine(logManager.PrintLog(new List<string>() { friendChara.name + "は" + thing.name + "をすてた。" }));
                         });
                     }
-                    ////装備なら
-                    //else
-                    //{
-                    //    var usePanel = CommandManager.Instance.MakeCommandPanel(new List<string> { "つかう", "わたす", "すてる" }, 3, 1, Vector2.zero, thingCommand, false, true, parentRect);
-                    //    var useCommands = usePanel.GetCommands();
-
-                    //    //つかうを選択したら
-                    //    useCommands[0].SetAction(() =>
-                    //    {
-                    //    });
-                    //}
                 }
             }
         }
     }
+
+    private void MakeItemCommand(ButtleChara friendChara, Thing thing, CommandPanel thingPanel, List<Command> friendCharaCommands)
+    {
+        List<ButtleChara> targets = ButtleManager.GetAlliveChara(ButtleManager.friendCharas);
+        var thingCommand = thingPanel.AddCommand(thing.name);
+        //道具なら
+        var usePanel = CommandManager.Instance.MakeCommandPanel(new List<string> { "つかう", "わたす", "すてる" }, 3, 1, Vector2.zero, thingCommand, false, true, parentRect);
+        var useCommands = usePanel.GetCommands();
+        //守備の名前取得
+        var targetNames = ButtleManager.GetCharaName(targets);
+        //つかうを押したら守備パネル表示
+        var targetPanel = CommandManager.Instance.MakeCommandPanel(targetNames, targetNames.Count, 1, commandPanelSelectRect.position, useCommands != null ? useCommands[0] : thingCommand, false, true, parentRect);
+        //守備コマンド取得
+        var targetCommands = targetPanel.GetCommands();
+        for (int k = 0, len3 = targetNames.Count; k < len3; k++)
+        {
+            var targetCommand = targetCommands[k];
+            var target = targets[k];
+
+            //ターゲットを選択したら
+            targetCommand.SetAction(() =>
+            {
+                //使用のログ表示
+                StartCoroutine(UseThingCulculate(new ButtleCulculate(friendChara, new List<ButtleChara>() { target }, thing)));
+                for (int l = 0, len4 = 2; l < len4; l++)
+                {
+                    //一個前に戻る
+                    CommandManager.Instance.CommandBack();
+                }
+                //アイテムなら消費
+                //アイテムをすてる
+                friendChara.itemBag.RemoveItem(thingPanel.nowNo);
+                //コマンド削除
+                thingPanel.RemoveCommand(thingPanel.nowNo);
+            });
+        }
+
+        if (useCommands != null)
+        {
+            //わたすを押したら守備パネル表示
+            var targetPanel2 = CommandManager.Instance.MakeCommandPanel(targetNames, targetNames.Count, 1, commandPanelSelectRect.position, useCommands[1], false, true, parentRect);
+            //守備コマンド取得
+            var targetCommands2 = targetPanel2.GetCommands();
+            for (int k = 0, len3 = targetNames.Count; k < len3; k++)
+            {
+                var targetCommand2 = targetCommands2[k];
+                var target = targets[k];
+                var no = k;
+
+                //ターゲットを選択したら
+                targetCommand2.SetAction(() =>
+                {
+                    //渡したときのログ表示
+                    StartCoroutine(logManager.PrintLog(new List<string>() { friendChara.name + "は" + thing.name + "を" + target.name + "に渡した。" }));
+                    for (int l = 0, len4 = 2; l < len4; l++)
+                    {
+                        //一個前に戻る
+                        CommandManager.Instance.CommandBack();
+                    }
+                    //アイテムを元のから消す
+                    Thing item = friendChara.itemBag.RemoveItem(thingPanel.nowNo);
+                    //コマンド削除
+                    thingPanel.RemoveCommand(thingPanel.nowNo);
+
+                    //アイテムを渡す
+                    target.itemBag.AddItem(item);
+                    //コマンド追加
+                    MakeItemCommand(ButtleManager.friendCharas[no], item, friendCharaCommands[no].childPanel, friendCharaCommands);
+
+                });
+            }
+
+            //すてるを押したら
+            useCommands[2].SetAction(() =>
+            {
+                //一個前に戻る
+                CommandManager.Instance.CommandBack();
+                //アイテムをすてる
+                friendChara.itemBag.RemoveItem(thingPanel.nowNo);
+                //コマンド削除
+                thingPanel.RemoveCommand(thingPanel.nowNo);
+                //使用のログ表示
+                StartCoroutine(logManager.PrintLog(new List<string>() { friendChara.name + "は" + thing.name + "をすてた。" }));
+            });
+        }
+    }
+
 
     //フィールド上で使える魔法を取得
     private List<Thing> GetMagicInField(List<Thing> magics)
