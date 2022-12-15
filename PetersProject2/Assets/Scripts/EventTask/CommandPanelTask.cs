@@ -95,7 +95,7 @@ public class CommandPanelTask : EventTask
             }
 
             //技パネル表示
-            var thingPanel = CommandManager.Instance.MakeCommandPanel(thingNames, 3, 2, Vector2.zero, parentCommand, false, true, parentRect, "使えるものがない！", 6);
+            var thingPanel = CommandManager.Instance.MakeCommandPanel(thingNames, 3, 2, Vector2.zero, parentCommand, false, true, parentRect, "使えるものがない！", 7);
             //技コマンド取得
             var thingCommands = thingPanel.GetCommands();
             for (int i = 0, len = thingCommands.Count; i < len; i++)

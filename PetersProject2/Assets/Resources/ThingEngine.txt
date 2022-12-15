@@ -22,8 +22,8 @@ Magic,ポア,30,true,false,false,3
 Item,魔法の絆創膏,20,true,false,false,0
 
 #Equipment 12~16
-Equipment,コスプレの剣,1,0,0,-1
-Equipment,コスプレの服,0,0,2,-1
-Equipment,コスプレの盾,0,0,1,-1
-Equipment,魔法使いの杖,1,0,0,-1
-Equipment,魔法使いの服,0,0,2,-1
+Equipment,コスプレの剣,1,0,0,-1,0
+Equipment,コスプレの服,0,0,2,-1,1
+Equipment,コスプレの盾,0,0,1,-1,2
+Equipment,魔法使いの杖,1,0,0,-1,0
+Equipment,魔法使いの服,0,0,2,-1,1

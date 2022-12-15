@@ -9,8 +9,53 @@ public class FriendChara : ButtleChara
 
     public int level { get; private set; } = 1;
 
+    public Equipment[] equipments = new Equipment[System.Enum.GetValues(typeof(Equipment.EquipmentType)).Length];
+
+    public float atp2 = 0;
+    public float mtp2 = 0;
+    public float df2 = 0;
+
     public FriendChara(string name, int hp, int mp, int atp, int mtp, int df, int speed, string professionName) : base(name, hp, mp, atp, mtp, df, speed)
     {
         this.professionName = professionName;
+        this.atp2 = atp;
+        this.mtp2 = mtp;
+        this.df2 = df;
+    }
+
+    //装備をする
+    public void Equip(Equipment equipment)
+    {
+        var equipmentType = equipment.equipmentType;
+        //装備を外す
+        RemoveEquipment(equipmentType);
+        //装備の能力分アップ
+        atp2 += equipment.atp;
+        mtp2 += equipment.mtp;
+        df2 += equipment.df;
+        //装備をする
+        equipments[(int)equipmentType] = equipment;
+        //boolをtrueに
+        equipment.isEquiped = true;
+    }
+
+    //装備を外す
+    public Equipment RemoveEquipment(Equipment.EquipmentType equipmentType)
+    {
+        var equipment = equipments[(int)equipmentType];
+        //装備をしているなら
+        if (equipment != null)
+        {
+            //装備の能力分ダウン
+            atp2 -= equipment.atp;
+            mtp2 -= equipment.mtp;
+            df2 -= equipment.df;
+            //外す
+            equipments[(int)equipmentType] = null;
+            //boolをfalseに
+            equipment.isEquiped = false;
+        }
+
+        return equipment;
     }
 }

@@ -2943,10 +2943,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1487696190281651335, guid: e16be79e91c5b40048fc0c64487f97cf, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7869859447243509344, guid: e16be79e91c5b40048fc0c64487f97cf, type: 3}
       propertyPath: m_Name
       value: Canvas
@@ -3157,6 +3153,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!224 &1404338349 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1404338349, guid: e16be79e91c5b40048fc0c64487f97cf, type: 3}
+  m_PrefabInstance: {fileID: 1227197327}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1531349481
 GameObject:
   m_ObjectHideFlags: 0
@@ -14163,6 +14164,10 @@ PrefabInstance:
       propertyPath: parentRect
       value: 
       objectReference: {fileID: 1957714955}
+    - target: {fileID: 8136133896044674838, guid: fc22b5ab2f13e4e1da0537b5869f596f, type: 3}
+      propertyPath: statusPanelRect
+      value: 
+      objectReference: {fileID: 1404338349}
     - target: {fileID: 8136133896044674838, guid: fc22b5ab2f13e4e1da0537b5869f596f, type: 3}
       propertyPath: commandPanelfirstRect
       value: 

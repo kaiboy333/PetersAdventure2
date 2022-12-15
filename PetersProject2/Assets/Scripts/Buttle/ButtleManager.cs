@@ -394,16 +394,31 @@ public class ButtleManager : MonoBehaviour
         return charaNames;
     }
 
-    public static  List<string> GetThingNames(List<int> keys)
+    public static List<string> GetThingNames(List<Thing> things)
     {
-        var skillNames = new List<string>();
+        var thingNames = new List<string>();
 
-        foreach (var key in keys)
+        foreach (var thing in things)
         {
-            skillNames.Add(ThingEngine.Instance.Get(key).name);
+            var mark = "";
+            if(thing is Equipment equipment)
+            {
+                if (equipment.isEquiped)
+                {
+                    mark = "E";
+                }
+            }
+            //Thingの名前を追加(装備しているならEをつける)
+            thingNames.Add(mark + thing.name);
         }
 
-        return skillNames;
+        return thingNames;
+    }
+    public static List<string> GetThingNames(List<int> keys)
+    {
+        var things = ThingEngine.Instance.Gets(keys);
+
+        return GetThingNames(things);
     }
 
     //戦闘終了か

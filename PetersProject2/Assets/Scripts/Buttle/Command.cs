@@ -40,4 +40,9 @@ public class Command : MonoBehaviour
         //関数セット
         this.action = action;
     }
+
+    public Action GetAction()
+    {
+        return action;
+    }
 }

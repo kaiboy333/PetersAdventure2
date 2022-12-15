@@ -39,8 +39,9 @@ public class ThingEngine : Engine<Thing>
                 var mtp = int.Parse(strs_t[3]);
                 var df = int.Parse(strs_t[4]);
                 var skillKey = int.Parse(strs_t[5]);
+                var equipmentType = (Equipment.EquipmentType)int.Parse(strs_t[6]);
 
-                thing = new Equipment(name, atp, mtp, df, skillKey);
+                thing = new Equipment(name, atp, mtp, df, skillKey, equipmentType);
             }
             //Skillなら
             else
