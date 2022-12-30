@@ -18,10 +18,7 @@ public class SoldierController : CharaController
     // Update is called once per frame
     void Update()
     {
-        if (!canMove)
-            return;
 
-        Move();
     }
 
     protected override void ArriveTargetPos()
@@ -31,18 +28,19 @@ public class SoldierController : CharaController
 
     IEnumerator DesideDirection()
     {
-        //動かなくする
-        key = Key.NONE;
-
         //待つ
         yield return new WaitForSeconds(waitInterval);
 
         //歩けるまで進む方向を決める
         do
         {
+            yield return null;
             var keyIndex = Random.Range(0, System.Enum.GetValues(typeof(Key)).Length - 1);
             key = (Key)System.Enum.ToObject(typeof(Key), keyIndex);
         }
         while (!CanWalk(GetNextTargetPos(directions[(int)key])));
+
+        //動く
+        Move();
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
-    [SerializeField] private CharaController charaController = null;
+    public CharaController charaController = null;
     private GameObject targetObj = null;
     private Vector2 beforeTargetPos;
 

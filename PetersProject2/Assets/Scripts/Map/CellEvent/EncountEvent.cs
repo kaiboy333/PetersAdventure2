@@ -14,7 +14,7 @@ public class EncountEvent : CellEvent
 
     [SerializeField] private Image blackPanelImage = null;
 
-    private YushaController yushaController = null;
+    [SerializeField] private ControllManager controllManager = null;
 
     protected override void Start()
     {
@@ -22,8 +22,6 @@ public class EncountEvent : CellEvent
 
         //0~1までにクランプ
         encountRate = Mathf.Clamp(encountRate, 0f, 1f);
-
-        yushaController = FindObjectOfType<YushaController>();
     }
 
     public override IEnumerator CallEvent()
@@ -33,7 +31,7 @@ public class EncountEvent : CellEvent
         if (parcent <= encountRate)
         {
             //プレイヤーの初期位置を記憶
-            YushaController.firstPos = yushaController.gameObject.transform.position;
+            YushaController.firstPos = controllManager.leader.gameObject.transform.position;
 
             //敵を生成
             var enemyCharas = EnemyGernerateEngine.Instance.Get(areaNo);

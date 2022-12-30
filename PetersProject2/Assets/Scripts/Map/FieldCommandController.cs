@@ -9,16 +9,16 @@ public class FieldCommandController : MonoBehaviour
     [SerializeField] private RectTransform commandPanelfirstRect = null;
     [SerializeField] private RectTransform commandPanelSelectRect = null;
     [SerializeField] private RectTransform statusPanelRect = null;
-    private YushaController yushaController = null;
-    private LogManager logManager = null;
+    [SerializeField] private LogManager logManager = null;
     //ステータスのパネル
     private CommandPanel statusPanel = null;
+
+    [SerializeField] private ControllManager controllManager = null;
 
     // Start is called before the first frame update
     void Start()
     {
-        yushaController = FindObjectOfType<YushaController>();
-        logManager = FindObjectOfType<LogManager>();
+
     }
 
     //最初のコマンドパネルとステータスパネルを作る関数
@@ -52,17 +52,25 @@ public class FieldCommandController : MonoBehaviour
         commandPanelRoot = CommandManager.Instance.MakeCommandPanel(new List<string> { "はなす", "じゅもん", "どうぐ", "しらべる", "つよさ", "さくせん" }, 3, 2, commandPanelfirstRect.position, null, false, true, parentRect);
         var commandsRoot = commandPanelRoot.GetCommands();
 
+        var leader = controllManager.leader;
         //はなすを押したら
         commandsRoot[0].SetAction(() =>
         {
             //CellEventを取得(Checkタイプ)
-            var cellEvent = yushaController.GetCellEvent(yushaController.GetNextTargetPos(yushaController.direction), CellEvent.CellType.Check);
+            var cellEvent = leader.GetCellEvent(leader.GetNextTargetPos(leader.direction), CellEvent.CellType.Check);
             //CellEventがあるなら
             if (cellEvent)
             {
                 //はなすイベントなら
                 if (cellEvent is TalkEvent)
                 {
+                    //パネルを消す
+                    CommandManager.Instance.RemoveAllButtleCommandPanel();
+                    //参照をnullに
+                    commandPanelRoot = null;
+                    //ステータスパネルを消す
+                    Destroy(statusPanel.gameObject);
+
                     //イベントを呼ぶ
                     StartCoroutine(cellEvent.CallEvent());
                 }
@@ -79,13 +87,20 @@ public class FieldCommandController : MonoBehaviour
         commandsRoot[3].SetAction(() =>
         {
             //CellEventを取得(Checkタイプ)
-            var cellEvent = yushaController.GetCellEvent(yushaController.GetNextTargetPos(yushaController.direction), CellEvent.CellType.Check);
+            var cellEvent = leader.GetCellEvent(leader.GetNextTargetPos(leader.direction), CellEvent.CellType.Check);
             //CellEventがあるなら
             if (cellEvent)
             {
                 //はなすイベントでないなら
                 if (!(cellEvent is TalkEvent))
                 {
+                    //パネルを消す
+                    CommandManager.Instance.RemoveAllButtleCommandPanel();
+                    //参照をnullに
+                    commandPanelRoot = null;
+                    //ステータスパネルを消す
+                    Destroy(statusPanel.gameObject);
+
                     //イベントを呼ぶ
                     StartCoroutine(cellEvent.CallEvent());
                 }
@@ -134,7 +149,7 @@ public class FieldCommandController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             //プレイヤーが動いていないときでコマンドパネルが生成されていないなら
-            if (!yushaController.isMoving && !CommandManager.Instance.nowCommandPanel)
+            if (!controllManager.leader.isMoving && !CommandManager.Instance.nowCommandPanel)
             {
                 MakeCommandPanels();
             }

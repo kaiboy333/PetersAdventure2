@@ -7,28 +7,29 @@ using UnityEngine.UI;
 public abstract class CharaController : MonoBehaviour
 {
     protected float speed = 2f;
-    protected readonly Vector2[] directions = { Vector2.right, Vector2.left, Vector2.up, Vector2.down };
-    protected float moveDistance;
+    public static Vector2[] directions = { Vector2.right, Vector2.left, Vector2.up, Vector2.down };
+    [HideInInspector] public Key key = Key.NONE;
+    public float moveDistance { get; protected set; }
     protected LayerMask hitMask;
-    protected LayerMask cellMask;
+    public LayerMask cellMask { get; protected set; }
     protected BoxCollider2D boxCollider2D = null;
     private Tilemap tilemap = null;
 
-    protected Animator animator = null;
+    public Animator animator { get; protected set; }
 
     protected Vector2 targetPos;
 
     public bool isMoving { get; protected set; }
 
-    protected Key key = Key.NONE;
-
-    //ログとコマンドパネルが見えないかつ、ブラックパネルのアルファ値が0なら
+    //ログとコマンドパネルが見えないかつ、ブラックパネルのアルファ値が0でキーが何かあるなら
     public bool canMove { get { return !logManager.gameObject.activeInHierarchy && !CommandManager.Instance.nowCommandPanel && blackPanelImage.color.a == 0; } }
     //当たり判定に使う球の半径
     protected float sphereRadious = 0;
 
     private LogManager logManager = null;
-    [SerializeField] private Image blackPanelImage = null;
+    public Image blackPanelImage = null;
+
+    public Vector2 direction { get { return directions[(int)key]; } }
 
     public enum Key
     {
@@ -74,14 +75,14 @@ public abstract class CharaController : MonoBehaviour
     }
 
     //目的地まで歩けるか
-    protected bool CanWalk(Vector2 targetPos)
+    public bool CanWalk(Vector2 targetPos)
     {
         var hitColliders = Physics2D.OverlapCircleAll(targetPos, sphereRadious, hitMask);
 
         foreach(var hitCollider in hitColliders)
         {
             //当たったコライダーが自分のとは違うものなら
-            if(hitCollider.gameObject != this.gameObject)
+            if(hitCollider.gameObject != this.gameObject && !hitCollider.gameObject.GetComponent<YushaController>() && this is YushaController)
             {
                 //壁がある
                 return false;
@@ -91,47 +92,86 @@ public abstract class CharaController : MonoBehaviour
         return true;
     }
 
-    protected void Move()
+    public IEnumerator Move()
     {
-        //動いていないなら
-        if (!isMoving)
+        //歩けないなら
+        if (key == Key.NONE || !canMove)
         {
-            if (key == Key.NONE)
-                return;
-
-            //最後に押しているキーを見て移動
-            var direction = directions[(int)key];
-
-            targetPos = GetNextTargetPos(direction);
-
-            //歩けるなら
-            if (CanWalk(targetPos))
-            {
-                //trueに
-                isMoving = true;
-            }
-
-            //アニメーション再生
-            animator.SetFloat("MoveX", direction.x);
-            animator.SetFloat("MoveY", direction.y);
+            yield break;
         }
-        //動いているなら
-        else
+
+        var direction = directions[(int)key];
+        targetPos = GetNextTargetPos(direction);
+
+        //trueに
+        isMoving = true;
+
+        //アニメーション再生
+        animator.SetFloat("MoveX", direction.x);
+        animator.SetFloat("MoveY", direction.y);
+
+        while(Vector2.Distance(targetPos, transform.position) >= Mathf.Epsilon)
         {
-            //移動
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
-
-            //たどり着いたら
-            if (Vector2.Distance(targetPos, transform.position) < Mathf.Epsilon)
+            if (canMove)
             {
-                //false
-                isMoving = false;
+                //移動
+                transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
 
-                //ついたときの関数を呼ぶ
-                ArriveTargetPos();
+                yield return null;
             }
         }
+
+        //たどり着いたら
+        //false
+        isMoving = false;
+
+        //ついたときの関数を呼ぶ
+        ArriveTargetPos();
     }
+
+    //protected void Move()
+    //{
+    //    //動いていないなら
+    //    if (!isMoving)
+    //    {
+    //        if (key == Key.NONE)
+    //            return;
+
+    //        //最後に押しているキーを見て移動
+    //        var direction = directions[(int)key];
+
+    //        targetPos = GetNextTargetPos(direction);
+
+    //        //歩けるなら
+    //        if (CanWalk(targetPos))
+    //        {
+    //            //trueに
+    //            isMoving = true;
+    //            //ここから離れる時によぶ
+    //            LeaveTargetPos();
+    //        }
+
+    //        //アニメーション再生
+    //        animator.SetFloat("MoveX", direction.x);
+    //        animator.SetFloat("MoveY", direction.y);
+    //    }
+    //    //動いているなら
+    //    else
+    //    {
+    //        //移動
+    //        transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
+
+    //        //たどり着いたら
+    //        if (Vector2.Distance(targetPos, transform.position) < Mathf.Epsilon)
+    //        {
+    //            //false
+    //            isMoving = false;
+
+    //            //ついたときの関数を呼ぶ
+    //            ArriveTargetPos();
+    //        }
+    //    }
+    //}
 
     public Vector2 GetNextTargetPos(Vector2 direction)
     {

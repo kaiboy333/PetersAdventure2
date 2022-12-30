@@ -11,16 +11,20 @@ public class FriendChara : ButtleChara
 
     public Equipment[] equipments = new Equipment[System.Enum.GetValues(typeof(Equipment.EquipmentType)).Length];
 
-    public float atp2 = 0;
-    public float mtp2 = 0;
-    public float df2 = 0;
+    //public float atp2 = 0;
+    //public float mtp2 = 0;
+    //public float df2 = 0;
 
-    public FriendChara(string name, int hp, int mp, int atp, int mtp, int df, int speed, string professionName) : base(name, hp, mp, atp, mtp, df, speed)
+    //エンジンでの番号
+    public int no { get; private set; }
+
+    public FriendChara(string name, int hp, int mp, int atp, int mtp, int df, int speed, string professionName, int no) : base(name, hp, mp, atp, mtp, df, speed)
     {
         this.professionName = professionName;
-        this.atp2 = atp;
-        this.mtp2 = mtp;
-        this.df2 = df;
+        //this.atp2 = atp;
+        //this.mtp2 = mtp;
+        //this.df2 = df;
+        this.no = no;
     }
 
     //装備をする
@@ -30,9 +34,9 @@ public class FriendChara : ButtleChara
         //装備を外す
         RemoveEquipment(equipmentType);
         //装備の能力分アップ
-        atp2 += equipment.atp;
-        mtp2 += equipment.mtp;
-        df2 += equipment.df;
+        atp += equipment.atp;
+        mtp += equipment.mtp;
+        df += equipment.df;
         //装備をする
         equipments[(int)equipmentType] = equipment;
         //boolをtrueに
@@ -47,9 +51,9 @@ public class FriendChara : ButtleChara
         if (equipment != null)
         {
             //装備の能力分ダウン
-            atp2 -= equipment.atp;
-            mtp2 -= equipment.mtp;
-            df2 -= equipment.df;
+            atp -= equipment.atp;
+            mtp -= equipment.mtp;
+            df -= equipment.df;
             //外す
             equipments[(int)equipmentType] = null;
             //boolをfalseに

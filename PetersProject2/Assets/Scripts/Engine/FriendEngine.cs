@@ -39,7 +39,7 @@ public class FriendEngine : Engine<FriendChara>
                 var speed = int.Parse(strs_t[6]);
                 var professionName = strs_t[7];
 
-                var friend = new FriendChara(name, hp, mp, atp, mtp, df, speed, professionName);
+                var friend = new FriendChara(name, hp, mp, atp, mtp, df, speed, professionName, i / READ_MAX_ROW);
 
                 dictionary.Add(i / READ_MAX_ROW, friend);
             }

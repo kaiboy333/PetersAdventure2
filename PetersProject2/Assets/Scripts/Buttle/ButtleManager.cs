@@ -159,8 +159,11 @@ public class ButtleManager : MonoBehaviour
         {
             var alliveFriendChara = alliveFriendCharas[i];
             bool isFirstMake = i == 0;
-            //コマンドパネル生成、選択が終わるまで進まない
-            yield return new CommandPanelTask(this, (FriendChara)alliveFriendChara, isFirstMake, backGroundRect).Event();
+            if (!isEscape)
+            {
+                //コマンドパネル生成、選択が終わるまで進まない
+                yield return new CommandPanelTask(this, (FriendChara)alliveFriendChara, isFirstMake, backGroundRect).Event();
+            }
         }
         //逃げようとしているなら
         if (isEscape)
