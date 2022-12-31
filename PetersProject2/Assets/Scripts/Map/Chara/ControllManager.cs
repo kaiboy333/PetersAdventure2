@@ -104,11 +104,11 @@ public class ControllManager : MonoBehaviour
 
     private void Investigate()
     {
-        //動いていないときに
-        if (!leader.isMoving && leader.canMove)
+        //スペースキーを押したら
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            //スペースキーを押したら
-            if (Input.GetKeyDown(KeyCode.Space))
+            //動いていないときにキーがNONE以外なら
+            if (!leader.isMoving && leader.canMove && leader.key != Key.NONE)
             {
                 //CellEventを取得(Checkタイプ)
                 var cellEvent = leader.GetCellEvent(leader.GetNextTargetPos(leader.direction), CellEvent.CellType.Check);
