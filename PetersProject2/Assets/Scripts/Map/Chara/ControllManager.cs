@@ -82,23 +82,7 @@ public class ControllManager : MonoBehaviour
 
         if (keys.Count > 0 && !leader.isMoving && leader.canMove)
         {
-            leader.key = keys[keys.Count - 1];
-            //向いている向きを記憶
-            direction = directions[(int)leader.key];
-            //アニメーション再生
-            leader.animator.SetFloat("MoveX", direction.x);
-            leader.animator.SetFloat("MoveY", direction.y);
-
-            var targetPos = leader.GetNextTargetPos(direction);
-            //歩けるなら
-            if (leader.CanWalk(targetPos))
-            {
-                //全員歩く
-                foreach (var yusha in yushas)
-                {
-                    StartCoroutine(yusha.Move());
-                }
-            }
+            AllMove(keys[keys.Count - 1]);
         }
     }
 
@@ -130,5 +114,34 @@ public class ControllManager : MonoBehaviour
             return yushas[index + 1];
         }
         return null;
+    }
+
+    public void AllMove(Key key)
+    {
+        leader.key = key;
+        //向いている向きを記憶
+        direction = directions[(int)leader.key];
+        //アニメーション再生
+        leader.animator.SetFloat("MoveX", direction.x);
+        leader.animator.SetFloat("MoveY", direction.y);
+
+        var targetPos = leader.GetNextTargetPos(direction);
+        //歩けるなら
+        if (leader.CanWalk(targetPos))
+        {
+            //全員歩く
+            foreach (var yusha in yushas)
+            {
+                StartCoroutine(yusha.Move());
+            }
+        }
+    }
+
+    public void AllTransform(Vector2 pos)
+    {
+        foreach(var yusha in yushas)
+        {
+            yusha.transform.position = pos;
+        }
     }
 }

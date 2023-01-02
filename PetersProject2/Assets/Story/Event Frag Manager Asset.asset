@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f96fdad7d5ba498aa8b346becb0ac91, type: 3}
+  m_Name: Event Frag Manager Asset
+  m_EditorClassIdentifier: 
+  eventFrags:
+  - {fileID: 11400000, guid: c1a79dcc8e8894721b9a91be11dc6776, type: 2}
+  - {fileID: 11400000, guid: b555ca7a2acc84665a4c5463a9687463, type: 2}
+  index: 1
