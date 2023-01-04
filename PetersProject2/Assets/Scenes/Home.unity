@@ -1406,7 +1406,7 @@ MonoBehaviour:
   cellType: 0
   sceneName: World
   blackPanelImage: {fileID: 1551059952}
-  teleportPosition: {x: -1.93, y: 0.5}
+  teleportPosition: {x: -1.35, y: 0.5}
 --- !u!61 &1531349483
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3085,7 +3085,7 @@ MonoBehaviour:
   cellType: 0
   sceneName: World
   blackPanelImage: {fileID: 1551059952}
-  teleportPosition: {x: -2.23, y: 0.5}
+  teleportPosition: {x: -1.35, y: 0.5}
 --- !u!61 &2075574625
 BoxCollider2D:
   m_ObjectHideFlags: 0

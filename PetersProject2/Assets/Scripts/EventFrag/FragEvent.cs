@@ -14,6 +14,8 @@ public abstract class FragEvent : CellEvent
     }
     [SerializeField] private TriggerType triggerType = TriggerType.Normal;
 
+    public static bool isEvent { get; private set; }
+
     // Start is called before the first frame update
     protected override void Start()
     {
@@ -51,7 +53,11 @@ public abstract class FragEvent : CellEvent
 
     private IEnumerator StartEvent()
     {
+        isEvent = true;
+
         yield return Event();
+
+        isEvent = false;
 
         frag.Finish();
 

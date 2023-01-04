@@ -80,7 +80,7 @@ public class ControllManager : MonoBehaviour
             keys.Remove(Key.DOWN);
         }
 
-        if (keys.Count > 0 && !leader.isMoving && leader.canMove)
+        if (keys.Count > 0 && !leader.isMoving && leader.canMove && !FragEvent.isEvent)
         {
             AllMove(keys[keys.Count - 1]);
         }

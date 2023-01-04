@@ -12,3 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 250d3227c89e24d16a02791dbf8ca193, type: 3}
   m_Name: Frag1
   m_EditorClassIdentifier: 
+  isFinished: 1
+  isOn: 0
