@@ -56,23 +56,26 @@ public class FieldCommandController : MonoBehaviour
         //はなすを押したら
         commandsRoot[0].SetAction(() =>
         {
-            //CellEventを取得(Checkタイプ)
-            var cellEvent = leader.GetCellEvent(leader.GetNextTargetPos(leader.direction), CellEvent.CellType.Check);
-            //CellEventがあるなら
-            if (cellEvent)
+            if(leader.key != CharaController.Key.NONE)
             {
-                //はなすイベントなら
-                if (cellEvent is TalkEvent)
+                //CellEventを取得(Checkタイプ)
+                var cellEvent = leader.GetCellEvent(leader.GetNextTargetPos(leader.direction), CellEvent.CellType.Check);
+                //CellEventがあるなら
+                if (cellEvent)
                 {
-                    //パネルを消す
-                    CommandManager.Instance.RemoveAllButtleCommandPanel();
-                    //参照をnullに
-                    commandPanelRoot = null;
-                    //ステータスパネルを消す
-                    Destroy(statusPanel.gameObject);
+                    //はなすイベントなら
+                    if (cellEvent is TalkEvent)
+                    {
+                        //パネルを消す
+                        CommandManager.Instance.RemoveAllButtleCommandPanel();
+                        //参照をnullに
+                        commandPanelRoot = null;
+                        //ステータスパネルを消す
+                        Destroy(statusPanel.gameObject);
 
-                    //イベントを呼ぶ
-                    StartCoroutine(cellEvent.CallEvent());
+                        //イベントを呼ぶ
+                        StartCoroutine(cellEvent.CallEvent());
+                    }
                 }
             }
         });
@@ -86,23 +89,26 @@ public class FieldCommandController : MonoBehaviour
         //しらべるを押したら
         commandsRoot[3].SetAction(() =>
         {
-            //CellEventを取得(Checkタイプ)
-            var cellEvent = leader.GetCellEvent(leader.GetNextTargetPos(leader.direction), CellEvent.CellType.Check);
-            //CellEventがあるなら
-            if (cellEvent)
+            if (leader.key != CharaController.Key.NONE)
             {
-                //はなすイベントでないなら
-                if (!(cellEvent is TalkEvent))
+                //CellEventを取得(Checkタイプ)
+                var cellEvent = leader.GetCellEvent(leader.GetNextTargetPos(leader.direction), CellEvent.CellType.Check);
+                //CellEventがあるなら
+                if (cellEvent)
                 {
-                    //パネルを消す
-                    CommandManager.Instance.RemoveAllButtleCommandPanel();
-                    //参照をnullに
-                    commandPanelRoot = null;
-                    //ステータスパネルを消す
-                    Destroy(statusPanel.gameObject);
+                    //はなすイベントでないなら
+                    if (!(cellEvent is TalkEvent))
+                    {
+                        //パネルを消す
+                        CommandManager.Instance.RemoveAllButtleCommandPanel();
+                        //参照をnullに
+                        commandPanelRoot = null;
+                        //ステータスパネルを消す
+                        Destroy(statusPanel.gameObject);
 
-                    //イベントを呼ぶ
-                    StartCoroutine(cellEvent.CallEvent());
+                        //イベントを呼ぶ
+                        StartCoroutine(cellEvent.CallEvent());
+                    }
                 }
             }
         });
@@ -149,7 +155,7 @@ public class FieldCommandController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             //プレイヤーが動いていないときでコマンドパネルが生成されていないなら
-            if (!controllManager.leader.isMoving && !CommandManager.Instance.nowCommandPanel)
+            if (!controllManager.leader.isMoving && !CommandManager.Instance.nowCommandPanel && !FragEvent.isEvent)
             {
                 MakeCommandPanels();
             }

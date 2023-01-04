@@ -26,7 +26,7 @@ public class TeleportEvent : CellEvent
         if (blackPanelImage)
         {
             //指定位置に移動するように設定
-            YushaController.firstPos = teleportPosition;
+            ControllManager.firstPos = teleportPosition;
             //暗くする
             var alphaManager = new AlphaManager(blackPanelImage, false);
             yield return alphaManager.Event();

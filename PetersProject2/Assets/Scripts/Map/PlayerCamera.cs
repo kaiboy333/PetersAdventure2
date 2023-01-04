@@ -4,23 +4,10 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
-    public CharaController charaController = null;
-    private GameObject targetObj = null;
+    [SerializeField] private GameObject targetObj = null;
     private Vector2 beforeTargetPos;
 
     public float outViewLine = 0.25f;
-
-    // Start is called before the first frame update
-
-    void Start()
-    {
-        if (charaController)
-        {
-            targetObj = charaController.gameObject;
-            transform.position = new Vector3(targetObj.transform.position.x, targetObj.transform.position.y, -10);
-            beforeTargetPos = targetObj.transform.position;
-        }
-    }
 
     void LateUpdate()
     {
@@ -50,5 +37,20 @@ public class PlayerCamera : MonoBehaviour
             beforeTargetPos = targetPos;
         }
 
+    }
+
+    public void SetTargetObj(GameObject targetObj)
+    {
+        this.targetObj = targetObj;
+        Init();
+    }
+
+    private void Init()
+    {
+        if (targetObj)
+        {
+            transform.position = new Vector3(targetObj.transform.position.x, targetObj.transform.position.y, -10);
+            beforeTargetPos = targetObj.transform.position;
+        }
     }
 }

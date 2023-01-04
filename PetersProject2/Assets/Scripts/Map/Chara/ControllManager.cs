@@ -23,6 +23,8 @@ public class ControllManager : MonoBehaviour
 
     [SerializeField] private PlayerCamera playerCamera = null;
 
+    [SerializeField] private LogManager logManager = null;
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -31,9 +33,11 @@ public class ControllManager : MonoBehaviour
             var yusha = Instantiate(yushaPrefabs[friendChara.no]).GetComponent<YushaController>();
             yusha.controllManager = this;
             yusha.blackPanelImage = blackPanelImage;
+            yusha.logManager = logManager;
             yushas.Add(yusha);
+            yusha.transform.position = firstPos;
         }
-        playerCamera.charaController = leader;
+        playerCamera.SetTargetObj(leader.gameObject);
     }
 
     // Update is called once per frame

@@ -4,18 +4,11 @@ using UnityEngine;
 
 public class YushaController : CharaController
 {
-    //現れる位置
-    public static Vector2 firstPos;
-
     public ControllManager controllManager = null;
 
     // Start is called before the first frame update
     protected override void Start()
     {
-
-        //初期位置に移動
-        transform.position = firstPos;
-
         //タイルによる位置修正
         base.Start();
     }

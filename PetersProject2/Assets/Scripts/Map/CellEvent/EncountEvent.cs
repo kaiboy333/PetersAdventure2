@@ -31,7 +31,7 @@ public class EncountEvent : CellEvent
         if (parcent <= encountRate)
         {
             //プレイヤーの初期位置を記憶
-            YushaController.firstPos = controllManager.leader.gameObject.transform.position;
+            ControllManager.firstPos = controllManager.leader.gameObject.transform.position;
 
             //敵を生成
             var enemyCharas = EnemyGernerateEngine.Instance.Get(areaNo);

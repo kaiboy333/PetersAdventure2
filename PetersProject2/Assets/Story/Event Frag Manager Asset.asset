@@ -15,4 +15,4 @@ MonoBehaviour:
   eventFrags:
   - {fileID: 11400000, guid: c1a79dcc8e8894721b9a91be11dc6776, type: 2}
   - {fileID: 11400000, guid: b555ca7a2acc84665a4c5463a9687463, type: 2}
-  index: 0
+  index: 1

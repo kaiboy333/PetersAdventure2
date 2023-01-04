@@ -267,6 +267,7 @@ MonoBehaviour:
   - {fileID: 938424938448825509, guid: aa14357b3331c4f6db273c7cc9e4b578, type: 3}
   blackPanelImage: {fileID: 1551059952}
   playerCamera: {fileID: 8774284884029469605}
+  logManager: {fileID: 2052105549}
 --- !u!4 &21488245
 Transform:
   m_ObjectHideFlags: 0
@@ -3194,6 +3195,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2052105549}
     - target: {fileID: 938424938448825504, guid: d345d627195de4d07b1e9a882e669a44, type: 3}
+      propertyPath: logManager
+      value: 
+      objectReference: {fileID: 2052105549}
+    - target: {fileID: 938424938448825504, guid: d345d627195de4d07b1e9a882e669a44, type: 3}
       propertyPath: blackPanelImage
       value: 
       objectReference: {fileID: 1551059952}
@@ -3368,6 +3373,10 @@ PrefabInstance:
       value: "\u3088\u3046\uFF01\u30B3\u30B9\u30D7\u30EC\u574A\u4E3B\uFF01\n\u5143\u6C17\u306B\u3057\u3066\u308B\u304B\uFF1F\n\n\u4ECA\u65E5\u306F\u52C7\u8005\u304C\u9B54\u738B\u3092\u5012\u3057\u3066\u304B\u3089\n200\u5E74\u8A18\u5FF5\u30D1\u30FC\u30C6\u30A3\u30FC\u3060\u3002\n\u52C7\u8005\u306E\u5B50\u5B6B\u3067\u3042\u308B\u3042\u3044\u3064\u304C\u53C2\u52A0\u3059\u308B\u3089\u3057\u3044\u305C\u3002"
       objectReference: {fileID: 0}
     - target: {fileID: 357081875167832889, guid: d345d627195de4d07b1e9a882e669a44, type: 3}
+      propertyPath: logManager
+      value: 
+      objectReference: {fileID: 2052105549}
+    - target: {fileID: 938424938448825504, guid: d345d627195de4d07b1e9a882e669a44, type: 3}
       propertyPath: logManager
       value: 
       objectReference: {fileID: 2052105549}
@@ -14147,14 +14156,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 357081875167832889, guid: d345d627195de4d07b1e9a882e669a44, type: 3}
-      propertyPath: talkStr
-      value: "\u4FFA\u3089\u5175\u58EB\u3068\u3057\u3066\u96C7\u308F\u308C\u3066\u3044\u308B\u3051\u3069\u3001\n\u6226\u95D8\u3068\u304B\u3057\u306A\u3044\u304B\u3089\u898B\u5F35\u308A\u3070\u3063\u304B\u3060\u3088\u3002\n\u9000\u5C48\u3067\u6B7B\u306B\u305D\u3046\u3060\u3088\u3002\n\u306A\u3042\u3001\u9762\u767D\u3044\u3053\u3068\u3042\u3063\u305F\u3089\u6559\u3048\u3066\u304F\u308C\u3088\u3002"
-      objectReference: {fileID: 0}
-    - target: {fileID: 357081875167832889, guid: d345d627195de4d07b1e9a882e669a44, type: 3}
-      propertyPath: cellType
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 357081875167832889, guid: d345d627195de4d07b1e9a882e669a44, type: 3}
+      propertyPath: logManager
+      value: 
+      objectReference: {fileID: 2052105549}
+    - target: {fileID: 938424938448825504, guid: d345d627195de4d07b1e9a882e669a44, type: 3}
       propertyPath: logManager
       value: 
       objectReference: {fileID: 2052105549}
@@ -14359,6 +14364,10 @@ PrefabInstance:
       value: "\u304A\u524D\u306F\u672C\u5F53\u306B\u52C7\u8005\u306E\u30B3\u30B9\u30D7\u30EC\u597D\u304D\u3060\u3088\u306A\u3002\n\u8A18\u5FF5\u30D1\u30FC\u30C6\u30A3\u30FC\u304F\u3089\u3044\u306F\u30B3\u30B9\u30D7\u30EC\u3084\u3081\u3068\u3051\u3088\u3002"
       objectReference: {fileID: 0}
     - target: {fileID: 357081875167832889, guid: d345d627195de4d07b1e9a882e669a44, type: 3}
+      propertyPath: logManager
+      value: 
+      objectReference: {fileID: 2052105549}
+    - target: {fileID: 938424938448825504, guid: d345d627195de4d07b1e9a882e669a44, type: 3}
       propertyPath: logManager
       value: 
       objectReference: {fileID: 2052105549}

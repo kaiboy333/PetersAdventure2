@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5362191648449631173}
   - component: {fileID: 5362191648449631174}
   m_Layer: 3
-  m_Name: Peter
+  m_Name: Ship
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -49,10 +49,10 @@ MonoBehaviour:
   key: 4
   hitMask:
     serializedVersion: 2
-    m_Bits: 648
+    m_Bits: 256
   cellMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 0
   logManager: {fileID: 0}
   blackPanelImage: {fileID: 0}
   controllManager: {fileID: 0}
@@ -96,7 +96,7 @@ SpriteRenderer:
   m_SortingLayerID: -1188737505
   m_SortingLayer: 2
   m_SortingOrder: 1
-  m_Sprite: {fileID: -598574372620395533, guid: 2bf5b3947ef294dbbb106f4ac4403015, type: 3}
+  m_Sprite: {fileID: -5411077673283184763, guid: 1d3fdfd27dc0b44819d8987c59791193, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -117,7 +117,7 @@ Animator:
   m_GameObject: {fileID: 5362191648449631176}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: fc5f8299c36ee469391ecdd9126552c5, type: 2}
+  m_Controller: {fileID: 9100000, guid: e9f57ca84c1fb4012b66fa55f87ea369, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

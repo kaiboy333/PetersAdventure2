@@ -10,8 +10,8 @@ public abstract class CharaController : MonoBehaviour
     public static Vector2[] directions = { Vector2.right, Vector2.left, Vector2.up, Vector2.down };
     [HideInInspector] public Key key = Key.NONE;
     public float moveDistance { get; protected set; }
-    protected LayerMask hitMask;
-    public LayerMask cellMask { get; protected set; }
+    [SerializeField] protected LayerMask hitMask;
+    [SerializeField] protected LayerMask cellMask;
     protected BoxCollider2D boxCollider2D = null;
     private Tilemap tilemap = null;
 
@@ -26,7 +26,7 @@ public abstract class CharaController : MonoBehaviour
     //当たり判定に使う球の半径
     protected float sphereRadious = 0;
 
-    private LogManager logManager = null;
+    public LogManager logManager = null;
     public Image blackPanelImage = null;
 
     public Vector2 direction { get { return directions[(int)key]; } }
@@ -40,16 +40,8 @@ public abstract class CharaController : MonoBehaviour
         NONE,
     }
 
-    private void Awake()
-    {
-        logManager = FindObjectOfType<LogManager>();
-    }
-
     protected virtual void Start()
     {
-        hitMask = LayerMask.GetMask("Sea", "Player", "Wall");
-        cellMask = LayerMask.GetMask("CellEvent");
-
         //タイルマップによる位置調整
         tilemap = FindObjectOfType<Tilemap>();
 
