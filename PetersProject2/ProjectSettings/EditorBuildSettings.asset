@@ -17,4 +17,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Buttle.unity
     guid: a7a2dda20bcbd4727bf1e6587ee56407
+  - enabled: 1
+    path: Assets/Scenes/Dungeon1/Dungeon1_1.unity
+    guid: 9c5136372232049f7b7ab99eb53a8605
+  - enabled: 1
+    path: Assets/Scenes/Town.unity
+    guid: 8cdbe644645de4a3bb079c08a5675347
   m_configObjects: {}

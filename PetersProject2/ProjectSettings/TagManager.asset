@@ -45,6 +45,9 @@ TagManager:
   - name: Map
     uniqueID: 3239973703
     locked: 0
+  - name: Spot
+    uniqueID: 3599338689
+    locked: 0
   - name: Chara
     uniqueID: 3106229791
     locked: 0
